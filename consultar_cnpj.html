@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consulta de CNPJ | Destac Propagandas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="consultas_publicas.css">
+</head>
+<body data-consulta="cnpj">
+<aside>
+  <img src="assets/logo-destac.png" alt="Destac Propagandas">
+  <div id="usuarioConectadoBox" style="margin:14px 12px 22px;padding:12px;border:1px solid rgba(123,97,168,.18);border-radius:12px;background:rgba(255,255,255,.55);">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a7caf;margin-bottom:6px;">USUÁRIO CONECTADO</div>
+    <div id="nomeUsuarioConectado" style="font-weight:800;color:#2f2a45;line-height:1.25;">Carregando...</div>
+    <div id="perfilUsuarioConectado" style="margin-top:4px;font-size:12px;font-weight:700;color:#7b61a8;"></div>
+  </div>
+      <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a class="active" href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+  <a class="sair" href="#" id="btnSair">Sair</a>
+</aside>
+<main class="consultas-main">
+  <header><div><span>CONSULTAS PÚBLICAS</span><h1>Consultar CNPJ</h1><p>Confira a situação cadastral e as informações completas de uma empresa.</p></div></header>
+  <div class="ferramentas-nav" aria-label="Consultas públicas"><a class="selecionada" href="consultar_cnpj.html">Consultar CNPJ</a><a class="" href="buscar_cep.html">Buscar CEP</a></div>
+<section class="consulta-card">
+  <div class="consulta-card-top"><div><h2>Validar e consultar empresa</h2><p>Informe o CNPJ para verificar a estrutura do número e consultar os dados cadastrais públicos.</p></div></div>
+  <form id="formCnpj" class="consulta-form" autocomplete="off">
+    <div class="consulta-field crescer"><label for="cnpjBusca">CNPJ <span aria-hidden="true">*</span></label><input id="cnpjBusca" type="text" inputmode="text" placeholder="00.000.000/0000-00" maxlength="18" required aria-describedby="cnpjAjuda"><small id="cnpjAjuda">Aceita número com ou sem pontuação.</small></div>
+    <button class="consulta-btn" id="btnConsultarCnpj" type="submit">Consultar CNPJ</button>
+  </form>
+  <div id="mensagemCnpj" class="consulta-mensagem" role="status" aria-live="polite" hidden></div>
+</section>
+<section id="resultadoCnpj" class="consulta-card resultado" hidden>
+  <div class="resultado-header"><div><div class="resultado-kicker">DADOS PÚBLICOS ENCONTRADOS</div><h2 id="empresaRazao">Empresa</h2><p id="empresaFantasia"></p></div><div id="empresaSituacao" class="situacao"></div></div>
+  <div id="validacaoCnpj" class="validacao-aviso"></div>
+  <div id="dadosCnpj" class="dados-empresa"></div>
+  <div class="consulta-actions"><button type="button" class="consulta-btn btn-secundario" id="btnCopiarCnpj">Copiar resumo</button><button type="button" class="consulta-btn btn-secundario" id="btnCopiarJson">Copiar JSON completo</button></div>
+  <details class="detalhe-json"><summary>Ver todos os campos retornados pela API (JSON)</summary><pre id="dadosJson"></pre></details>
+  <p class="consulta-fonte">Fonte: <a href="https://brasilapi.com.br/docs" target="_blank" rel="noopener noreferrer">BrasilAPI / Minha Receita</a>. Os dados podem ter defasagem em relação à Receita Federal. Esta consulta não é certidão nem comprovante oficial.</p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+<script src="consultas_publicas.js"></script>
+</body>
+</html>

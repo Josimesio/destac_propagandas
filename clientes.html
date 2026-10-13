@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes | Destac Propagandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .clientes-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+    .clientes-tab{border:1px solid var(--line);background:#fff;color:var(--lilac-dark);padding:12px 18px;border-radius:12px;font:inherit;font-weight:800;cursor:pointer}
+    .clientes-tab.active{background:var(--lilac-dark);color:#fff;border-color:var(--lilac-dark)}
+    .clientes-view{display:none}.clientes-view.active{display:block}
+    .clientes-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px}
+    .clientes-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:18px 0}
+    .clientes-toolbar-left{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;flex:1}
+    .clientes-toolbar .campo{min-width:220px;flex:1}.clientes-toolbar .campo label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}
+    .clientes-toolbar input,.clientes-toolbar select{width:100%;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}
+    .clientes-toolbar select{min-width:105px}
+    .btnPrimario,.btnSecundario{min-height:44px;padding:0 16px;border-radius:10px;border:0;font:inherit;font-weight:800;cursor:pointer}
+    .btnPrimario{background:var(--lilac-dark);color:#fff}.btnSecundario{background:#efedf6;color:var(--lilac-dark);border:1px solid #dfd9eb}
+    .pagination-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px;color:var(--muted);font-size:13px;font-weight:700}
+    .pagination-actions{display:flex;align-items:center;gap:8px}.pagination-actions button{min-width:40px;height:38px;border:1px solid var(--line);background:#fff;border-radius:9px;font:inherit;font-weight:800;color:var(--lilac-dark);cursor:pointer}.pagination-actions button:disabled{opacity:.4;cursor:not-allowed}
+    .tabela-wrapper{overflow-x:auto;border:1px solid var(--line);border-radius:14px}.tabela-usuarios{min-width:1050px;margin:0}
+    #tabelaClientes th:nth-child(1),#tabelaClientes td:nth-child(1){white-space:nowrap;font-weight:800;color:var(--lilac-dark)}
+    #tabelaClientes th:nth-child(7),#tabelaClientes td:nth-child(7),#tabelaClientes th:nth-child(8),#tabelaClientes td:nth-child(8){text-align:center;vertical-align:middle}
+    #tabelaClientes td:nth-child(7) .status-ativo,#tabelaClientes td:nth-child(7) .status-inativo{margin:0 auto}
+    #tabelaClientes td:nth-child(8) .acoes-usuario{justify-content:center}
+    .cnpj-autorizacao{display:none;margin-top:10px;padding:12px 14px;border:1px solid #d79a50;border-radius:10px;background:#fff8ea}
+    .cnpj-autorizacao label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;color:#7a4d12!important;font-weight:700!important;line-height:1.35}
+    .cnpj-autorizacao input{width:18px!important;height:18px!important;min-height:18px!important;margin-top:2px;flex:0 0 auto}
+    .cnpj-autorizacao small{display:block;margin-top:4px;font-weight:400}
+    .form-acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+    .form-section-title{grid-column:1/-1;margin-top:5px;padding-top:8px;border-top:1px solid var(--line);font-size:12px;font-weight:800;color:var(--lilac-dark);letter-spacing:.06em;text-transform:uppercase}
+    .full{grid-column:1/-1}.full textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;resize:vertical;background:#fff}
+    .contador-clientes{display:inline-flex;align-items:center;padding:7px 11px;border-radius:999px;background:#efedf6;color:var(--lilac-dark);font-size:12px;font-weight:800}
+    @media(max-width:700px){.clientes-card{padding:18px}.clientes-tabs{display:grid;grid-template-columns:1fr 1fr}.clientes-tab{width:100%}.clientes-toolbar-left{display:grid;grid-template-columns:1fr;width:100%}.clientes-toolbar .campo{min-width:0}.clientes-toolbar-right{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}}
+  </style>
+</head>
+<body>
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+    <div id="usuarioConectadoBox" style="margin:14px 12px 22px;padding:12px;border:1px solid rgba(123,97,168,.18);border-radius:12px;background:rgba(255,255,255,.55);">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a7caf;margin-bottom:6px;">USUÁRIO CONECTADO</div>
+      <div id="nomeUsuarioConectado" style="font-weight:800;color:#2f2a45;line-height:1.25;">Carregando...</div>
+      <div id="perfilUsuarioConectado" style="margin-top:4px;font-size:12px;font-weight:700;color:#7b61a8;"></div>
+    </div>
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a class="active" href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <span>CADASTRO E CONSULTA</span>
+        <h1>Clientes</h1>
+        <p>Consulte, cadastre, importe e mantenha todos os clientes em uma única página.</p>
+      </div>
+    </header>
+
+    <div class="clientes-tabs" role="tablist" aria-label="Opções de clientes">
+      <button type="button" class="clientes-tab active" id="tabConsulta" data-target="consultaClientes">🔎 Consulta de clientes</button>
+      <button type="button" class="clientes-tab" id="tabNovo" data-target="novoCliente">＋ Novo cliente</button>
+    </div>
+
+    <span id="consulta" aria-hidden="true"></span>
+    <section class="summary clientes-view active" id="consultaClientes">
+      <div class="clientes-card">
+        <div class="usuarios-topo">
+          <div>
+            <span>CLIENTES CADASTRADOS</span>
+            <h2>Consulta de clientes</h2>
+            <p style="color:var(--muted);margin-top:5px;">Pesquise, visualize o código do cliente e faça manutenção do cadastro.</p>
+          </div>
+          <span class="contador-clientes" id="contadorClientes">0 clientes</span>
+        </div>
+
+        <div class="clientes-toolbar">
+          <div class="clientes-toolbar-left">
+            <div class="campo" style="min-width:min(420px,100%);">
+              <label for="pesquisaCliente">Pesquisar</label>
+              <input type="search" id="pesquisaCliente" placeholder="Código, nome, razão social, CPF/CNPJ, contato ou cidade">
+            </div>
+            <div class="campo" style="flex:0 0 auto;min-width:125px;">
+              <label for="itensPorPagina">Mostrar</label>
+              <select id="itensPorPagina">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">Todos</option>
+              </select>
+            </div>
+          </div>
+          <div class="clientes-toolbar-right" style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" id="btnImportarCSV" class="btnPrimario">⬆ Importar CSV</button>
+            <input type="file" id="arquivoCSV" accept=".csv,text/csv" style="display:none;">
+            <button type="button" id="btnAtualizarClientes" class="btnSecundario">↻ Atualizar</button>
+          </div>
+        </div>
+
+        <div id="mensagemImportacao" style="margin:12px 0;font-weight:700;"></div>
+        <div class="tabela-wrapper">
+          <table class="tabela-usuarios" id="tabelaClientes">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Razão social</th>
+                <th>CPF / CNPJ</th>
+                <th>Contato</th>
+                <th>Cidade / UF</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="listaClientes">
+              <tr><td colspan="8">Carregando clientes...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar">
+          <div id="infoPaginacao">Exibindo 0 de 0 clientes</div>
+          <div class="pagination-actions">
+            <button type="button" id="btnPaginaAnterior" title="Página anterior">‹</button>
+            <span id="paginaAtualTexto">Página 1 de 1</span>
+            <button type="button" id="btnProximaPagina" title="Próxima página">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <span id="novo" aria-hidden="true"></span>
+    <section class="summary clientes-view" id="novoCliente">
+      <div class="clientes-card">
+        <div>
+          <span>NOVO CLIENTE</span>
+          <h2 id="tituloFormularioCliente">Cadastrar cliente</h2>
+          <p style="margin:5px 0 18px;color:#6e688f;font-size:14px;">* Campos obrigatórios. O código do cliente será gerado automaticamente no padrão CLI-000000.</p>
+        </div>
+
+        <form id="formCliente">
+          <div class="form-grid" style="max-width:none;">
+            <div>
+              <label for="tipo_pessoa">Tipo de pessoa *</label>
+              <select id="tipo_pessoa" required>
+                <option value="">Selecione</option>
+                <option value="JURIDICA">Pessoa jurídica</option>
+                <option value="FISICA">Pessoa física</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="cpf_cnpj">CPF / CNPJ *</label>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <input type="text" id="cpf_cnpj" required style="flex:1;">
+                <button type="button" id="btnBuscarCnpj" class="btnPrimario" style="white-space:nowrap;">🔎 Buscar CNPJ</button>
+              </div>
+              <div id="statusCnpj" style="margin-top:8px;font-size:13px;font-weight:600;color:#6e688f;"></div>
+              <div id="autorizacaoCnpjInvalido" class="cnpj-autorizacao">
+                <label>
+                  <input type="checkbox" id="autorizarCnpjInvalido">
+                  <span>Autorizar cadastro deste cliente mesmo com CNPJ inválido
+                    <small>O CNPJ continuará identificado como inválido, mas o cadastro será permitido após sua autorização.</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div><label for="razao_social">Razão social / Nome *</label><input type="text" id="razao_social" required></div>
+            <div><label for="nome_fantasia">Nome fantasia</label><input type="text" id="nome_fantasia"></div>
+            <div><label for="inscricao_estadual">Inscrição estadual</label><input type="text" id="inscricao_estadual"></div>
+            <div><label for="responsavel">Responsável</label><input type="text" id="responsavel"></div>
+            <div><label for="contato">Contato</label><input type="text" id="contato"></div>
+            <div><label for="telefone">Telefone</label><input type="text" id="telefone" inputmode="numeric" placeholder="(00) 0000-0000"></div>
+            <div><label for="celular_whatsapp">Celular / WhatsApp</label><input type="text" id="celular_whatsapp" inputmode="numeric" placeholder="(00) 00000-0000"></div>
+            <div><label for="email">E-mail</label><input type="email" id="email"></div>
+
+            <div class="form-section-title">Endereço</div>
+            <div><label for="endereco">Endereço</label><input type="text" id="endereco"></div>
+            <div><label for="numero">Número</label><input type="text" id="numero"></div>
+            <div><label for="complemento">Complemento</label><input type="text" id="complemento"></div>
+            <div><label for="bairro">Bairro</label><input type="text" id="bairro"></div>
+            <div><label for="cidade">Cidade</label><input type="text" id="cidade"></div>
+            <div><label for="estado">Estado</label><input type="text" id="estado" maxlength="2"></div>
+            <div><label for="cep">CEP</label><input type="text" id="cep" inputmode="numeric" placeholder="00000-000"></div>
+            <div><label for="ativo">Status</label><select id="ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
+
+            <div class="form-section-title">Dados cadastrais do CNPJ</div>
+            <div><label for="situacao_cadastral">Situação cadastral</label><input type="text" id="situacao_cadastral" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div><label for="data_inicio_atividade">Data de início da atividade</label><input type="date" id="data_inicio_atividade" readonly></div>
+            <div><label for="natureza_juridica">Natureza jurídica</label><input type="text" id="natureza_juridica" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div><label for="porte">Porte</label><input type="text" id="porte" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div><label for="capital_social">Capital social</label><input type="text" id="capital_social" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div><label for="cnae_principal">CNAE principal</label><input type="text" id="cnae_principal" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div><label for="matriz_filial">Matriz / Filial</label><input type="text" id="matriz_filial" readonly placeholder="Preenchido pela consulta do CNPJ"></div>
+            <div class="full"><label for="socios">Sócios</label><textarea id="socios" readonly rows="4" placeholder="Preenchido pela consulta do CNPJ"></textarea></div>
+          </div>
+
+          <div class="form-acoes">
+            <button type="submit" class="btnCadastrar">Cadastrar cliente</button>
+            <button type="button" id="btnCancelarEdicao" class="btnSecundario" style="display:none;">Cancelar edição</button>
+            <button type="button" id="btnVoltarConsulta" class="btnSecundario">Voltar para consulta</button>
+          </div>
+          <div id="mensagem" style="margin-top:15px;font-weight:700;"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="clientes.js"></script>
+</body>
+</html>

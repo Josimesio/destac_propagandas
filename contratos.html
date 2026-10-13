@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contratos - Destac Propagandas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+
+  <style>
+    .contratos-home {
+      padding-bottom: 40px;
+    }
+
+    .acoes-contratos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 34px;
+      max-width: 1125px;
+    }
+
+    .acao-contrato-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-height: 120px;
+      padding: 24px 30px;
+      border: 1px solid #dfd9e7;
+      border-radius: 24px;
+      background: #ffffff;
+      text-decoration: none;
+      color: inherit;
+      box-sizing: border-box;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .acao-contrato-card:hover {
+      transform: translateY(-2px);
+      border-color: #cfc4dd;
+      box-shadow: 0 12px 28px rgba(92, 76, 124, .08);
+    }
+
+    .acao-contrato-icone {
+      flex: 0 0 60px;
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: #f0ecf7;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .acao-contrato-texto h2 {
+      margin: 0 0 7px;
+      color: #3c3749;
+      font-size: 25px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .acao-contrato-texto p {
+      margin: 0;
+      color: #8a7382;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .resumo-contratos {
+      margin-top: 50px;
+    }
+
+    .resumo-contratos h2 {
+      margin: 0 0 18px;
+      color: #373244;
+      font-size: 31px;
+      font-weight: 800;
+    }
+
+    .resumo-box {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
+      max-width: 720px;
+    }
+
+    .resumo-item {
+      padding: 20px 22px;
+      border: 1px solid #e2dce8;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+
+    .resumo-item span {
+      display: block;
+      margin-bottom: 6px;
+      color: #b36f91;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .resumo-item strong {
+      color: #3b3548;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+      .acoes-contratos {
+        grid-template-columns: 1fr;
+      }
+
+      .resumo-box {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas" class="logo">
+
+    <div class="usuario-conectado">
+      <small>USUÁRIO CONECTADO</small>
+      <strong id="nomeUsuario">Carregando...</strong>
+      <span id="perfilUsuario"></span>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a class="active" href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios">Usuários</a>
+    </nav>
+
+    <a href="#" class="sair" id="btnSair">Sair</a>
+  </aside>
+
+  <main class="contratos-home">
+
+    <header>
+      <div>
+        <span>ÁREA ADMINISTRATIVA</span>
+        <h1>Contratos</h1>
+        <p>Gerencie os contratos da Destac Propagandas.</p>
+      </div>
+    </header>
+
+    <section class="acoes-contratos">
+
+      <a href="contrato_novo.html" class="acao-contrato-card">
+        <div class="acao-contrato-icone">📄</div>
+
+        <div class="acao-contrato-texto">
+          <h2>Gerar contrato novo</h2>
+          <p>Cadastrar um novo contrato, anexar áudio e gerar Word ou PDF.</p>
+        </div>
+      </a>
+
+      <a href="consultar_contratos.html" class="acao-contrato-card">
+        <div class="acao-contrato-icone">🔎</div>
+
+        <div class="acao-contrato-texto">
+          <h2>Consultar contrato</h2>
+          <p>Localizar contratos cadastrados por empresa, cliente ou número.</p>
+        </div>
+      </a>
+
+      <a href="consultar_contratos.html?acao=editar" class="acao-contrato-card">
+        <div class="acao-contrato-icone">✏️</div>
+
+        <div class="acao-contrato-texto">
+          <h2>Editar contrato</h2>
+          <p>Localize um contrato existente e altere seus dados, sem duplicá-lo.</p>
+        </div>
+      </a>
+
+    </section>
+
+    <section class="resumo-contratos">
+      <h2>Resumo</h2>
+
+      <div class="resumo-box">
+        <div class="resumo-item">
+          <span>Módulo</span>
+          <strong>Contratos</strong>
+        </div>
+
+        <div class="resumo-item">
+          <span>Ações disponíveis</span>
+          <strong>3</strong>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://kvmayirfbdnexlzqnjvr.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_RisUa11fiUO_G5TMLnMAPg_OfVBoNIP';
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    const nomeUsuario =
+      document.getElementById('nomeUsuario');
+
+    const perfilUsuario =
+      document.getElementById('perfilUsuario');
+
+    const menuUsuarios =
+      document.getElementById('menuUsuarios');
+
+    const btnSair =
+      document.getElementById('btnSair');
+
+    async function iniciarPagina() {
+      const {
+        data: { session }
+      } =
+        await supabaseClient
+          .auth
+          .getSession();
+
+      if (!session) {
+        window.location.href =
+          'index.html';
+
+        return;
+      }
+
+      const {
+        data: perfil,
+        error
+      } =
+        await supabaseClient
+          .from('perfis_usuario')
+          .select('nome, perfil')
+          .eq('user_id', session.user.id)
+          .single();
+
+      if (!error && perfil) {
+        nomeUsuario.textContent =
+          perfil.nome;
+
+        perfilUsuario.textContent =
+          perfil.perfil === 'SUPER_USUARIO'
+            ? 'Super usuário'
+            : perfil.perfil === 'ADMINISTRADOR'
+              ? 'Administrador'
+              : 'Usuário';
+
+        if (
+          ![
+            'SUPER_USUARIO',
+            'ADMINISTRADOR'
+          ].includes(perfil.perfil)
+        ) {
+          menuUsuarios.style.display =
+            'none';
+        }
+      }
+    }
+
+    btnSair.addEventListener(
+      'click',
+      async event => {
+        event.preventDefault();
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+        window.location.href =
+          'index.html';
+      }
+    );
+
+    iniciarPagina();
+  </script>
+
+</body>
+</html>

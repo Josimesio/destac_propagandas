@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar Contratos - Destac Propagandas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+
+  <style>
+    .voltar-pagina {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 10px 14px;
+      border: 1px solid #ddd5e7;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #5f4d78;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .consulta-filtros {
+      margin-top: 22px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid #e4ddec;
+      border-radius: 16px;
+    }
+
+    .consulta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #5d536a;
+    }
+
+    .campo select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d6cfdf;
+      border-radius: 10px;
+      background: #fff;
+      color: #2f2a45;
+      font: inherit;
+    }
+
+    .mensagem-consulta {
+      margin-top: 14px;
+      min-height: 20px;
+      font-weight: 700;
+      color: #6f6881;
+    }
+
+    .contrato-resultado {
+      display: none;
+      margin-top: 24px;
+      background: #ffffff;
+      border: 1px solid #d8d0df;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .contrato-topo {
+      display: grid;
+      grid-template-columns: 38% 62%;
+      border-bottom: 1px solid #222;
+    }
+
+    .contrato-logo {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 145px;
+    }
+
+    .contrato-logo img {
+      max-width: 100%;
+      max-height: 110px;
+      object-fit: contain;
+    }
+
+    .contrato-empresa {
+      padding: 18px 22px;
+      text-align: right;
+      color: #111;
+    }
+
+    .contrato-empresa h2 {
+      margin: 0 0 3px;
+      font-size: 21px;
+    }
+
+    .numero-contrato {
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .contrato-empresa p {
+      margin: 2px 0;
+      font-size: 14px;
+    }
+
+    .contrato-corpo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid #222;
+    }
+
+    .contrato-bloco {
+      padding: 18px 22px;
+      color: #111;
+    }
+
+    .contrato-bloco + .contrato-bloco {
+      border-left: 1px solid #222;
+    }
+
+    .linha-info {
+      margin: 5px 0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .linha-info strong {
+      font-weight: 800;
+    }
+
+    .secao-contrato {
+      padding: 16px 22px;
+      border-bottom: 1px solid #222;
+      color: #111;
+    }
+
+    .secao-contrato h3 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .horario-titulo {
+      margin: 8px 0 5px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .horarios-grid {
+      display: grid;
+      gap: 0;
+      margin-bottom: 8px;
+    }
+
+    .horario-item {
+      padding: 7px 5px;
+      border: 1px solid #222;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .texto-audio {
+      white-space: pre-wrap;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .audio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #6d5a98;
+      text-decoration: none;
+    }
+
+    .audio-player {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .obs-lista {
+      margin: 0;
+      padding-left: 24px;
+      line-height: 1.5;
+    }
+
+    .assinaturas {
+      min-height: 230px;
+      padding: 18px 24px 24px;
+      color: #111;
+    }
+
+    .data-assinatura {
+      text-align: right;
+      margin-bottom: 95px;
+    }
+
+    .assinaturas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      text-align: center;
+    }
+
+    .linha-assinatura {
+      width: 65%;
+      margin: 0 auto 6px;
+      border-top: 1px solid #222;
+    }
+
+    .nome-assinatura {
+      font-weight: 800;
+    }
+
+    .acoes-consulta {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 20px;
+      background: #faf7fc;
+      border-top: 1px solid #e6deed;
+    }
+
+    .btn-acao {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-editar {
+      background: #7b61a8;
+      color: #fff;
+    }
+
+    .btn-reimprimir-pdf {
+      background: #b83f43;
+      color: #fff;
+    }
+
+    .btn-reimprimir-word {
+      background: #2459a1;
+      color: #fff;
+    }
+
+    .acoes-consulta {
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .acoes-consulta .btn-acao {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 42px;
+      white-space: nowrap;
+    }
+
+    .acoes-consulta .btn-acao:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+
+    .acoes-consulta .btn-acao:focus-visible {
+      outline: 3px solid #50406b;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 600px) {
+      .acoes-consulta .btn-acao { flex: 1 1 100%; }
+    }
+
+    @media (max-width: 850px) {
+      .consulta-grid,
+      .contrato-topo,
+      .contrato-corpo {
+        grid-template-columns: 1fr;
+      }
+
+      .contrato-bloco + .contrato-bloco {
+        border-left: none;
+        border-top: none;
+      }
+    }
+
+    .ultimos-contratos {
+      margin-top: 24px;
+      padding: 22px;
+      background: #ffffff;
+      border: 1px solid #e4ddec;
+      border-radius: 16px;
+    }
+
+    .ultimos-contratos h2 {
+      margin: 0 0 6px;
+      color: #302843;
+      font-size: 21px;
+    }
+
+    .ultimos-contratos p {
+      margin: 0 0 16px;
+      color: #716a7c;
+    }
+
+    .tabela-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .tabela-contratos {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+    }
+
+    .tabela-contratos th,
+    .tabela-contratos td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #ebe5f0;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .tabela-contratos th {
+      color: #5c5169;
+      font-weight: 800;
+      background: #faf7fc;
+    }
+
+    .tabela-contratos tbody tr {
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .tabela-contratos tbody tr:hover {
+      background: #f7f2fa;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #f1ecf6;
+      color: #5c4a73;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .acao-abrir {
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 11px;
+      background: #7b61a8;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .acoes-linha-contrato {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .acao-editar-lista {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 7px 11px;
+      background: #2459a1;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .atalho-edicao-consulta {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .atalho-edicao-consulta .btn-acao {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .atalho-edicao-consulta .btn-acao[aria-disabled="true"] {
+      opacity: .5;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .ajuda-edicao-contrato { color: #665a70; font-size: 13px; }
+
+  </style>
+</head>
+
+<body>
+
+  <aside>
+    <img
+      src="assets/logo-destac.png"
+      alt="Destac Propagandas"
+      class="logo"
+    >
+
+    <div class="usuario-conectado">
+      <small>USUÁRIO CONECTADO</small>
+      <strong id="nomeUsuario">Carregando...</strong>
+      <span id="perfilUsuario"></span>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a class="active" href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios">Usuários</a>
+    </nav>
+
+    <a href="#" class="sair" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+
+    <a href="contratos.html" class="voltar-pagina">
+      ← Voltar para contratos
+    </a>
+
+    <header>
+      <div>
+        <span>GESTÃO COMERCIAL</span>
+        <h1>Consultar contrato</h1>
+        <p>Selecione a empresa, depois o cliente e o contrato que deseja visualizar.</p>
+      </div>
+    </header>
+
+    <section class="summary">
+      <div>
+        <span>MÓDULO</span>
+        <strong>Consulta de contratos</strong>
+      </div>
+    </section>
+
+    <section class="consulta-filtros">
+
+      <div class="consulta-grid">
+
+        <div class="campo">
+          <label for="empresaId">Empresa *</label>
+          <select id="empresaId">
+            <option value="">Selecione a empresa</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="clienteId">Cliente *</label>
+          <select id="clienteId" disabled>
+            <option value="">Selecione primeiro a empresa</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="contratoId">Contrato *</label>
+          <select id="contratoId" disabled>
+            <option value="">Selecione primeiro o cliente</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="atalho-edicao-consulta">
+        <a id="btnEditarSelecionado" class="btn-acao btn-editar" aria-disabled="true" tabindex="-1">Editar contrato selecionado</a>
+        <span id="ajudaEdicaoContrato" class="ajuda-edicao-contrato">Selecione um contrato ou clique em Editar na lista abaixo.</span>
+      </div>
+
+      <div id="mensagemConsulta" class="mensagem-consulta"></div>
+
+    </section>
+
+    <section class="ultimos-contratos">
+      <h2>10 últimos contratos adicionados</h2>
+      <p>Clique em um contrato para visualizar os dados completos.</p>
+
+      <div class="tabela-wrapper">
+        <table class="tabela-contratos">
+          <thead>
+            <tr>
+              <th>Número</th>
+              <th>Empresa</th>
+              <th>Cliente</th>
+              <th>Início</th>
+              <th>Término</th>
+              <th>Valor mensal</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabelaUltimosContratos">
+            <tr>
+              <td colspan="8">Carregando contratos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="contratoResultado" class="contrato-resultado">
+
+      <div class="contrato-topo">
+        <div class="contrato-logo">
+          <img id="logoEmpresaContrato" alt="Logo da empresa">
+        </div>
+
+        <div class="contrato-empresa">
+          <h2>AUTORIZAÇÃO DE MÍDIA E SERVIÇOS</h2>
+          <div id="numeroContrato" class="numero-contrato"></div>
+          <p id="empresaLinha1"></p>
+          <p id="empresaLinha2"></p>
+          <p id="empresaLinha3"></p>
+          <p id="empresaLinha4"></p>
+        </div>
+      </div>
+
+      <div class="contrato-corpo">
+
+        <div class="contrato-bloco">
+          <div class="linha-info"><strong>Razão Social:</strong> <span id="clienteRazaoSocial"></span></div>
+          <div class="linha-info"><strong>CNPJ:</strong> <span id="clienteCnpj"></span></div>
+          <div class="linha-info"><strong>Fantasia:</strong> <span id="clienteFantasia"></span></div>
+          <div class="linha-info"><strong>Endereço:</strong> <span id="clienteEndereco"></span></div>
+          <div class="linha-info"><strong>Telefone:</strong> <span id="clienteTelefone"></span></div>
+          <div class="linha-info"><strong>Contato:</strong> <span id="clienteContato"></span></div>
+          <div class="linha-info"><strong>E-mail:</strong> <span id="clienteEmail"></span></div>
+        </div>
+
+        <div class="contrato-bloco">
+          <div class="linha-info"><strong>Veículo Executor:</strong> <span id="veiculoExecutor"></span></div>
+          <div class="linha-info"><strong>Início:</strong> <span id="dataInicio"></span></div>
+          <div class="linha-info"><strong>Término:</strong> <span id="dataTermino"></span></div>
+          <div class="linha-info"><strong>Número de inserções:</strong> <span id="numeroInsercoes"></span></div>
+          <div class="linha-info" id="linhaValorUnitarioConsulta" hidden><strong>Valor unitário por inserção:</strong> <span id="valorUnitarioInsercaoConsulta"></span></div>
+          <div class="linha-info" id="linhaInsercoesMensaisConsulta" hidden><strong>Inserções mensais:</strong> <span id="insercoesMensaisConsulta"></span></div>
+          <div id="valoresDinamicosConsulta" aria-label="Valores conforme a modalidade do contrato"></div>
+          <div class="linha-info"><strong>Status:</strong> <span id="statusContrato"></span></div>
+        </div>
+
+      </div>
+
+      <div class="secao-contrato">
+        <h3>Horários das Inserções:</h3>
+
+        <div id="grupoSabadoDomingo">
+          <div class="horario-titulo">Sábados e Domingos</div>
+          <div id="horariosSabadoDomingo" class="horarios-grid"></div>
+        </div>
+
+        <div id="grupoTercaQuinta">
+          <div class="horario-titulo">Terças e Quintas</div>
+          <div id="horariosTercaQuinta" class="horarios-grid"></div>
+        </div>
+      </div>
+
+      <div id="secaoAudio" class="secao-contrato">
+        <h3>Áudio enviado ao cliente</h3>
+        <div id="textoAudioCliente" class="texto-audio"></div>
+        <a id="linkAudioCliente" class="audio-link" target="_blank" rel="noopener">
+          Abrir arquivo de áudio
+        </a>
+        <audio id="playerAudioCliente" class="audio-player" controls preload="metadata"></audio>
+      </div>
+
+      <div class="secao-contrato">
+        <h3 style="text-decoration:underline;">OBS:</h3>
+
+        <ul class="obs-lista">
+          <li>Terças e quintas das 13:30h às 21h na praça Wilson Jofre.</li>
+          <li>Sábados das 8h às 12h em frente à Prefeitura.</li>
+          <li>Domingos das 8h às 12h na praça Wilson Jofre.</li>
+          <li>
+            A não publicação por motivo de força maior, não implicara em inadimplência contratual por parte da Destac Propagandas que comunicara por escrito, cessando os pagamentos subseqüentes desde o momento em que deixar de ser veiculada o apoio contratado.
+          </li>
+        </ul>
+      </div>
+
+<div class="secao-contrato" id="detalhesComplementares" style="font-size:12px;line-height:1.5">
+<h3>Condições contratuais e financeiras</h3>
+<div id="resumoComplementar" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px"></div>
+<p id="observacoesAdicionais" style="white-space:pre-wrap;overflow-wrap:anywhere"></p>
+</div>
+      <div class="assinaturas">
+        <div id="dataAssinatura" class="data-assinatura"></div>
+
+        <div class="assinaturas-grid">
+          <div>
+            <div id="responsavelEmpresa"></div>
+            <div id="nomeEmpresaAssinatura" class="nome-assinatura"></div>
+          </div>
+
+          <div>
+            <div class="linha-assinatura"></div>
+            <div id="responsavelClienteAssinatura"></div>
+            <div id="nomeClienteAssinatura" class="nome-assinatura"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acoes-consulta">
+        <button id="btnReimprimirPdf" type="button" class="btn-acao btn-reimprimir-pdf" disabled>
+          Reimprimir PDF
+        </button>
+        <button id="btnReimprimirWord" type="button" class="btn-acao btn-reimprimir-word" disabled>
+          Reimprimir Word
+        </button>
+        <a id="btnEditarContrato" href="#" class="btn-acao btn-editar">
+          Editar contrato
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="opcoes_impressao_contrato.js"></script>
+  <script src="reimpressao_contratos.js"></script>
+
+  <script>
+    const SUPABASE_URL =
+      'https://kvmayirfbdnexlzqnjvr.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_RisUa11fiUO_G5TMLnMAPg_OfVBoNIP';
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    const empresaId =
+      document.getElementById('empresaId');
+
+    const clienteId =
+      document.getElementById('clienteId');
+
+    const contratoId =
+      document.getElementById('contratoId');
+
+    const mensagemConsulta =
+      document.getElementById('mensagemConsulta');
+
+
+    const tabelaUltimosContratos =
+      document.getElementById('tabelaUltimosContratos');
+
+    const contratoResultado =
+      document.getElementById('contratoResultado');
+
+    const btnEditarSelecionado = document.getElementById('btnEditarSelecionado');
+    const ajudaEdicaoContrato = document.getElementById('ajudaEdicaoContrato');
+    const btnEditarContrato = document.getElementById('btnEditarContrato');
+
+    function atualizarLinkEdicao(idContrato = null) {
+      const id = Number(idContrato);
+      if (Number.isSafeInteger(id) && id > 0) {
+        const link = `contrato_novo.html?id=${id}`;
+        btnEditarSelecionado.href = link;
+        btnEditarContrato.href = link;
+        btnEditarSelecionado.removeAttribute('aria-disabled');
+        btnEditarSelecionado.removeAttribute('tabindex');
+        ajudaEdicaoContrato.textContent = 'O contrato selecionado será aberto com os campos editáveis.';
+      } else {
+        btnEditarSelecionado.removeAttribute('href');
+        btnEditarContrato.removeAttribute('href');
+        btnEditarSelecionado.setAttribute('aria-disabled', 'true');
+        btnEditarSelecionado.setAttribute('tabindex', '-1');
+        ajudaEdicaoContrato.textContent = 'Selecione um contrato ou clique em Editar na lista abaixo.';
+      }
+    }
+
+    const nomeUsuario =
+      document.getElementById('nomeUsuario');
+
+    const perfilUsuario =
+      document.getElementById('perfilUsuario');
+
+    const menuUsuarios =
+      document.getElementById('menuUsuarios');
+
+    const btnSair =
+      document.getElementById('btnSair');
+
+    let empresaSelecionada = null;
+    let clienteSelecionado = null;
+    let contratoSelecionado = null;
+
+    const btnReimprimirPdf = document.getElementById('btnReimprimirPdf');
+    const btnReimprimirWord = document.getElementById('btnReimprimirWord');
+    let reimpressaoEmAndamento = false;
+
+    function atualizarBotoesReimpressao() {
+      const habilitados = Boolean(
+        contratoSelecionado && empresaSelecionada && clienteSelecionado
+      ) && !reimpressaoEmAndamento;
+      btnReimprimirPdf.disabled = !habilitados;
+      btnReimprimirWord.disabled = !habilitados;
+    }
+
+    async function executarReimpressao(formato) {
+      if (reimpressaoEmAndamento || !contratoSelecionado || !empresaSelecionada || !clienteSelecionado) {
+        mensagemConsulta.textContent = 'Selecione um contrato antes de reimprimir.';
+        return;
+      }
+      reimpressaoEmAndamento = true;
+      atualizarBotoesReimpressao();
+      mensagemConsulta.textContent = `Preparando reimpressão em ${formato.toUpperCase()}...`;
+      try {
+        if (!window.DestacReimpressao || !window.DestacOpcoesImpressao) {
+          throw new Error('Módulo de reimpressão ou opções de impressão indisponível.');
+        }
+        const incluirCondicoes = await window.DestacOpcoesImpressao.perguntar();
+        if (incluirCondicoes === null) {
+          mensagemConsulta.textContent = 'Reimpressão cancelada.';
+          return;
+        }
+        mensagemConsulta.textContent = `Gerando ${formato.toUpperCase()}...`;
+        const dados = {
+          contrato: contratoSelecionado,
+          empresa: empresaSelecionada,
+          cliente: clienteSelecionado
+        };
+        const opcoes = { incluirCondicoes };
+        if (formato === 'pdf') await window.DestacReimpressao.pdf(dados, opcoes);
+        else await window.DestacReimpressao.word(dados, opcoes);
+        mensagemConsulta.textContent = `Contrato ${contratoSelecionado.numero_contrato} reimpresso em ${formato.toUpperCase()}.`;
+      } catch (erro) {
+        console.error('Erro ao reimprimir contrato:', erro);
+        mensagemConsulta.textContent = `Não foi possível reimprimir em ${formato.toUpperCase()}: ${erro.message}`;
+      } finally {
+        reimpressaoEmAndamento = false;
+        atualizarBotoesReimpressao();
+      }
+    }
+
+    btnReimprimirPdf.addEventListener('click', () => executarReimpressao('pdf'));
+    btnReimprimirWord.addEventListener('click', () => executarReimpressao('word'));
+
+
+    function formatarData(valor) {
+      if (!valor) return '-';
+
+      const partes =
+        String(valor).split('-');
+
+      if (partes.length !== 3) {
+        return valor;
+      }
+
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+
+    function formatarMoeda(valor) {
+      if (
+        valor === null ||
+        valor === undefined ||
+        valor === ''
+      ) {
+        return '-';
+      }
+
+      return Number(valor).toLocaleString(
+        'pt-BR',
+        {
+          style: 'currency',
+          currency: 'BRL'
+        }
+      );
+    }
+
+
+  function resumoValoresContratuais(contrato) {
+    const reais = v => Number.isFinite(Number(v)) && v !== null && v !== ''
+      ? Number(v).toLocaleString('pt-BR', {style:'currency',currency:'BRL'}) : '—';
+    const modo = String(contrato.modalidade_contrato || 'FINANCEIRO').toUpperCase();
+    const baseTotal = Number(contrato.valor_total_contrato);
+    const meses = Number(contrato.valor_mensal) > 0 && baseTotal > 0
+      ? Math.max(1, Math.round(baseTotal / Number(contrato.valor_mensal))) : 1;
+    const mensal = Number(contrato.valor_mensal) || 0;
+    const total = baseTotal > 0 ? baseTotal : mensal * meses;
+    if (modo === 'PERMUTA') return [['Valor mensal (permuta)', reais(mensal)], ['Valor total (permuta)', reais(total)]];
+    const pctDesc = Number(contrato.percentual_desconto_vista || 0);
+    const descInferido = modo === 'FINANCEIRO' && contrato.condicao_pagamento === 'AVISTA'
+      && Number(contrato.valor_vista) > 0 && Number(contrato.valor_vista) < Number(contrato.valor_financeiro ?? total);
+    const percentualParcelado = Number(contrato.percentual_desconto_parcelado || 0);
+    const comDescontoParcelado = modo === 'FINANCEIRO' && contrato.condicao_pagamento === 'PARCELADO' && percentualParcelado > 0;
+    const comDesconto = (modo === 'FINANCEIRO' && contrato.condicao_pagamento === 'AVISTA' && (pctDesc > 0 || descInferido)) || comDescontoParcelado;
+    const linhas = [['Valor mensal', reais(mensal)], ['Valor total', reais(total)]];
+    if (comDesconto) {
+      const vista = Number(contrato.valor_vista);
+      const totalDesc = comDescontoParcelado ? Math.round(Number(contrato.valor_financeiro ?? total)*(1-percentualParcelado/100)*100)/100 : (vista > 0 ? vista : total * (1 - pctDesc/100));
+      const mensalDesc = meses > 0 ? Math.round(totalDesc * 100 / meses)/100 : totalDesc;
+      linhas.splice(1, 0, ['Valor mensal com desconto', reais(mensalDesc)]);
+      linhas.push(['Valor total com desconto', reais(totalDesc)]);
+    }
+    if (modo === 'MISTO') {
+      const valorPermuta = Number(contrato.valor_permuta || 0);
+      const pct = contrato.percentual_permuta != null
+        ? Number(contrato.percentual_permuta)
+        : total > 0 ? valorPermuta*100/total : 0;
+      const percentual = Number.isFinite(pct) ? pct.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%' : '—';
+      linhas.push(['Permuta', percentual], ['Valor em permuta', reais(valorPermuta)],
+        ['Valor em dinheiro', reais(contrato.valor_financeiro ?? Math.max(0,total-valorPermuta))]);
+    }
+    return linhas;
+  }
+
+    function montarEndereco(obj) {
+      return [
+        obj.endereco,
+        obj.numero,
+        obj.complemento,
+        obj.bairro,
+        obj.cidade,
+        obj.estado
+      ]
+        .filter(Boolean)
+        .join(', ');
+    }
+
+
+    function montarTelefones(obj) {
+      return [
+        obj.telefone,
+        obj.celular_whatsapp
+      ]
+        .filter(Boolean)
+        .join(' / ');
+    }
+
+
+    function dataPorExtenso(valor, cidade) {
+      if (!valor) return '';
+
+      const data =
+        new Date(`${valor}T12:00:00`);
+
+      const meses = [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
+      ];
+
+      return `${cidade || 'Cascavel'}, ${String(data.getDate()).padStart(2, '0')} de ${meses[data.getMonth()]} de ${data.getFullYear()}.`;
+    }
+
+
+    function preencherHorarios(containerId, horarios, colunas) {
+      const container =
+        document.getElementById(containerId);
+
+      container.innerHTML = '';
+
+      if (!Array.isArray(horarios) || !horarios.length) {
+        container.innerHTML =
+          '<div class="horario-item">Não cadastrado</div>';
+
+        container.style.gridTemplateColumns =
+          '1fr';
+
+        return;
+      }
+
+      container.style.gridTemplateColumns =
+        `repeat(${Math.min(colunas, horarios.length)}, 1fr)`;
+
+      horarios.forEach(hora => {
+        const item =
+          document.createElement('div');
+
+        item.className =
+          'horario-item';
+
+        item.textContent =
+          hora;
+
+        container.appendChild(item);
+      });
+    }
+
+
+    async function carregarUsuario() {
+      const {
+        data: { session }
+      } =
+        await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href =
+          'index.html';
+        return false;
+      }
+
+      const {
+        data: perfil
+      } =
+        await supabaseClient
+          .from('perfis_usuario')
+          .select('nome, perfil')
+          .eq('user_id', session.user.id)
+          .single();
+
+      if (perfil) {
+        nomeUsuario.textContent =
+          perfil.nome;
+
+        perfilUsuario.textContent =
+          perfil.perfil === 'SUPER_USUARIO'
+            ? 'Super usuário'
+            : perfil.perfil === 'ADMINISTRADOR'
+              ? 'Administrador'
+              : 'Usuário';
+
+        if (
+          ![
+            'SUPER_USUARIO',
+            'ADMINISTRADOR'
+          ].includes(perfil.perfil)
+        ) {
+          menuUsuarios.style.display =
+            'none';
+        }
+      }
+
+      return true;
+    }
+
+
+
+    async function carregarUltimosContratos() {
+
+      tabelaUltimosContratos.innerHTML =
+        '<tr><td colspan="8">Carregando contratos...</td></tr>';
+
+
+      const {
+        data: contratos,
+        error
+      } =
+        await supabaseClient
+          .from('contratos')
+          .select(`
+            id,
+            numero_contrato,
+            empresa_id,
+            cliente_id,
+            data_inicio,
+            data_termino,
+            valor_mensal,
+            status,
+            created_at
+          `)
+          .order(
+            'created_at',
+            {
+              ascending: false
+            }
+          )
+          .limit(10);
+
+
+      if (error) {
+
+        tabelaUltimosContratos.innerHTML =
+          `<tr><td colspan="8">Erro ao carregar contratos: ${error.message}</td></tr>`;
+
+        return;
+      }
+
+
+      if (!contratos.length) {
+
+        tabelaUltimosContratos.innerHTML =
+          '<tr><td colspan="8">Nenhum contrato cadastrado até o momento.</td></tr>';
+
+        return;
+      }
+
+
+      const empresaIds =
+        [...new Set(
+          contratos.map(
+            item => item.empresa_id
+          )
+        )];
+
+
+      const clienteIds =
+        [...new Set(
+          contratos.map(
+            item => item.cliente_id
+          )
+        )];
+
+
+      const [
+        empresasResultado,
+        clientesResultado
+      ] =
+        await Promise.all([
+          supabaseClient
+            .from('empresas')
+            .select('id, razao_social, nome_fantasia')
+            .in('id', empresaIds),
+
+          supabaseClient
+            .from('clientes')
+            .select('id, razao_social, nome_fantasia')
+            .in('id', clienteIds)
+        ]);
+
+
+      const empresas =
+        new Map(
+          (empresasResultado.data || [])
+            .map(
+              item => [
+                item.id,
+                item.nome_fantasia ||
+                item.razao_social
+              ]
+            )
+        );
+
+
+      const clientes =
+        new Map(
+          (clientesResultado.data || [])
+            .map(
+              item => [
+                item.id,
+                item.nome_fantasia ||
+                item.razao_social
+              ]
+            )
+        );
+
+
+      tabelaUltimosContratos.innerHTML =
+        '';
+
+
+      contratos.forEach(
+        contrato => {
+
+          const tr =
+            document.createElement(
+              'tr'
+            );
+
+
+          tr.innerHTML =
+            `
+              <td><strong>${contrato.numero_contrato}</strong></td>
+              <td>${empresas.get(contrato.empresa_id) || '-'}</td>
+              <td>${clientes.get(contrato.cliente_id) || '-'}</td>
+              <td>${formatarData(contrato.data_inicio)}</td>
+              <td>${formatarData(contrato.data_termino)}</td>
+              <td>${formatarMoeda(contrato.valor_mensal)}</td>
+              <td><span class="status-pill">${contrato.status || '-'}</span></td>
+              <td>
+                <div class="acoes-linha-contrato">
+                  <button
+                    type="button"
+                    class="acao-abrir"
+                    data-id="${contrato.id}"
+                  >
+                    Abrir
+                  </button>
+                  <a
+                    class="acao-editar-lista"
+                    href="contrato_novo.html?id=${Number(contrato.id)}"
+                    aria-label="Editar contrato ${contrato.numero_contrato}"
+                  >Editar</a>
+                </div>
+              </td>
+            `;
+
+
+          tr.addEventListener(
+            'click',
+            async event => {
+
+              if (
+                event.target.closest(
+                  'button, a'
+                )
+              ) {
+                return;
+              }
+
+              await carregarContratoCompleto(
+                contrato.id
+              );
+            }
+          );
+
+
+          const botao =
+            tr.querySelector(
+              '.acao-abrir'
+            );
+
+
+          botao.addEventListener(
+            'click',
+            async event => {
+
+              event.stopPropagation();
+
+              await carregarContratoCompleto(
+                contrato.id
+              );
+            }
+          );
+
+
+          tabelaUltimosContratos.appendChild(
+            tr
+          );
+        }
+      );
+    }
+
+
+    async function carregarEmpresas() {
+      mensagemConsulta.textContent =
+        'Carregando empresas...';
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('empresas')
+          .select(`
+            id,
+            razao_social,
+            nome_fantasia,
+            cpf_cnpj,
+            responsavel,
+            telefone,
+            celular_whatsapp,
+            email,
+            endereco,
+            numero,
+            complemento,
+            bairro,
+            cidade,
+            estado,
+            logo_url
+          `)
+          .eq('ativo', true)
+          .order('nome_fantasia', { ascending: true });
+
+      if (error) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar empresas: ${error.message}`;
+        return;
+      }
+
+      empresaId.innerHTML =
+        '<option value="">Selecione a empresa</option>';
+
+      data.forEach(empresa => {
+        const option =
+          document.createElement('option');
+
+        option.value =
+          empresa.id;
+
+        option.textContent =
+          empresa.nome_fantasia ||
+          empresa.razao_social;
+
+        empresaId.appendChild(option);
+      });
+
+      mensagemConsulta.textContent = '';
+    }
+
+
+    async function carregarClientesGlobais() {
+      atualizarLinkEdicao();
+      clienteId.disabled = true;
+      contratoId.disabled = true;
+
+      clienteId.innerHTML =
+        '<option value="">Carregando clientes...</option>';
+
+      contratoId.innerHTML =
+        '<option value="">Selecione primeiro o cliente</option>';
+
+      contratoResultado.style.display =
+        'none';
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('clientes')
+          .select(`
+            id,
+            razao_social,
+            nome_fantasia,
+            cpf_cnpj,
+            responsavel,
+            contato,
+            telefone,
+            celular_whatsapp,
+            email,
+            endereco,
+            numero,
+            complemento,
+            bairro,
+            cidade,
+            estado
+          `)
+          .eq('ativo', true)
+          .order('nome_fantasia', { ascending: true });
+
+      if (error) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar clientes: ${error.message}`;
+        clienteId.innerHTML =
+          '<option value="">Não foi possível carregar clientes</option>';
+        return;
+      }
+
+      clienteId.innerHTML =
+        '<option value="">Selecione o cliente</option>';
+
+      if (!data || data.length === 0) {
+        clienteId.innerHTML =
+          '<option value="">Nenhum cliente ativo cadastrado</option>';
+        mensagemConsulta.textContent =
+          'Nenhum cliente ativo cadastrado.';
+        return;
+      }
+
+      [...data].sort((a, b) => {
+        const nomeA = String(a.nome_fantasia || a.razao_social || '').trim();
+        const nomeB = String(b.nome_fantasia || b.razao_social || '').trim();
+        return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base', numeric: true }) ||
+          String(a.razao_social || '').localeCompare(String(b.razao_social || ''), 'pt-BR', { sensitivity: 'base', numeric: true }) ||
+          Number(a.id) - Number(b.id);
+      }).forEach(cliente => {
+        const option =
+          document.createElement('option');
+
+        option.value =
+          cliente.id;
+
+        option.textContent =
+          cliente.nome_fantasia ||
+          cliente.razao_social;
+
+        clienteId.appendChild(option);
+      });
+
+      clienteId.disabled =
+        false;
+    }
+
+
+    async function carregarContratosDoCliente(idCliente) {
+      atualizarLinkEdicao();
+      contratoId.disabled = true;
+
+      contratoId.innerHTML =
+        '<option value="">Carregando contratos...</option>';
+
+      contratoResultado.style.display =
+        'none';
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('contratos')
+          .select(`
+            id,
+            numero_contrato,
+            data_inicio,
+            data_termino,
+            status
+          `)
+          .eq('empresa_id', Number(empresaId.value))
+          .eq('cliente_id', Number(idCliente))
+          .order('created_at', { ascending: false });
+
+      if (error) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar contratos: ${error.message}`;
+        return;
+      }
+
+      contratoId.innerHTML =
+        '<option value="">Selecione o contrato</option>';
+
+      if (!data.length) {
+        contratoId.innerHTML =
+          '<option value="">Nenhum contrato encontrado</option>';
+
+        mensagemConsulta.textContent =
+          'Este cliente ainda não possui contratos cadastrados.';
+
+        return;
+      }
+
+      data.forEach(contrato => {
+        const option =
+          document.createElement('option');
+
+        option.value =
+          contrato.id;
+
+        option.textContent =
+          `${contrato.numero_contrato} — ${formatarData(contrato.data_inicio)} até ${formatarData(contrato.data_termino)} — ${contrato.status}`;
+
+        contratoId.appendChild(option);
+      });
+
+      contratoId.disabled =
+        false;
+
+      mensagemConsulta.textContent = '';
+    }
+
+
+    async function carregarContratoCompleto(idContrato) {
+      atualizarLinkEdicao();
+      mensagemConsulta.textContent =
+        'Carregando contrato...';
+
+      empresaSelecionada = null;
+      clienteSelecionado = null;
+      contratoSelecionado = null;
+      atualizarBotoesReimpressao();
+
+      contratoResultado.style.display =
+        'none';
+
+      const {
+        data: contrato,
+        error
+      } =
+        await supabaseClient
+          .from('contratos')
+          .select('*')
+          .eq('id', idContrato)
+          .single();
+
+      if (error) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar contrato: ${error.message}`;
+        return;
+      }
+
+      const {
+        data: empresa,
+        error: erroEmpresa
+      } =
+        await supabaseClient
+          .from('empresas')
+          .select('*')
+          .eq('id', contrato.empresa_id)
+          .single();
+
+      if (erroEmpresa) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar empresa: ${erroEmpresa.message}`;
+        return;
+      }
+
+      const {
+        data: cliente,
+        error: erroCliente
+      } =
+        await supabaseClient
+          .from('clientes')
+          .select('*')
+          .eq('id', contrato.cliente_id)
+          .single();
+
+      if (erroCliente) {
+        mensagemConsulta.textContent =
+          `Erro ao carregar cliente: ${erroCliente.message}`;
+        return;
+      }
+
+      empresaSelecionada =
+        empresa;
+
+      clienteSelecionado =
+        cliente;
+
+      contratoSelecionado =
+        contrato;
+      atualizarBotoesReimpressao();
+
+      document.getElementById('numeroContrato').textContent =
+        `Contrato nº ${contrato.numero_contrato}`;
+
+      const logo =
+        document.getElementById('logoEmpresaContrato');
+
+      if (empresa.logo_url) {
+        logo.src =
+          empresa.logo_url;
+
+        logo.style.display =
+          'block';
+      } else {
+        logo.removeAttribute('src');
+        logo.style.display =
+          'none';
+      }
+
+      document.getElementById('empresaLinha1').textContent =
+        `${empresa.razao_social || '-'} - CNPJ: ${empresa.cpf_cnpj || '-'}`;
+
+      document.getElementById('empresaLinha2').textContent =
+        montarEndereco(empresa) || '-';
+
+      document.getElementById('empresaLinha3').textContent =
+        `Telefones ${montarTelefones(empresa) || '-'} - ${empresa.cidade || ''}${empresa.estado ? '-' + empresa.estado : ''}`;
+
+      document.getElementById('empresaLinha4').textContent =
+        `E-mail: ${empresa.email || '-'}`;
+
+
+      document.getElementById('clienteRazaoSocial').textContent =
+        cliente.razao_social || '-';
+
+      document.getElementById('clienteCnpj').textContent =
+        cliente.cpf_cnpj || '-';
+
+      document.getElementById('clienteFantasia').textContent =
+        cliente.nome_fantasia || '-';
+
+      document.getElementById('clienteEndereco').textContent =
+        montarEndereco(cliente) || '-';
+
+      document.getElementById('clienteTelefone').textContent =
+        montarTelefones(cliente) || '-';
+
+      document.getElementById('clienteContato').textContent =
+        cliente.contato ||
+        cliente.responsavel ||
+        '-';
+
+      document.getElementById('clienteEmail').textContent =
+        cliente.email || '-';
+
+
+      document.getElementById('veiculoExecutor').textContent =
+        contrato.veiculo_executor || '-';
+
+      document.getElementById('dataInicio').textContent =
+        formatarData(contrato.data_inicio);
+
+      document.getElementById('dataTermino').textContent =
+        formatarData(contrato.data_termino);
+
+      document.getElementById('numeroInsercoes').textContent =
+        `${contrato.insercoes_terca_quinta || 0}x às terças e quintas e ${contrato.insercoes_sabado_domingo || 0}x aos sábados e domingos`;
+
+      const comValorUnitario = contrato.valor_unitario_insercao != null;
+      document.getElementById('linhaValorUnitarioConsulta').hidden = !comValorUnitario;
+      document.getElementById('linhaInsercoesMensaisConsulta').hidden = !comValorUnitario;
+      document.getElementById('valorUnitarioInsercaoConsulta').textContent = comValorUnitario ? formatarMoeda(contrato.valor_unitario_insercao) : '';
+      document.getElementById('insercoesMensaisConsulta').textContent = comValorUnitario ? String(contrato.insercoes_mensais ?? '-') : '';
+      // Mantém as mesmas informações visíveis no cadastro e no contrato impresso.
+      const quadroValores = document.getElementById('valoresDinamicosConsulta');
+      quadroValores.replaceChildren();
+      for (const [rotulo, valor] of resumoValoresContratuais(contrato)) {
+        const linha = document.createElement('div');
+        linha.className = 'linha-info';
+        const titulo = document.createElement('strong');
+        titulo.textContent = `${rotulo}: `;
+        const dado = document.createElement('span');
+        dado.textContent = valor;
+        linha.append(titulo, dado);
+        quadroValores.appendChild(linha);
+      }
+
+      document.getElementById('statusContrato').textContent =
+        contrato.status || '-';
+
+      const camposExtras = [
+        ['Data da assinatura', contrato.data_assinatura ? formatarData(contrato.data_assinatura) : null],
+        ['Responsável pela empresa', contrato.responsavel_empresa],
+        ['Responsável pelo cliente', contrato.responsavel_cliente],
+        ['Modalidade do contrato', contrato.modalidade_contrato === 'MISTO' ? 'Misto (permuta + financeiro)' : contrato.modalidade_contrato === 'PERMUTA' ? 'Somente permuta' : contrato.condicao_pagamento === 'AVISTA' ? (Number(contrato.percentual_desconto_vista || 0)>0 ? 'À vista com desconto' : 'À vista') : Number(contrato.percentual_desconto_parcelado || 0)>0 ? 'Parcelado com desconto' : (contrato.condicao_pagamento === 'PARCELADO' &&
+        Number(contrato.percentual_desconto_parcelado || 0) === 0 &&
+        Number(contrato.valor_entrada || 0) === 0 &&
+        Number(contrato.quantidade_parcelas) > 0 &&
+        Number(contrato.quantidade_parcelas) ===
+          (Number(contrato.valor_mensal)>0 ? Math.round(Number(contrato.valor_total_contrato)/Number(contrato.valor_mensal)) : 0) ? 'Contrato Mensal — sem desconto' : 'Financeiro parcelado')],
+        ['Desconto à vista (%)', contrato.condicao_pagamento === 'AVISTA' && contrato.modalidade_contrato !== 'PERMUTA' && Number(contrato.percentual_desconto_vista || 0)>0 ? `${contrato.percentual_desconto_vista}%` : null],
+        ['Desconto no parcelamento (%)', contrato.condicao_pagamento === 'PARCELADO' && Number(contrato.percentual_desconto_parcelado || 0)>0 ? `${contrato.percentual_desconto_parcelado}%` : null],
+        ['Percentual de permuta', contrato.modalidade_contrato === 'MISTO' ? resumoValoresContratuais(contrato).find(([n]) => n === 'Permuta')?.[1] : null],
+        ['Valor da permuta', contrato.modalidade_contrato !== 'FINANCEIRO' && Number(contrato.valor_permuta)>0 ? formatarMoeda(contrato.valor_permuta) : null],
+        ['Descrição da permuta', contrato.descricao_permuta],
+        ['Valor financeiro comercial', contrato.modalidade_contrato === 'PERMUTA' ? formatarMoeda(0) : formatarMoeda(contrato.valor_financeiro ?? contrato.valor_total_contrato)],
+        ['Condição de cobrança', contrato.modalidade_contrato === 'PERMUTA' ? 'Sem cobrança monetária' : contrato.condicao_pagamento === 'AVISTA' ? (Number(contrato.percentual_desconto_vista || 0) > 0 ? 'À vista com desconto' : 'À vista') : Number(contrato.percentual_desconto_parcelado || 0)>0 ? 'Parcelado com desconto' : (contrato.condicao_pagamento === 'PARCELADO' &&
+        Number(contrato.percentual_desconto_parcelado || 0) === 0 &&
+        Number(contrato.valor_entrada || 0) === 0 &&
+        Number(contrato.quantidade_parcelas) > 0 &&
+        Number(contrato.quantidade_parcelas) ===
+          (Number(contrato.valor_mensal)>0 ? Math.round(Number(contrato.valor_total_contrato)/Number(contrato.valor_mensal)) : 0) ? 'Contrato Mensal — sem desconto' : 'Parcelado')],
+        ['Forma de pagamento', contrato.forma_pagamento],
+        ['Dia do vencimento', contrato.dia_vencimento],
+        ['Parcelas', contrato.quantidade_parcelas],
+        ['Valor total comercial', contrato.valor_total_contrato == null ? null : formatarMoeda(contrato.valor_total_contrato)],
+        ['Total a cobrar (somente financeiro)', contrato.modalidade_contrato === 'PERMUTA' ? formatarMoeda(0) : contrato.condicao_pagamento === 'AVISTA' ? formatarMoeda(contrato.valor_vista) : (contrato.valor_financeiro == null && contrato.valor_total_contrato == null ? null : formatarMoeda(Number(contrato.percentual_desconto_parcelado || 0)>0 ? Math.round(Number(contrato.valor_financeiro ?? contrato.valor_total_contrato)*(1-Number(contrato.percentual_desconto_parcelado)/100)*100)/100 : contrato.valor_financeiro ?? contrato.valor_total_contrato))],
+        ['Entrada', contrato.valor_entrada == null ? null : formatarMoeda(contrato.valor_entrada)],
+        ['Vencimento da entrada', contrato.data_vencimento_entrada ? formatarData(contrato.data_vencimento_entrada) : null],
+        ['Periodicidade', 'Mensal'],
+        ['Primeiro vencimento', contrato.data_primeiro_vencimento ? formatarData(contrato.data_primeiro_vencimento) : null],
+        ['Status da assinatura', contrato.status_assinatura],
+        ['PDF assinado (URL)', contrato.pdf_url],
+        ['Cancelado em', contrato.cancelado_em ? new Date(contrato.cancelado_em).toLocaleString('pt-BR') : null],
+        ['Motivo do cancelamento', contrato.motivo_cancelamento]
+      ];
+      const resumo = document.getElementById('resumoComplementar');
+      resumo.replaceChildren();
+      camposExtras.forEach(([rotulo, valor]) => {
+        if (valor === null || valor === undefined || valor === '') return;
+        const item = document.createElement('div');
+        const titulo = document.createElement('strong');
+        titulo.textContent = `${rotulo}: `;
+        item.append(titulo, document.createTextNode(String(valor)));
+        item.style.overflowWrap = 'anywhere';
+        resumo.appendChild(item);
+      });
+      document.getElementById('observacoesAdicionais').textContent =
+        contrato.observacoes ? `Observações adicionais: ${contrato.observacoes}` : '';
+
+
+
+      preencherHorarios(
+        'horariosSabadoDomingo',
+        contrato.horarios_sabado_domingo || [],
+        4
+      );
+
+      preencherHorarios(
+        'horariosTercaQuinta',
+        contrato.horarios_terca_quinta || [],
+        6
+      );
+
+
+      const secaoAudio =
+        document.getElementById('secaoAudio');
+
+      const textoAudio =
+        document.getElementById('textoAudioCliente');
+
+      const linkAudio =
+        document.getElementById('linkAudioCliente');
+
+      const playerAudio =
+        document.getElementById('playerAudioCliente');
+
+      textoAudio.textContent =
+        contrato.texto_audio_cliente ||
+        '';
+
+      if (contrato.audio_url) {
+        linkAudio.href =
+          contrato.audio_url;
+
+        linkAudio.textContent =
+          contrato.audio_nome
+            ? `Abrir áudio: ${contrato.audio_nome}`
+            : 'Abrir arquivo de áudio';
+
+        playerAudio.src =
+          contrato.audio_url;
+
+        linkAudio.style.display =
+          'inline-flex';
+
+        playerAudio.style.display =
+          'block';
+      } else {
+        linkAudio.style.display =
+          'none';
+
+        playerAudio.style.display =
+          'none';
+
+        playerAudio.removeAttribute('src');
+      }
+
+      if (
+        !contrato.texto_audio_cliente &&
+        !contrato.audio_url
+      ) {
+        secaoAudio.style.display =
+          'none';
+      } else {
+        secaoAudio.style.display =
+          'block';
+      }
+
+
+      document.getElementById('dataAssinatura').textContent =
+        dataPorExtenso(
+          contrato.data_assinatura
+            ? contrato.data_assinatura
+            : contrato.created_at
+            ? contrato.created_at.substring(0, 10)
+            : contrato.data_inicio,
+          empresa.cidade
+        );
+
+      const empresaEhDestac = /destac/i.test(
+        `${empresa.nome_fantasia || ''} ${empresa.razao_social || ''}`
+      );
+      document.getElementById('responsavelEmpresa').textContent =
+        contrato.assinante_empresa?.trim() ||
+        (empresaEhDestac ? 'Celso Dondoni' : (empresa.responsavel || empresa.razao_social || '-'));
+      document.getElementById('responsavelClienteAssinatura').textContent =
+        contrato.responsavel_cliente || cliente.contato || cliente.responsavel || '';
+
+      document.getElementById('nomeEmpresaAssinatura').textContent =
+        empresa.nome_fantasia ||
+        empresa.razao_social ||
+        '-';
+
+      document.getElementById('nomeClienteAssinatura').textContent =
+        cliente.nome_fantasia ||
+        cliente.razao_social ||
+        '-';
+
+
+      atualizarLinkEdicao(contrato.id);
+
+      contratoResultado.style.display =
+        'block';
+
+      mensagemConsulta.textContent =
+        `Contrato ${contrato.numero_contrato} carregado.`;
+
+      contratoResultado.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+
+
+    empresaId.addEventListener(
+      'change',
+      async () => {
+        const id =
+          Number(empresaId.value);
+
+        empresaSelecionada = null;
+        clienteSelecionado = null;
+        contratoSelecionado = null;
+        atualizarLinkEdicao();
+        atualizarBotoesReimpressao();
+
+        if (!id) {
+          clienteId.disabled = true;
+          contratoId.disabled = true;
+
+          clienteId.innerHTML =
+            '<option value="">Selecione primeiro a empresa</option>';
+
+          contratoId.innerHTML =
+            '<option value="">Selecione primeiro o cliente</option>';
+
+          contratoResultado.style.display =
+            'none';
+
+          return;
+        }
+
+        await carregarClientesGlobais();
+      }
+    );
+
+
+    clienteId.addEventListener(
+      'change',
+      async () => {
+        const id =
+          Number(clienteId.value);
+
+        contratoSelecionado = null;
+        atualizarLinkEdicao();
+        atualizarBotoesReimpressao();
+
+        if (!id) {
+          contratoId.disabled = true;
+
+          contratoId.innerHTML =
+            '<option value="">Selecione primeiro o cliente</option>';
+
+          contratoResultado.style.display =
+            'none';
+
+          return;
+        }
+
+        await carregarContratosDoCliente(id);
+      }
+    );
+
+
+    contratoId.addEventListener(
+      'change',
+      async () => {
+        const id =
+          Number(contratoId.value);
+
+        if (!id) {
+          contratoSelecionado = null;
+          atualizarLinkEdicao();
+          atualizarBotoesReimpressao();
+          contratoResultado.style.display =
+            'none';
+
+          return;
+        }
+
+        await carregarContratoCompleto(id);
+      }
+    );
+
+
+    btnSair.addEventListener(
+      'click',
+      async event => {
+        event.preventDefault();
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+          'index.html';
+      }
+    );
+
+
+    async function iniciarPagina() {
+      if (new URLSearchParams(window.location.search).get('acao') === 'editar') {
+        document.querySelector('main header h1').textContent = 'Editar contrato';
+        document.querySelector('main header p').textContent =
+          'Escolha um contrato na lista dos 10 últimos ou pelos filtros. Clique em Editar para abrir todos os campos.';
+      }
+      const ok =
+        await carregarUsuario();
+
+      if (!ok) return;
+
+      await carregarEmpresas();
+      await carregarUltimosContratos();
+    }
+
+
+    iniciarPagina();
+  </script>
+
+</body>
+</html>

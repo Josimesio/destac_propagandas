@@ -1,0 +1,2 @@
+﻿empresa_id;razao_social;nome_fantasia;tipo_pessoa;cpf_cnpj;inscricao_estadual;responsavel;contato;telefone;celular_whatsapp;email;endereco;numero;complemento;bairro;cidade;estado;cep;observacoes;ativo
+1;Cliente Exemplo LTDA;Cliente Exemplo;JURIDICA;00.000.000/0001-00;;Maria;Maria;(45) 0000-0000;(45) 99999-9999;cliente@exemplo.com;Rua Exemplo;100;;Centro;Cascavel;PR;85800-000;Registro de exemplo;true

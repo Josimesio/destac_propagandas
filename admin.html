@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel | Destac Propagandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .painel-boas-vindas {
+      margin-bottom: 24px;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid #e4ddec;
+      border-radius: 16px;
+    }
+    .painel-boas-vindas span {
+      display: block;
+      margin-bottom: 6px;
+      color: #8a7caf;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .painel-boas-vindas h2 {
+      margin: 0 0 8px;
+      color: #302843;
+      font-size: 26px;
+    }
+    .painel-boas-vindas p {
+      margin: 0;
+      color: #6e688f;
+    }
+    .atalhos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+    .atalho-card {
+      display: block;
+      min-height: 145px;
+      padding: 22px;
+      border: 1px solid #e2daea;
+      border-radius: 16px;
+      background: #fff;
+      color: #302843;
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .atalho-card:hover {
+      transform: translateY(-2px);
+      border-color: #cbbade;
+      box-shadow: 0 10px 24px rgba(62, 44, 88, .08);
+    }
+    .atalho-icone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      background: #f1ecf6;
+      color: #6c55a0;
+      font-size: 22px;
+    }
+    .atalho-card h3 {
+      margin: 0 0 7px;
+      font-size: 18px;
+    }
+    .atalho-card p {
+      margin: 0;
+      color: #746d80;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .atalho-card.financeiro {
+      border-color: #ccbce0;
+      background: linear-gradient(180deg, #ffffff 0%, #fbf8fd 100%);
+    }
+    .atalho-card.financeiro .atalho-icone {
+      background: #e8def4;
+      color: #67498e;
+    }
+    @media (max-width: 1050px) {
+      .atalhos-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .atalhos-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+
+    <div id="usuarioConectadoBox" style="margin:14px 12px 22px;padding:12px;border:1px solid rgba(123,97,168,.18);border-radius:12px;background:rgba(255,255,255,.55);">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a7caf;margin-bottom:6px;">USUÁRIO CONECTADO</div>
+      <div id="nomeUsuarioConectado" style="font-weight:800;color:#2f2a45;line-height:1.25;">Carregando...</div>
+      <div id="perfilUsuarioConectado" style="margin-top:4px;font-size:12px;font-weight:700;color:#7b61a8;"></div>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a class="active" href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <span>PAINEL ADMINISTRATIVO</span>
+        <h1 id="tituloUsuario">Olá!</h1>
+        <p id="descricaoUsuario">Carregando seu perfil...</p>
+      </div>
+    </header>
+
+    <section class="painel-boas-vindas">
+      <span>ACESSO RÁPIDO</span>
+      <h2>O que você deseja fazer?</h2>
+      <p>Acesse os módulos da Destac Propagandas.</p>
+
+      <div class="atalhos-grid">
+        <a class="atalho-card" href="empresas.html">
+          <div class="atalho-icone">🏢</div>
+          <h3>Empresas</h3>
+          <p>Cadastre e gerencie as empresas utilizadas no sistema.</p>
+        </a>
+
+        <a class="atalho-card" href="clientes.html">
+          <div class="atalho-icone">👥</div>
+          <h3>Clientes</h3>
+          <p>Cadastre, consulte e mantenha os dados dos clientes.</p>
+        </a>
+
+        <a class="atalho-card" href="contratos.html">
+          <div class="atalho-icone">📄</div>
+          <h3>Contratos</h3>
+          <p>Crie e consulte contratos de mídia e serviços.</p>
+        </a>
+
+        <a class="atalho-card financeiro" id="atalhoFinanceiro" href="financeiro.html">
+          <div class="atalho-icone">💰</div>
+          <h3>Financeiro</h3>
+          <p>Contas a receber, recebimentos, despesas, fluxo de caixa e relatórios.</p>
+        </a>
+
+        <div class="atalho-card" aria-disabled="true" style="opacity:.65;cursor:not-allowed;">
+          <div class="atalho-icone">📣</div>
+          <h3>Campanhas</h3>
+          <p>Módulo reservado para a próxima etapa do projeto.</p>
+        </div>
+
+        <a class="atalho-card" href="consultar_cnpj.html">
+          <div class="atalho-icone">🏛️</div>
+          <h3>Consultar CNPJ</h3>
+          <p>Verifique dados públicos cadastrais e a situação de uma empresa.</p>
+        </a>
+
+        <a class="atalho-card" href="buscar_cep.html">
+          <div class="atalho-icone">📍</div>
+          <h3>Buscar CEP</h3>
+          <p>Pesquise o CEP pelo estado, cidade e logradouro.</p>
+        </a>
+
+        <a class="atalho-card" id="atalhoUsuarios" href="usuarios.html" style="display:none;">
+          <div class="atalho-icone">⚙️</div>
+          <h3>Usuários</h3>
+          <p>Gerencie usuários, perfis e acessos ao sistema.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

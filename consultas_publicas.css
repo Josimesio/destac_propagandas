@@ -1,0 +1,58 @@
+/* Isolado: altera somente as duas páginas de consultas. */
+.consultas-main{min-width:0;max-width:1600px;width:100%}
+.consultas-main header{margin-bottom:25px}
+.ferramentas-nav{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 24px}
+.ferramentas-nav a{color:#625480;text-decoration:none;background:#fff;border:1px solid #e3dce9;border-radius:12px;padding:11px 18px;font-weight:800;font-size:14px}
+.ferramentas-nav a.selecionada{background:#725994;color:#fff;border-color:#725994}
+.consulta-card{background:#fff;border:1px solid #e2dce9;border-radius:18px;padding:28px;margin-bottom:22px;max-width:1180px;box-shadow:0 6px 22px rgba(64,51,85,.025)}
+.consulta-card-top h2,.resultado-header h2{margin:0 0 8px;color:#2f2a45;font-size:22px;line-height:1.3}
+.consulta-card-top p,.resultado-header p{margin:0;color:#6e6880;font-size:14px;line-height:1.5}
+.consulta-form{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:24px}
+.consulta-field{display:flex;flex-direction:column;gap:8px;min-width:145px;flex:1 1 170px}
+.consulta-field.crescer{max-width:410px;flex:1 1 250px}
+.consulta-field label{font-size:13px;font-weight:800;color:#383044}
+.consulta-field label span{color:#a13f65}
+.consulta-field input,.consulta-field select{width:100%;height:46px;border:1px solid #d9d3e5;border-radius:11px;background:#fff;padding:0 14px;font:inherit;font-size:15px;color:#302943}
+.consulta-field input:focus,.consulta-field select:focus{outline:2px solid #b9a7d0;outline-offset:1px}
+.consulta-field small{font-size:12px;color:#786f81;min-height:14px;line-height:1.35}
+.consulta-btn{border:0;background:#745b99;color:white;border-radius:11px;padding:12px 19px;min-height:46px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.consulta-btn:hover:not(:disabled){background:#5c467c}
+.consulta-btn:disabled{opacity:.55;cursor:progress}
+.btn-secundario{background:#f0eaf8;color:#4f3e70;border:1px solid #d8cbe6}
+.btn-secundario:hover:not(:disabled){background:#e4d7f2}
+.consulta-mensagem{margin-top:16px;padding:13px 16px;border-radius:12px;border:1px solid #ded1e9;background:#f7f3fc;color:#514168;font-size:14px;line-height:1.5}
+.consulta-mensagem.erro{background:#fff3f3;border-color:#f0caca;color:#932f43}
+.consulta-mensagem.sucesso{background:#f1faf5;border-color:#c7e9d5;color:#296240}
+.resultado-header{display:flex;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap;margin-bottom:20px}
+.resultado-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:#917ab3;margin-bottom:9px}
+.situacao{font-size:13px;font-weight:800;border-radius:20px;padding:9px 17px;background:#f5edf1;color:#82435f;white-space:nowrap}
+.situacao.ativa{background:#e7f7ed;color:#237244}
+.validacao-aviso{margin:0 0 20px;color:#4d426b;font-size:14px;font-weight:700}
+.dados-empresa{display:grid;gap:19px}
+.dados-grupo{border:1px solid #ede8f1;border-radius:14px;padding:20px}
+.dados-grupo h3{font-size:15px;color:#4a3a65;margin:0 0 16px}
+.dados-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
+.dado .campo-titulo{display:block;color:#7b7384;font-size:12px;font-weight:700;margin-bottom:5px}
+.dado .campo-valor{color:#312b3d;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.45}
+.dado-largura{grid-column:1/-1}
+.dados-lista{display:grid;gap:12px}
+.dados-item{border-bottom:1px solid #f0eaf5;padding:0 0 11px;font-size:14px;color:#383044;line-height:1.45;overflow-wrap:anywhere}
+.dados-item:last-child{border-bottom:0;padding-bottom:0}
+.dados-item strong{display:block;margin-bottom:4px;color:#3d3352}
+.consulta-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.detalhe-json{margin-top:22px;border:1px solid #e6e0ec;border-radius:12px;padding:13px 16px}
+.detalhe-json summary{cursor:pointer;color:#5b4977;font-weight:800;font-size:13px}
+.detalhe-json pre{max-width:100%;overflow:auto;max-height:490px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;margin-top:15px;color:#433950}
+.consulta-fonte{font-size:12px;line-height:1.55;color:#756e7d;margin:21px 0 0}
+.consulta-fonte a{color:#69508b}
+.cep-form .uf-field{flex:0 1 160px}
+.cep-form .cidade-field{flex:1 1 240px}
+.cep-form .rua-field{flex:2 1 320px}
+.cep-submit{align-self:flex-end}
+.lista-ceps{display:grid;gap:12px}
+.cep-item{border:1px solid #e7e0ed;border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cep-item h3{font-size:19px;color:#4b366c;margin:0 0 5px}
+.cep-item p{font-size:14px;color:#484252;line-height:1.45;margin:0 0 4px;overflow-wrap:anywhere}
+.cep-item .cep-sec{font-size:12px;color:#797180}
+@media(max-width:900px){.consultas-main{padding:30px 18px}.consulta-card{padding:20px}.dados-grid{grid-template-columns:1fr}}
+@media(max-width:580px){.consulta-form{display:grid;grid-template-columns:1fr}.consulta-field,.consulta-field.crescer{max-width:none}.ferramentas-nav a{flex:1;text-align:center}.cep-item{align-items:flex-start}.consulta-btn{white-space:normal}}

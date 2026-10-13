@@ -1,0 +1,166 @@
+:root {
+  --fin-primary: #7b61a8;
+  --fin-primary-dark: #5f4d78;
+  --fin-primary-soft: #f4eff8;
+  --fin-border: #e4ddec;
+  --fin-text: #302843;
+  --fin-muted: #716a7c;
+  --fin-success: #2e7d5b;
+  --fin-success-soft: #eaf6ef;
+  --fin-danger: #b2475c;
+  --fin-danger-soft: #fff0f2;
+  --fin-warning: #a66a17;
+  --fin-warning-soft: #fff7e8;
+  --fin-blue: #355fa8;
+}
+
+* { box-sizing: border-box; }
+
+.usuario-financeiro {
+  margin: 14px 12px 22px;
+  padding: 12px;
+  border: 1px solid rgba(123,97,168,.18);
+  border-radius: 12px;
+  background: rgba(255,255,255,.55);
+}
+.usuario-financeiro-label { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: #8a7caf; margin-bottom: 6px; }
+.usuario-financeiro-nome { font-weight: 800; color: #2f2a45; line-height: 1.25; }
+.usuario-financeiro-perfil { margin-top: 4px; font-size: 12px; font-weight: 700; color: #7b61a8; }
+
+.financeiro-header { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; }
+.financeiro-header-acoes { display:flex; gap:10px; flex-wrap:wrap; }
+
+.btn-primario, .btn-secundario, .btn-link {
+  font: inherit; font-weight: 800; cursor: pointer; transition: .15s ease; border-radius: 10px;
+}
+.btn-primario { border: 0; background: var(--fin-primary); color:#fff; padding:11px 16px; }
+.btn-primario:hover { background: var(--fin-primary-dark); }
+.btn-secundario { border:1px solid #d8d0df; background:#fff; color:var(--fin-primary-dark); padding:10px 14px; }
+.btn-secundario:hover { background:#f8f5fa; }
+.btn-link { border:0; background:transparent; color:var(--fin-primary); padding:8px; }
+
+.modo-dados-aviso { margin: 16px 0; border:1px solid #ecd59e; background:#fff8e9; color:#795a1a; padding:12px 15px; border-radius:12px; font-size:13px; font-weight:700; }
+
+.financeiro-filtros { display:grid; grid-template-columns:minmax(220px,1.4fr) minmax(150px,.7fr) minmax(150px,.7fr) auto; gap:12px; align-items:end; background:#fff; border:1px solid var(--fin-border); border-radius:14px; padding:15px; margin:20px 0 12px; }
+.campo-filtro label, .form-grid-financeiro label { display:block; margin-bottom:6px; font-size:12px; font-weight:800; color:#64566f; }
+.campo-filtro input, .campo-filtro select, .acoes-inline input, .acoes-inline select, .form-grid-financeiro input, .form-grid-financeiro select, .form-grid-financeiro textarea {
+  width:100%; border:1px solid #d5ccdc; border-radius:9px; padding:10px 11px; font:inherit; color:#342d3e; background:#fff;
+}
+.campo-filtro-botao { display:flex; align-items:end; gap:8px; flex-wrap:wrap; }
+
+.financeiro-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 18px; }
+.tab-btn { border:1px solid var(--fin-border); background:#fff; color:#64566f; border-radius:999px; padding:9px 14px; font:inherit; font-size:13px; font-weight:800; cursor:pointer; }
+.tab-btn.active { background:var(--fin-primary); color:#fff; border-color:var(--fin-primary); }
+.tab-painel { display:none; }
+.tab-painel.active { display:block; }
+
+.kpi-grid { display:grid; grid-template-columns:repeat(5,minmax(160px,1fr)); gap:12px; margin-bottom:18px; }
+.kpi-card { background:#fff; border:1px solid var(--fin-border); border-radius:16px; padding:18px; min-height:122px; display:flex; flex-direction:column; justify-content:center; }
+.kpi-card span { font-size:12px; font-weight:800; color:var(--fin-muted); text-transform:uppercase; letter-spacing:.04em; }
+.kpi-card strong { display:block; margin:8px 0 5px; font-size:25px; line-height:1.05; color:var(--fin-text); }
+.kpi-card small { color:#8d8496; font-weight:600; }
+.kpi-alerta { border-color:#efcbd3; background:linear-gradient(180deg,#fff,#fff8f9); }
+.kpi-alerta strong { color:var(--fin-danger); }
+.kpi-saldo { border-color:#cce4d7; background:linear-gradient(180deg,#fff,#f8fdf9); }
+.kpi-saldo strong { color:var(--fin-success); }
+
+.painel-grid { display:grid; gap:16px; margin-bottom:16px; }
+.painel-grid-2 { grid-template-columns:minmax(0,1.7fr) minmax(320px,.8fr); }
+.painel-card { background:#fff; border:1px solid var(--fin-border); border-radius:16px; padding:20px; margin-bottom:16px; }
+.painel-titulo { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:15px; }
+.painel-titulo-wrap { align-items:flex-start; flex-wrap:wrap; }
+.painel-titulo span { display:block; font-size:11px; font-weight:800; letter-spacing:.08em; color:#8a7caf; margin-bottom:4px; }
+.painel-titulo h2 { margin:0; color:var(--fin-text); font-size:20px; }
+.chart-box { position:relative; min-height:300px; }
+.chart-box-menor { min-height:260px; }
+
+.tabela-wrapper { width:100%; overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:850px; }
+th, td { padding:11px 10px; border-bottom:1px solid #ece6f0; text-align:left; font-size:12.5px; vertical-align:middle; }
+th { color:#5f5368; background:#faf8fb; font-weight:800; white-space:nowrap; }
+tbody tr:hover { background:#fbf9fc; }
+.valor { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+
+.status-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 9px; border-radius:999px; font-size:11px; font-weight:800; white-space:nowrap; }
+.status-ABERTO { background:#f3eff7; color:#69547f; }
+.status-PARCIAL { background:var(--fin-warning-soft); color:var(--fin-warning); }
+.status-PAGO { background:var(--fin-success-soft); color:var(--fin-success); }
+.status-VENCIDO { background:var(--fin-danger-soft); color:var(--fin-danger); }
+.status-CANCELADO { background:#f0f0f0; color:#777; }
+
+.acoes-linha { display:flex; gap:6px; flex-wrap:wrap; }
+.acao-mini { border:1px solid #d7cfdd; background:#fff; color:#665674; border-radius:7px; padding:6px 9px; font:inherit; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; }
+.acao-mini.primaria { background:var(--fin-primary); color:#fff; border-color:var(--fin-primary); }
+.acao-mini.perigo { color:var(--fin-danger); }
+
+.acoes-inline { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.acoes-inline input { min-width:230px; width:auto; }
+.acoes-inline select { min-width:150px; width:auto; }
+
+.resumo-fluxo { display:flex; flex-direction:column; }
+.linha-resumo { display:flex; justify-content:space-between; gap:20px; padding:12px 0; border-bottom:1px solid #eee9f2; color:#665c6f; }
+.linha-resumo strong { color:var(--fin-text); }
+.linha-resumo-total { margin:8px -8px; padding:14px 8px; background:#f6f1f9; border-radius:10px; border:0; }
+
+.relatorios-grid { display:grid; grid-template-columns:repeat(4,minmax(180px,1fr)); gap:12px; margin-bottom:16px; }
+.relatorio-card { text-align:left; border:1px solid var(--fin-border); background:#fff; border-radius:14px; padding:16px; cursor:pointer; min-height:110px; }
+.relatorio-card strong { display:block; color:var(--fin-text); margin-bottom:8px; font-size:15px; }
+.relatorio-card span { color:var(--fin-muted); line-height:1.4; font-size:12px; }
+.relatorio-card.active, .relatorio-card:hover { border-color:#bca9ce; background:#fbf8fd; }
+
+.modal-financeiro { width:min(900px, calc(100vw - 30px)); border:0; border-radius:18px; padding:0; box-shadow:0 25px 70px rgba(47,36,60,.25); }
+.modal-financeiro::backdrop { background:rgba(25,19,31,.48); backdrop-filter:blur(2px); }
+.modal-conteudo { padding:22px; }
+.modal-menor { max-width:680px; }
+.modal-cabecalho { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:18px; }
+.modal-cabecalho span { font-size:11px; font-weight:800; color:#8a7caf; letter-spacing:.08em; }
+.modal-cabecalho h2 { margin:4px 0 0; color:var(--fin-text); }
+.modal-fechar { border:0; background:#f4f0f6; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:22px; color:#6d6176; }
+.form-grid-financeiro { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px 16px; }
+.campo-span-2 { grid-column:span 2; }
+.modal-acoes { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+.integracao-futura-box { margin-top:16px; padding:12px 14px; background:#f8f5fa; border:1px dashed #cbbbd7; border-radius:10px; color:#665772; font-size:12px; line-height:1.5; }
+.resumo-baixa { background:#f8f5fa; border:1px solid #e2dae8; border-radius:12px; padding:13px; margin-bottom:15px; color:#5e5267; line-height:1.5; }
+
+@media (max-width: 1250px) {
+  .kpi-grid { grid-template-columns:repeat(3,minmax(160px,1fr)); }
+  .relatorios-grid { grid-template-columns:repeat(2,minmax(180px,1fr)); }
+}
+@media (max-width: 950px) {
+  .financeiro-header { align-items:flex-start; flex-direction:column; }
+  .financeiro-filtros { grid-template-columns:1fr 1fr; }
+  .painel-grid-2 { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:repeat(2,minmax(150px,1fr)); }
+}
+@media (max-width: 650px) {
+  .financeiro-filtros, .form-grid-financeiro { grid-template-columns:1fr; }
+  .campo-span-2 { grid-column:span 1; }
+  .kpi-grid, .relatorios-grid { grid-template-columns:1fr; }
+  .acoes-inline { width:100%; align-items:stretch; }
+  .acoes-inline input, .acoes-inline select { width:100%; min-width:0; }
+}
+
+/* Diagnóstico visível após salvar conta a receber. */
+.financeiro-resultado:not([hidden]) {
+  margin: 12px 0; padding: 12px 16px; border-radius: 10px;
+  border: 1px solid #9bd4aa; background: #f0fbf2; color: #19592d; font-weight: 650;
+}
+.financeiro-resultado.erro:not([hidden]) {
+  border-color: #e3abab; background: #fff1f1; color: #902d2d;
+}
+
+/* Gestão das parcelas originadas de contratos */
+.fin-descricao {color:#61566c;line-height:1.55;margin:0 0 15px;font-size:13px;}
+.fin-link {display:inline-flex;text-decoration:none;align-items:center;}
+.fin-situacao {margin-bottom:14px;border:1px solid #dfd3eb;background:#f8f5fb;border-radius:10px;padding:12px 14px;color:#514364;font-size:13px;line-height:1.5;}
+.fin-contratos-kpis {display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.fin-contratos-kpis > div {border:1px solid #e7e0eb;background:#fbf9fc;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.fin-contratos-kpis span {font-size:12px;color:#6a5f73;}
+.fin-contratos-kpis strong {font-size:23px;color:#342743;font-variant-numeric:tabular-nums;}
+.fin-busca-contratos {margin-bottom:14px;}
+.fin-origem-contrato,.fin-origem-manual {display:inline-block;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:800;white-space:nowrap;}
+.fin-origem-contrato {background:#eee6f5;color:#563873;}
+.fin-origem-manual {background:#f2f3f4;color:#58616b;}
+.filtro-contrato-aviso:not([hidden]) {display:flex;justify-content:space-between;gap:14px;align-items:center;background:#f7f2fd;border:1px solid #ddcbed;border-radius:10px;padding:10px 12px;margin-bottom:12px;}
+@media(max-width:1050px){.fin-contratos-kpis{grid-template-columns:repeat(2,minmax(150px,1fr));}}
+@media(max-width:600px){.fin-contratos-kpis{grid-template-columns:1fr;}.filtro-contrato-aviso:not([hidden]){flex-direction:column;align-items:flex-start;}}

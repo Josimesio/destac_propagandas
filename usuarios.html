@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Usuários | Destac Propagandas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+</head>
+
+<body>
+
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+
+    <div
+      id="usuarioConectadoBox"
+      style="
+        margin: 14px 12px 22px;
+        padding: 12px;
+        border: 1px solid rgba(123,97,168,.18);
+        border-radius: 12px;
+        background: rgba(255,255,255,.55);
+      "
+    >
+      <div
+        style="
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .08em;
+          color: #8a7caf;
+          margin-bottom: 6px;
+        "
+      >
+        USUÁRIO CONECTADO
+      </div>
+
+      <div
+        id="nomeUsuarioConectado"
+        style="
+          font-weight: 800;
+          color: #2f2a45;
+          line-height: 1.25;
+        "
+      >
+        Carregando...
+      </div>
+
+      <div
+        id="perfilUsuarioConectado"
+        style="
+          margin-top: 4px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #7b61a8;
+        "
+      ></div>
+    </div>
+
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" class="active">Usuários</a>
+    </nav>
+
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+
+  <main>
+
+    <header>
+      <div>
+        <span>ADMINISTRAÇÃO</span>
+
+        <h1>Usuários</h1>
+
+        <p>
+          Cadastre e gerencie os usuários do sistema.
+        </p>
+      </div>
+    </header>
+
+
+    <section class="summary">
+
+      <h2>Novo usuário</h2>
+
+      <p style="margin: 0 0 18px; color: #6e688f; font-size: 14px;">* Campos obrigatórios</p>
+
+      <form id="formUsuario">
+
+        <div class="form-grid">
+
+          <div>
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" required>
+          </div>
+
+          <div>
+            <label for="email">E-mail *</label>
+            <input type="email" id="email" required>
+          </div>
+
+          <div>
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone">
+          </div>
+
+          <div>
+            <label for="cargo">Cargo / Função</label>
+            <input type="text" id="cargo">
+          </div>
+
+          <div>
+            <label for="empresa">Empresa</label>
+
+            <select id="empresa">
+              <option value="">
+                Acesso global
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label for="perfil">Perfil *</label>
+
+            <select id="perfil" required>
+              <option value="">
+                Selecione
+              </option>
+
+              <option value="SUPER_USUARIO">
+                Super usuário
+              </option>
+
+              <option value="ADMINISTRADOR">
+                Administrador
+              </option>
+
+              <option value="USUARIO">
+                Usuário comum
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label for="senha">Senha inicial *</label>
+
+            <input
+              type="password"
+              id="senha"
+              required
+              minlength="8"
+            >
+          </div>
+
+          <div>
+            <label for="ativo">Status</label>
+
+            <select id="ativo">
+              <option value="true">
+                Ativo
+              </option>
+
+              <option value="false">
+                Inativo
+              </option>
+            </select>
+          </div>
+
+        </div>
+
+
+        <div style="margin-top: 25px;">
+          <button
+            type="submit"
+            class="btnCadastrar"
+          >
+            Cadastrar usuário
+          </button>
+        </div>
+
+
+        <div
+          id="mensagem"
+          style="
+            margin-top: 15px;
+            font-weight: 700;
+          "
+        ></div>
+
+      </form>
+
+    </section>
+
+
+    <section class="summary">
+
+      <div class="usuarios-topo">
+
+        <div>
+          <span>USUÁRIOS CADASTRADOS</span>
+          <h2>Usuários do sistema</h2>
+        </div>
+
+        <button
+          type="button"
+          id="btnAtualizarUsuarios"
+          class="btnSecundario"
+        >
+          Atualizar lista
+        </button>
+
+      </div>
+
+
+      <div class="tabela-wrapper">
+
+        <table class="tabela-usuarios">
+
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Cargo</th>
+              <th>Perfil</th>
+              <th>Empresa</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaUsuarios">
+            <tr>
+              <td colspan="7">
+                Carregando usuários...
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="usuarios.js"></script>
+
+</body>
+</html>

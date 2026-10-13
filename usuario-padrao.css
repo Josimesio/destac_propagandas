@@ -1,0 +1,62 @@
+
+/* =========================================================
+   PADRÃO ÚNICO - USUÁRIO CONECTADO
+   Usado em todas as páginas administrativas
+   ========================================================= */
+
+#usuarioConectadoBox,
+.usuario-conectado {
+  display: block !important;
+  margin: 14px 16px 22px !important;
+  padding: 16px 16px 15px !important;
+  border: 1px solid rgba(123, 97, 168, .24) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,.86) !important;
+  box-shadow: 0 2px 8px rgba(71, 55, 101, .03) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+#usuarioConectadoBox > div:first-child,
+.usuario-conectado small {
+  display: block !important;
+  margin: 0 0 7px !important;
+  color: #8a7caf !important;
+  font-family: Inter, Arial, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+
+#nomeUsuarioConectado,
+.usuario-conectado #nomeUsuario,
+.usuario-conectado strong {
+  display: block !important;
+  margin: 0 !important;
+  color: #2f2a45 !important;
+  font-family: Inter, Arial, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  overflow-wrap: anywhere !important;
+}
+
+#perfilUsuarioConectado,
+.usuario-conectado #perfilUsuario,
+.usuario-conectado span {
+  display: block !important;
+  margin: 5px 0 0 !important;
+  color: #7b61a8 !important;
+  font-family: Inter, Arial, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+/* Espaçamento igual entre o quadro do usuário e o menu */
+#usuarioConectadoBox + nav,
+.usuario-conectado + nav {
+  margin-top: 0 !important;
+}

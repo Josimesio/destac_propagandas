@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saneador de Clientes | Destac Propagandas</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f4f9;
+      color: #2f2a45;
+    }
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e1dbea;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 24px rgba(47,42,69,.06);
+    }
+    h1 { margin: 0 0 8px; }
+    h2 { margin-top: 0; font-size: 18px; }
+    p { line-height: 1.5; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+    label {
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    input, select, button {
+      width:100%;
+      padding:11px 12px;
+      border:1px solid #d9d5e8;
+      border-radius:10px;
+      font:inherit;
+    }
+    button {
+      cursor:pointer;
+      border:none;
+      background:#7b61a8;
+      color:#fff;
+      font-weight:800;
+    }
+    button.secondary { background:#6e688f; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    .actions {
+      display:grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .status {
+      margin-top:14px;
+      padding:12px;
+      background:#f7f5fb;
+      border-radius:10px;
+      white-space:pre-wrap;
+      min-height:46px;
+    }
+    .progress {
+      width:100%;
+      height:16px;
+      background:#ece8f2;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .progress > div {
+      height:100%;
+      width:0%;
+      background:#7b61a8;
+      transition:width .2s ease;
+    }
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+    th, td {
+      border-bottom:1px solid #eee;
+      padding:8px;
+      text-align:left;
+      vertical-align:top;
+    }
+    th { background:#f7f5fb; position:sticky; top:0; }
+    .table-wrap {
+      max-height:420px;
+      overflow:auto;
+      border:1px solid #eee;
+      border-radius:10px;
+    }
+    .ok { color:#2f7d32; font-weight:700; }
+    .erro { color:#a44f69; font-weight:700; }
+    .nota {
+      font-size:13px;
+      color:#6e688f;
+      background:#faf9fc;
+      border-left:4px solid #7b61a8;
+      padding:10px 12px;
+      border-radius:8px;
+    }
+    @media(max-width:800px) {
+      .grid,.actions { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Saneador de Clientes</h1>
+    <p>Importe uma planilha contendo uma coluna de CNPJ. O programa consulta os dados cadastrais, saneia os registros e gera uma nova planilha com os campos do cadastro de clientes. Cliente é global, portanto empresa_id não é gerado.</p>
+    <div class="nota">
+      Fonte padrão: BrasilAPI / Minha Receita, com dados cadastrais oriundos da Receita Federal. Para consulta oficial contratada diretamente no SERPRO/Receita, é necessário usar credenciais próprias da API oficial.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>1. Importar planilha</h2>
+    <div class="grid">
+      <div>
+        <label for="arquivo">Arquivo Excel *</label>
+        <input id="arquivo" type="file" accept=".xlsx,.xls,.csv" />
+      </div>
+      <div>
+        <label for="colunaCnpj">Coluna do CNPJ *</label>
+        <select id="colunaCnpj" disabled>
+          <option value="">Selecione o arquivo primeiro</option>
+        </select>
+      </div>
+      <div>
+        <label>Intervalo entre consultas</label>
+<input type="text" value="3 segundos (fixo)" disabled>
+      </div>
+      <div>
+        <label for="somenteAtivos">Situação cadastral</label>
+        <select id="somenteAtivos">
+          <option value="todos">Trazer todos</option>
+          <option value="ativos">Somente ATIVA</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnConsultar" disabled>Consultar CNPJs</button>
+      <button id="btnExportar" class="secondary" disabled>Exportar XLSX</button>
+      <button id="btnLimpar" class="secondary">Limpar</button>
+    </div>
+
+    <div class="progress"><div id="barra"></div></div>
+    <div id="status" class="status">Aguardando planilha...</div>
+  </div>
+
+  <div class="card">
+    <h2>2. Prévia</h2>
+    <div id="resumo"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>CNPJ</th>
+            <th>Razão social</th>
+            <th>Fantasia</th>
+            <th>Situação</th>
+            <th>Cidade/UF</th>
+            <th>Status consulta</th>
+          </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const arquivo = document.getElementById('arquivo');
+  const colunaCnpj = document.getElementById('colunaCnpj');
+  const btnConsultar = document.getElementById('btnConsultar');
+  const btnExportar = document.getElementById('btnExportar');
+  const btnLimpar = document.getElementById('btnLimpar');
+  const statusEl = document.getElementById('status');
+  const barra = document.getElementById('barra');
+  const tabela = document.getElementById('tabela');
+  const resumo = document.getElementById('resumo');
+  const somenteAtivos = document.getElementById('somenteAtivos');
+
+  let linhasEntrada = [];
+  let resultados = [];
+  let cnpjsProcessar = [];
+  let indiceAtual = 0;
+  let loteAtual = 0;
+  let loteExportado = true;
+  const TAMANHO_LOTE = 30;
+
+  function normalizarCnpj(v) {
+    return String(v ?? '')
+      .toUpperCase()
+      .replace(/[^0-9A-Z]/g, '')
+      .trim();
+  }
+
+  function formatarCnpj(v) {
+    const s = normalizarCnpj(v);
+    if (/^\d{14}$/.test(s)) {
+      return s.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+    }
+    return s;
+  }
+
+  function dormir(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function texto(v) {
+    return v == null ? '' : String(v).trim();
+  }
+
+  function juntarTelefone(ddd, numero) {
+    const a = texto(ddd);
+    const b = texto(numero);
+    if (!a && !b) return '';
+    return `${a ? '(' + a + ') ' : ''}${b}`.trim();
+  }
+
+  function endereçoCompleto(d) {
+    const partes = [
+      d.descricao_tipo_de_logradouro,
+      d.logradouro,
+      d.numero ? `nº ${d.numero}` : '',
+      d.complemento,
+      d.bairro,
+      d.municipio,
+      d.uf,
+      d.cep
+    ].map(texto).filter(Boolean);
+    return partes.join(', ');
+  }
+
+
+  function montarRegistro(cnpjOriginal, d, statusConsulta, erro = '') {
+    const qsa = Array.isArray(d?.qsa) ? d.qsa : [];
+
+    const situacao = texto(d?.descricao_situacao_cadastral || d?.situacao_cadastral);
+    const matrizFilial = texto(
+      d?.descricao_identificador_matriz_filial ||
+      d?.identificador_matriz_filial ||
+      d?.matriz_filial
+    );
+
+    const cnaeCodigo = texto(d?.cnae_fiscal);
+    const cnaeDescricao = texto(d?.cnae_fiscal_descricao);
+    const cnaePrincipal =
+      cnaeCodigo && cnaeDescricao
+        ? `${cnaeCodigo} - ${cnaeDescricao}`
+        : (cnaeCodigo || cnaeDescricao);
+
+    const socios = qsa
+      .map(s => {
+        const nome = texto(s.nome_socio || s.nome);
+        const qualificacao = texto(s.qualificacao_socio || s.qualificacao);
+        if (nome && qualificacao) return `${nome} - ${qualificacao}`;
+        return nome || qualificacao;
+      })
+      .filter(Boolean)
+      .join(' | ');
+
+    return {
+      id: '',
+      codigo_cliente: '',
+      razao_social: texto(d?.razao_social),
+      nome_fantasia: texto(d?.nome_fantasia),
+      tipo_pessoa: 'JURIDICA',
+      cpf_cnpj: formatarCnpj(d?.cnpj || cnpjOriginal),
+      inscricao_estadual: '',
+      responsavel: texto(qsa[0]?.nome_socio || qsa[0]?.nome),
+      contato: texto(qsa[0]?.nome_socio || qsa[0]?.nome),
+      telefone: texto(d?.ddd_telefone_1),
+      celular_whatsapp: texto(d?.ddd_telefone_2),
+      email: texto(d?.email),
+      endereco: [texto(d?.descricao_tipo_de_logradouro), texto(d?.logradouro)].filter(Boolean).join(' '),
+      numero: texto(d?.numero),
+      complemento: texto(d?.complemento),
+      bairro: texto(d?.bairro),
+      cidade: texto(d?.municipio),
+      estado: texto(d?.uf).toUpperCase(),
+      cep: texto(d?.cep),
+      observacoes: '',
+      situacao_cadastral: situacao,
+      data_inicio_atividade: texto(d?.data_inicio_atividade),
+      natureza_juridica: texto(d?.natureza_juridica || d?.descricao_natureza_juridica),
+      porte: texto(d?.porte),
+      capital_social: d?.capital_social ?? '',
+      cnae_principal: cnaePrincipal,
+      matriz_filial: matrizFilial,
+      socios: socios,
+      ativo: situacao.toUpperCase() === 'ATIVA',
+      created_at: '',
+      updated_at: '',
+
+      // auditoria
+      status_consulta: statusConsulta,
+      erro_consulta: erro,
+      cnpj_normalizado: normalizarCnpj(d?.cnpj || cnpjOriginal)
+    };
+  }
+
+  function atualizarTabela() {
+    tabela.innerHTML = '';
+    resultados.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${r.cpf_cnpj || ''}</td>
+        <td>${r.razao_social || ''}</td>
+        <td>${r.nome_fantasia || ''}</td>
+        <td>${r.situacao_cadastral || ''}</td>
+        <td>${[r.cidade, r.estado].filter(Boolean).join('/')}</td>
+        <td class="${r.status_consulta === 'OK' ? 'ok' : 'erro'}">${r.status_consulta}${r.erro_consulta ? ' - ' + r.erro_consulta : ''}</td>
+      `;
+      tabela.appendChild(tr);
+    });
+
+    const ok = resultados.filter(r => r.status_consulta === 'OK').length;
+    const erro = resultados.length - ok;
+    const ativos = resultados.filter(r => r.ativo === true).length;
+    resumo.innerHTML = `<p><strong>${resultados.length}</strong> processado(s) — <span class="ok">${ok} OK</span> — <span class="erro">${erro} erro(s)</span> — ${ativos} ativo(s).</p>`;
+  }
+
+  arquivo.addEventListener('change', async () => {
+    resultados = [];
+    cnpjsProcessar = [];
+    indiceAtual = 0;
+    loteAtual = 0;
+    loteExportado = true;
+    atualizarTabela();
+    btnExportar.disabled = true;
+    btnConsultar.textContent = 'Consultar primeiros 30';
+    barra.style.width = '0%';
+
+    const f = arquivo.files[0];
+    if (!f) return;
+
+    try {
+      const buf = await f.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      linhasEntrada = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+      if (!linhasEntrada.length) throw new Error('A primeira aba está vazia.');
+
+      const colunas = Object.keys(linhasEntrada[0]);
+      colunaCnpj.innerHTML = '<option value="">Selecione a coluna</option>';
+      colunas.forEach(c => {
+        const op = document.createElement('option');
+        op.value = c;
+        op.textContent = c;
+        colunaCnpj.appendChild(op);
+      });
+
+      const sugestao = colunas.find(c => /cnpj/i.test(c));
+      if (sugestao) colunaCnpj.value = sugestao;
+
+      colunaCnpj.disabled = false;
+      btnConsultar.disabled = !colunaCnpj.value;
+      statusEl.textContent = `${linhasEntrada.length} linha(s) carregada(s). Selecione/confirme a coluna do CNPJ.`;
+    } catch (e) {
+      statusEl.textContent = `Erro ao ler planilha: ${e.message}`;
+    }
+  });
+
+  colunaCnpj.addEventListener('change', () => {
+    btnConsultar.disabled = !colunaCnpj.value || !linhasEntrada.length;
+  });
+
+  btnConsultar.addEventListener('click', async () => {
+    const col = colunaCnpj.value;
+    if (!col) return;
+
+    // Monta a fila apenas na primeira execução, removendo vazios e duplicados.
+    if (!cnpjsProcessar.length) {
+      const vistos = new Set();
+      for (const linha of linhasEntrada) {
+        const c = normalizarCnpj(linha[col]);
+        if (!c || vistos.has(c)) continue;
+        vistos.add(c);
+        cnpjsProcessar.push(c);
+      }
+
+      if (!cnpjsProcessar.length) {
+        statusEl.textContent = 'Nenhum CNPJ válido encontrado na coluna selecionada.';
+        return;
+      }
+    }
+
+    if (!loteExportado) {
+      statusEl.textContent = 'Exporte a planilha do lote atual antes de continuar para os próximos 30.';
+      return;
+    }
+
+    if (indiceAtual >= cnpjsProcessar.length) {
+      statusEl.textContent = 'Todos os CNPJs já foram processados.';
+      btnConsultar.disabled = true;
+      return;
+    }
+
+    const inicio = indiceAtual;
+    const fim = Math.min(inicio + TAMANHO_LOTE, cnpjsProcessar.length);
+    const lote = cnpjsProcessar.slice(inicio, fim);
+    loteAtual += 1;
+    resultados = [];
+    loteExportado = false;
+    atualizarTabela();
+
+    btnConsultar.disabled = true;
+    btnExportar.disabled = true;
+    colunaCnpj.disabled = true;
+    arquivo.disabled = true;
+
+    for (let i = 0; i < lote.length; i++) {
+      const cnpj = lote[i];
+      const posicaoGeral = inicio + i + 1;
+      statusEl.textContent = `Lote ${loteAtual} — consultando ${i + 1} de ${lote.length} (geral ${posicaoGeral} de ${cnpjsProcessar.length}): ${formatarCnpj(cnpj)}`;
+      barra.style.width = `${Math.round(((i + 1) / lote.length) * 100)}%`;
+
+      try {
+        const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${encodeURIComponent(cnpj)}`);
+        if (!resp.ok) {
+          let msg = `HTTP ${resp.status}`;
+          try {
+            const er = await resp.json();
+            msg = er.message || er.name || msg;
+          } catch (_) {}
+          resultados.push(montarRegistro(cnpj, null, 'ERRO', msg));
+        } else {
+          const d = await resp.json();
+          const reg = montarRegistro(cnpj, d, 'OK', '');
+          if (somenteAtivos.value === 'todos' || reg.ativo === true) {
+            resultados.push(reg);
+          }
+        }
+      } catch (e) {
+        resultados.push(montarRegistro(cnpj, null, 'ERRO', e.message || 'Falha de conexão'));
+      }
+
+      atualizarTabela();
+      if (i < lote.length - 1) await dormir(3000);
+    }
+
+    indiceAtual = fim;
+    btnExportar.disabled = resultados.length === 0;
+    colunaCnpj.disabled = false;
+    arquivo.disabled = false;
+
+    const restantes = cnpjsProcessar.length - indiceAtual;
+    if (resultados.length === 0) {
+      loteExportado = true;
+      btnConsultar.disabled = restantes <= 0;
+      statusEl.textContent = `Lote ${loteAtual} concluído sem registros disponíveis para exportação. ${restantes > 0 ? `${restantes} CNPJ(s) restante(s).` : 'Processamento finalizado.'}`;
+    } else if (restantes > 0) {
+      btnConsultar.textContent = 'Salvar lote atual antes de continuar';
+      btnConsultar.disabled = true;
+      statusEl.textContent = `Lote ${loteAtual} concluído (${inicio + 1} a ${fim} de ${cnpjsProcessar.length}). Exporte a planilha deste lote. Depois o botão será liberado para consultar os próximos 30. Restam ${restantes} CNPJ(s).`;
+    } else {
+      btnConsultar.textContent = 'Processamento concluído';
+      btnConsultar.disabled = true;
+      statusEl.textContent = `Último lote concluído. Exporte a planilha deste lote para finalizar.`;
+    }
+  });
+
+  btnExportar.addEventListener('click', () => {
+    if (!resultados.length) return;
+
+    const colsSistema = [
+      'id',
+      'codigo_cliente',
+      'razao_social',
+      'nome_fantasia',
+      'tipo_pessoa',
+      'cpf_cnpj',
+      'inscricao_estadual',
+      'responsavel',
+      'contato',
+      'telefone',
+      'celular_whatsapp',
+      'email',
+      'endereco',
+      'numero',
+      'complemento',
+      'bairro',
+      'cidade',
+      'estado',
+      'cep',
+      'observacoes',
+      'situacao_cadastral',
+      'data_inicio_atividade',
+      'natureza_juridica',
+      'porte',
+      'capital_social',
+      'cnae_principal',
+      'matriz_filial',
+      'socios',
+      'ativo',
+      'created_at',
+      'updated_at'
+    ];
+
+    const dadosSistema = resultados
+      .filter(r => r.status_consulta === 'OK')
+      .map(r => Object.fromEntries(colsSistema.map(c => [c, r[c]])));
+
+    const wb = XLSX.utils.book_new();
+
+    const wsSistema = XLSX.utils.json_to_sheet(dadosSistema, { header: colsSistema });
+    XLSX.utils.book_append_sheet(wb, wsSistema, 'IMPORTACAO_CLIENTES');
+
+    const wsCompleto = XLSX.utils.json_to_sheet(resultados);
+    XLSX.utils.book_append_sheet(wb, wsCompleto, 'DADOS_RECEITA');
+
+    const erros = resultados.filter(r => r.status_consulta !== 'OK');
+    const wsErros = XLSX.utils.json_to_sheet(erros.length ? erros : [{status:'Sem erros'}]);
+    XLSX.utils.book_append_sheet(wb, wsErros, 'AUDITORIA');
+
+    const data = new Date().toISOString().slice(0,10);
+    const faixaInicio = Math.max(1, indiceAtual - resultados.length + 1);
+    const faixaFim = indiceAtual;
+    XLSX.writeFile(wb, `clientes_saneados_destac_lote_${String(loteAtual).padStart(2, '0')}_${faixaInicio}_a_${faixaFim}_${data}.xlsx`);
+
+    loteExportado = true;
+    const restantes = cnpjsProcessar.length - indiceAtual;
+    if (restantes > 0) {
+      btnConsultar.disabled = false;
+      btnConsultar.textContent = `Consultar próximos ${Math.min(TAMANHO_LOTE, restantes)}`;
+      statusEl.textContent = `Lote ${loteAtual} salvo. Restam ${restantes} CNPJ(s). Clique em "${btnConsultar.textContent}" para continuar.`;
+    } else {
+      btnConsultar.disabled = true;
+      btnConsultar.textContent = 'Processamento concluído';
+      statusEl.textContent = 'Último lote salvo. Todos os CNPJs foram processados.';
+    }
+  });
+
+  btnLimpar.addEventListener('click', () => {
+    arquivo.value = '';
+    arquivo.disabled = false;
+    colunaCnpj.innerHTML = '<option value="">Selecione o arquivo primeiro</option>';
+    colunaCnpj.disabled = true;
+    linhasEntrada = [];
+    resultados = [];
+    cnpjsProcessar = [];
+    indiceAtual = 0;
+    loteAtual = 0;
+    loteExportado = true;
+    btnConsultar.textContent = 'Consultar primeiros 30';
+    btnConsultar.disabled = true;
+    btnExportar.disabled = true;
+    barra.style.width = '0%';
+    statusEl.textContent = 'Aguardando planilha...';
+    resumo.innerHTML = '';
+    tabela.innerHTML = '';
+  });
+</script>
+</body>
+</html>

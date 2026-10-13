@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Busca de CEP | Destac Propagandas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="consultas_publicas.css">
+</head>
+<body data-consulta="cep">
+<aside>
+  <img src="assets/logo-destac.png" alt="Destac Propagandas">
+  <div id="usuarioConectadoBox" style="margin:14px 12px 22px;padding:12px;border:1px solid rgba(123,97,168,.18);border-radius:12px;background:rgba(255,255,255,.55);">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a7caf;margin-bottom:6px;">USUÁRIO CONECTADO</div>
+    <div id="nomeUsuarioConectado" style="font-weight:800;color:#2f2a45;line-height:1.25;">Carregando...</div>
+    <div id="perfilUsuarioConectado" style="margin-top:4px;font-size:12px;font-weight:700;color:#7b61a8;"></div>
+  </div>
+      <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a class="active" href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+  <a class="sair" href="#" id="btnSair">Sair</a>
+</aside>
+<main class="consultas-main">
+  <header><div><span>CONSULTAS PÚBLICAS</span><h1>Buscar CEP</h1><p>Encontre CEPs pela rua, cidade e estado.</p></div></header>
+  <div class="ferramentas-nav" aria-label="Consultas públicas"><a class="" href="consultar_cnpj.html">Consultar CNPJ</a><a class="selecionada" href="buscar_cep.html">Buscar CEP</a></div>
+<section class="consulta-card">
+  <div class="consulta-card-top"><div><h2>Localizar CEP por endereço</h2><p>Informe o estado, a cidade e o logradouro para encontrar os CEPs correspondentes.</p></div></div>
+  <form id="formCep" class="consulta-form cep-form" autocomplete="off">
+    <div class="consulta-field uf-field"><label for="cepUf">Estado (UF) <span aria-hidden="true">*</span></label><select id="cepUf" required><option value="">Selecione</option></select></div>
+    <div class="consulta-field cidade-field"><label for="cepCidade">Cidade <span aria-hidden="true">*</span></label><input id="cepCidade" placeholder="Ex.: Cascavel" minlength="3" required></div>
+    <div class="consulta-field rua-field"><label for="cepRua">Rua / avenida / logradouro <span aria-hidden="true">*</span></label><input id="cepRua" placeholder="Ex.: Avenida Brasil" minlength="3" required></div>
+    <div class="consulta-field"><label for="cepBairro">Bairro (opcional)</label><input id="cepBairro" placeholder="Ajuda a filtrar os resultados"></div>
+    <div class="consulta-field"><label for="cepNumero">Número (opcional)</label><input id="cepNumero" placeholder="Ex.: 372" inputmode="text"><small>Não é validado pela API; confirme a faixa numérica.</small></div>
+    <button class="consulta-btn cep-submit" type="submit" id="btnBuscarCep">Pesquisar CEP</button>
+  </form>
+  <div id="mensagemCep" class="consulta-mensagem" role="status" aria-live="polite" hidden></div>
+</section>
+<section id="resultadoCep" class="consulta-card resultado" hidden>
+  <div class="resultado-header"><div><div class="resultado-kicker">RESULTADOS DA PESQUISA</div><h2 id="tituloResultadosCep">CEPs encontrados</h2><p id="subtituloResultadosCep">Selecione a opção correspondente ao endereço.</p></div></div>
+  <div id="listaCeps" class="lista-ceps"></div>
+  <p class="consulta-fonte">Fonte: <a href="https://viacep.com.br" target="_blank" rel="noopener noreferrer">ViaCEP</a>. O serviço pode retornar mais de um CEP para a mesma rua. O número do imóvel não é validado; confirme os dados antes de usar em um cadastro.</p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+<script src="consultas_publicas.js"></script>
+</body>
+</html>

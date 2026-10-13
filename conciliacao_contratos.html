@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Conciliação de Contratos Antigos | Destac Propagandas</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="conciliacao_contratos.css">
+</head>
+<body>
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+    <div class="cc-usuario"><small>USUÁRIO CONECTADO</small><strong id="ccNomeUsuario">Verificando acesso…</strong><span id="ccPerfilUsuario"></span></div>
+    <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html" class="active">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none">Usuários</a>
+    </nav>
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+  <main>
+    <header class="cc-header">
+      <div><span>FINANCEIRO • SEGURANÇA</span><h1>Conciliação de contratos antigos</h1>
+        <p>Confira contratos já cadastrados antes de gerar cobranças. Nada será gerado sem confirmação explícita.</p>
+      </div>
+      <div class="cc-header-acoes"><a class="cc-btn neutro" href="financeiro.html">Voltar ao Financeiro</a><button class="cc-btn" id="ccAtualizar" type="button">Atualizar lista</button></div>
+    </header>
+    <div id="ccMensagem" role="status" aria-live="polite" class="cc-alerta" hidden></div>
+    <section class="cc-cards" aria-label="Indicadores">
+      <article><small>Contratos antigos</small><strong id="ccTotal">—</strong></article>
+      <article><small>Não conciliados</small><strong id="ccPendentes">—</strong></article>
+      <article><small>Já possuem cobranças</small><strong id="ccComCobranca">—</strong></article>
+      <article><small>Conferidos / integrados</small><strong id="ccIntegrados">—</strong></article>
+    </section>
+    <section class="cc-aviso"><strong>Como funciona:</strong> contratos ATIVOS e com condições completas podem ser autorizados após conferência de pagamentos anteriores. Os que já têm cobranças vinculadas são apenas conferidos, sem novas parcelas. Contratos pendentes, suspensos, encerrados e cancelados não geram novas cobranças.</section>
+    <section class="cc-painel">
+      <div class="cc-filtros">
+        <label>Pesquisar contrato ou cliente<input id="ccBusca" type="search" placeholder="Número, cliente ou empresa"></label>
+        <label>Situação<select id="ccFiltro"><option value="todos">Todos</option><option value="pendente">Aguardando conferência</option><option value="elegivel">Aptos a gerar</option><option value="revisar">Exigem atenção</option><option value="existente">Com cobrança vinculada</option><option value="integrado">Conciliados</option><option value="ignorado">Ignorados</option></select></label>
+        <label>Empresa<select id="ccEmpresa"><option value="">Todas as empresas</option></select></label>
+      </div>
+      <div class="cc-acao-lote"><label class="cc-check"><input type="checkbox" id="ccSelecionarPagina"> Selecionar elegíveis desta página</label><span id="ccSelecionados">0 selecionados</span><label class="cc-check"><input type="checkbox" id="ccConferiLote"> Conferi os pagamentos anteriores de todos os selecionados</label><button type="button" id="ccIntegrarLote" class="cc-btn" disabled>Autorizar selecionados</button></div>
+      <div class="cc-tabela-wrap"><table><thead><tr><th scope="col">Selecionar</th><th scope="col">Contrato / Empresa / Cliente</th><th scope="col">Status</th><th scope="col">Condições</th><th scope="col">Financeiro existente</th><th scope="col">Conciliação</th><th scope="col">Ação</th></tr></thead><tbody id="ccLinhas"><tr><td colspan="7">Carregando contratos…</td></tr></tbody></table></div>
+      <div class="cc-paginacao"><span id="ccContagem">—</span><div><label>Por página <select id="ccPorPagina"><option>10</option><option selected>20</option><option>50</option><option>100</option></select></label><button type="button" id="ccAnterior">Anterior</button><span id="ccPagina">1/1</span><button type="button" id="ccProximo">Próximo</button></div></div>
+    </section>
+    <section id="ccDetalhe" class="cc-detalhe" hidden aria-labelledby="ccDetalheTitulo">
+      <div class="cc-detalhe-titulo"><h2 id="ccDetalheTitulo">Conferência</h2><button type="button" class="cc-btn neutro" id="ccFecharDetalhe">Fechar</button></div>
+      <div id="ccDetalheInfo"></div>
+      <div id="ccAvisoManual" class="cc-atencao" hidden></div>
+      <div id="ccParcelas"></div>
+      <label class="cc-check cc-confirmacao"><input type="checkbox" id="ccConferido"> Conferi os pagamentos e as cobranças anteriores deste contrato, inclusive possíveis lançamentos manuais, e autorizo a ação selecionada.</label>
+      <div class="cc-detalhe-acoes"><button type="button" class="cc-btn" id="ccConfirmar" disabled>Confirmar conciliação</button><a id="ccEditar" class="cc-btn neutro" href="contratos.html">Editar dados do contrato</a><button type="button" class="cc-btn neutro" id="ccIgnorar">Não gerar financeiro para este contrato</button></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="conciliacao_contratos.js?v=20261012-1"></script>
+</body>
+</html>

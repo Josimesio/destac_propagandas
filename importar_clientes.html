@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Importar Clientes - Destac Propagandas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+
+  <style>
+    .importacao-page { padding-bottom: 42px; }
+    .painel-importacao {
+      max-width: 1125px;
+      margin-top: 28px;
+      padding: 26px;
+      border: 1px solid #dfd9e7;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(92,76,124,.06);
+    }
+    .drop-zone {
+      border: 2px dashed #cfc4dd;
+      border-radius: 18px;
+      padding: 28px 22px;
+      text-align: center;
+      background: #faf8fd;
+      transition: .18s ease;
+      cursor: pointer;
+    }
+    .drop-zone.arrastando { border-color: #7b61a8; background: #f3eff9; }
+    .drop-zone strong { display:block; margin-bottom:6px; font-size:18px; color:#3b3548; }
+    .drop-zone span { color:#7f738e; font-size:14px; }
+    .acoes-importacao {
+      display:grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+    .acoes-importacao button {
+      border:0;
+      border-radius:10px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      background:#7b61a8;
+      color:#fff;
+    }
+    .acoes-importacao button.secundario { background:#6e688f; }
+    .acoes-importacao button.claro { background:#eee9f4; color:#4b435d; }
+    .acoes-importacao button:disabled { opacity:.48; cursor:not-allowed; }
+    .arquivos-lista {
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      background:#f8f6fb;
+      color:#5e566c;
+      font-size:13px;
+      line-height:1.55;
+      min-height:44px;
+      white-space:pre-wrap;
+    }
+    .progresso { margin-top:16px; height:14px; background:#ece8f2; border-radius:999px; overflow:hidden; }
+    .progresso > div { height:100%; width:0%; background:#7b61a8; transition:width .2s ease; }
+    .status-box { margin-top:12px; padding:12px 14px; border-radius:12px; background:#f8f6fb; color:#5e566c; font-weight:700; white-space:pre-wrap; }
+    .resumo-grid {
+      display:grid;
+      grid-template-columns: repeat(6, minmax(120px,1fr));
+      gap:12px;
+      margin-top:20px;
+    }
+    .resumo-card { padding:16px; border:1px solid #e4deeb; border-radius:14px; background:#fff; }
+    .resumo-card span { display:block; color:#947d91; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .resumo-card strong { display:block; margin-top:5px; color:#3b3548; font-size:24px; }
+    .tabela-box { max-width:1125px; margin-top:22px; border:1px solid #e3dde9; border-radius:16px; background:#fff; overflow:hidden; }
+    .tabela-scroll { overflow:auto; max-height:520px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { padding:10px 11px; border-bottom:1px solid #eeeaf2; text-align:left; vertical-align:top; }
+    th { position:sticky; top:0; z-index:1; background:#f7f4fa; color:#51485f; }
+    .tag { display:inline-block; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .tag-novo { background:#eaf6ed; color:#347242; }
+    .tag-ja { background:#f2eef7; color:#6e5b86; }
+    .tag-dup { background:#fff4dc; color:#8b6720; }
+    .tag-erro { background:#fbeaec; color:#9b4452; }
+    .tag-importado { background:#e8f5eb; color:#2f7d3d; }
+    .tag-semcodigo { background:#fff4dc; color:#8b6720; }
+
+    .painel-correcao {
+      max-width:1125px;
+      margin-top:22px;
+      padding:22px 24px;
+      border:1px solid #ead9ad;
+      border-radius:18px;
+      background:#fffaf0;
+      box-shadow:0 10px 24px rgba(92,76,124,.04);
+    }
+    .painel-correcao h2 { margin:0 0 7px; color:#4a3f2d; }
+    .painel-correcao p { margin:0; color:#74664f; line-height:1.5; }
+    .correcao-acoes { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px; }
+    .correcao-acoes button {
+      border:0; border-radius:10px; padding:12px 16px; font:inherit; font-weight:800;
+      cursor:pointer; background:#a97822; color:#fff;
+    }
+    .correcao-acoes button:disabled { opacity:.48; cursor:not-allowed; }
+    .correcao-acoes .contador { color:#6f5a31; font-weight:800; }
+
+    .voltar { display:inline-block; margin-top:20px; color:#7b61a8; font-weight:800; text-decoration:none; }
+    @media(max-width:1000px){ .acoes-importacao{grid-template-columns:1fr 1fr}.resumo-grid{grid-template-columns:1fr 1fr}.tabela-box{max-width:100%} }
+    @media(max-width:640px){ .acoes-importacao,.resumo-grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas" class="logo">
+
+    <div class="usuario-conectado">
+      <small>USUÁRIO CONECTADO</small>
+      <strong id="nomeUsuario">Carregando...</strong>
+      <span id="perfilUsuario"></span>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a class="active" href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios">Usuários</a>
+    </nav>
+
+    <a href="#" class="sair" id="btnSair">Sair</a>
+  </aside>
+
+  <main class="importacao-page">
+    <header>
+      <div>
+        <span>CLIENTES</span>
+        <h1>Importar arquivos saneados</h1>
+        <p>Selecione os arquivos XLSX gerados pelo saneador. Você pode importar vários lotes de uma só vez.</p>
+      </div>
+    </header>
+
+
+    <section class="painel-correcao">
+      <h2>Clientes já importados sem código</h2>
+      <p>Use esta opção para corrigir os clientes que já estão cadastrados no banco, mas ficaram com <strong>codigo_cliente</strong> vazio. O sistema seguirá obrigatoriamente o padrão <strong>CLI-000001</strong>, <strong>CLI-000002</strong>...</p>
+      <div class="correcao-acoes">
+        <button type="button" id="btnCorrigirCodigos">Corrigir códigos pendentes</button>
+        <span class="contador" id="resumoCorrecao">Ainda não verificado.</span>
+      </div>
+    </section>
+
+    <section class="painel-importacao">
+      <div id="dropZone" class="drop-zone">
+        <strong>📥 Selecione ou arraste os arquivos aqui</strong>
+        <span>XLSX / XLS / CSV — aceita vários arquivos de lote ao mesmo tempo</span>
+      </div>
+
+      <input id="arquivos" type="file" accept=".xlsx,.xls,.csv" multiple hidden>
+
+      <div id="listaArquivos" class="arquivos-lista">Nenhum arquivo selecionado.</div>
+
+      <div class="acoes-importacao">
+        <button type="button" id="btnSelecionar">Selecionar arquivos</button>
+        <button type="button" id="btnAnalisar" class="secundario" disabled>Analisar arquivos</button>
+        <button type="button" id="btnImportar" disabled>Importar / gerar códigos</button>
+        <button type="button" id="btnLimpar" class="claro">Limpar</button>
+      </div>
+
+      <div class="progresso"><div id="barra"></div></div>
+      <div id="status" class="status-box">Aguardando arquivos.</div>
+
+      <div class="resumo-grid">
+        <div class="resumo-card"><span>Arquivos</span><strong id="qtdArquivos">0</strong></div>
+        <div class="resumo-card"><span>Registros lidos</span><strong id="qtdLidos">0</strong></div>
+        <div class="resumo-card"><span>Novos</span><strong id="qtdNovos">0</strong></div>
+        <div class="resumo-card"><span>Já com código</span><strong id="qtdExistentes">0</strong></div>
+        <div class="resumo-card"><span>Sem código</span><strong id="qtdSemCodigo">0</strong></div>
+        <div class="resumo-card"><span>Erros / duplicados</span><strong id="qtdErros">0</strong></div>
+      </div>
+    </section>
+
+    <section class="tabela-box">
+      <div class="tabela-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Arquivo</th>
+              <th>Código</th>
+              <th>CPF/CNPJ</th>
+              <th>Razão social</th>
+              <th>Fantasia</th>
+              <th>Cidade/UF</th>
+              <th>Status</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaResultados">
+            <tr><td colspan="9">Nenhum arquivo analisado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <a href="clientes.html" class="voltar">← Voltar para Clientes</a>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="importar_clientes.js"></script>
+</body>
+</html>

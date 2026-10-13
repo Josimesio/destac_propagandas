@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financeiro | Destac Propagandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="financeiro.css?v=20261012-integracao-financeiro-1">
+</head>
+<body>
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+
+    <div id="usuarioConectadoBox" class="usuario-financeiro">
+      <div class="usuario-financeiro-label">USUÁRIO CONECTADO</div>
+      <div id="nomeUsuarioConectado" class="usuario-financeiro-nome">Carregando...</div>
+      <div id="perfilUsuarioConectado" class="usuario-financeiro-perfil"></div>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a class="active" href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+    <header class="financeiro-header">
+      <div>
+        <span>GESTÃO FINANCEIRA</span>
+        <h1>Financeiro</h1>
+        <p>Recebimentos, despesas, fluxo de caixa e visão financeira dos clientes.</p>
+      </div>
+      <div class="financeiro-header-acoes">
+        <a class="btn-secundario" href="conciliacao_contratos.html" style="text-decoration:none;display:inline-flex;align-items:center;">Conciliar contratos antigos</a>
+        <button type="button" class="btn-secundario" id="btnAtualizarTudo">↻ Atualizar</button>
+        <button type="button" class="btn-primario" id="btnNovoReceber">+ Conta a receber</button>
+      </div>
+    </header>
+
+    <div id="modoDadosAviso" class="modo-dados-aviso" hidden></div>
+    <div id="financeiroResultado" class="financeiro-resultado" role="status" aria-live="polite" hidden></div>
+
+    <section class="financeiro-filtros">
+      <div class="campo-filtro">
+        <label for="filtroEmpresa">Empresa</label>
+        <select id="filtroEmpresa"><option value="">Todas as empresas</option></select>
+      </div>
+      <div class="campo-filtro">
+        <label for="filtroInicio">De</label>
+        <input type="date" id="filtroInicio">
+      </div>
+      <div class="campo-filtro">
+        <label for="filtroFim">Até</label>
+        <input type="date" id="filtroFim">
+      </div>
+      <div class="campo-filtro campo-filtro-botao">
+        <button type="button" class="btn-secundario" id="btnAplicarFiltros">Aplicar filtros</button>
+        <button type="button" class="btn-secundario" id="btnLimparFiltros">Limpar filtros</button>
+      </div>
+    </section>
+
+    <nav class="financeiro-tabs" aria-label="Seções do financeiro">
+      <button type="button" class="tab-btn active" data-tab="visao-geral">Visão geral</button>
+      <button type="button" class="tab-btn" data-tab="receber">Contas a receber</button>
+      <button type="button" class="tab-btn" data-tab="contratos-financeiro">Parcelas de contratos</button>
+      <button type="button" class="tab-btn" data-tab="recebimentos">Recebimentos</button>
+      <button type="button" class="tab-btn" data-tab="pagar">Contas a pagar</button>
+      <button type="button" class="tab-btn" data-tab="fluxo">Fluxo de caixa</button>
+      <button type="button" class="tab-btn" data-tab="relatorios">Relatórios</button>
+    </nav>
+
+    <section id="tab-visao-geral" class="tab-painel active">
+      <div class="kpi-grid">
+        <article class="kpi-card">
+          <span>Recebido no período</span>
+          <strong id="kpiRecebido">R$ 0,00</strong>
+          <small id="kpiRecebidoQtd">0 recebimentos</small>
+        </article>
+        <article class="kpi-card">
+          <span>A receber</span>
+          <strong id="kpiAReceber">R$ 0,00</strong>
+          <small id="kpiAReceberQtd">0 parcelas</small>
+        </article>
+        <article class="kpi-card kpi-alerta">
+          <span>Vencido</span>
+          <strong id="kpiVencido">R$ 0,00</strong>
+          <small id="kpiVencidoQtd">0 parcelas</small>
+        </article>
+        <article class="kpi-card">
+          <span>Próximos 7 dias</span>
+          <strong id="kpiProximos">R$ 0,00</strong>
+          <small id="kpiProximosQtd">0 vencimentos</small>
+        </article>
+        <article class="kpi-card kpi-saldo">
+          <span>Saldo realizado</span>
+          <strong id="kpiSaldo">R$ 0,00</strong>
+          <small>Recebimentos - pagamentos</small>
+        </article>
+      </div>
+
+      <div class="painel-grid painel-grid-2">
+        <article class="painel-card">
+          <div class="painel-titulo">
+            <div><span>EVOLUÇÃO</span><h2>Receitas x despesas</h2></div>
+          </div>
+          <div class="chart-box"><canvas id="graficoReceitasDespesas"></canvas></div>
+        </article>
+
+        <article class="painel-card">
+          <div class="painel-titulo">
+            <div><span>COBRANÇA</span><h2>Situação das contas a receber</h2></div>
+          </div>
+          <div class="chart-box chart-box-menor"><canvas id="graficoStatusReceber"></canvas></div>
+        </article>
+      </div>
+
+      <article class="painel-card">
+        <div class="painel-titulo">
+          <div><span>PRIORIDADE</span><h2>Próximos vencimentos e atrasos</h2></div>
+          <button type="button" class="btn-link" data-ir-tab="receber">Ver todas</button>
+        </div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Vencimento</th><th>Cliente</th><th>Documento</th><th>Parcela</th><th>Valor</th><th>Saldo</th><th>Status</th><th>Ação</th></tr></thead>
+            <tbody id="tabelaResumoReceber"><tr><td colspan="8">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="tab-receber" class="tab-painel">
+      <article class="painel-card">
+        <div class="painel-titulo painel-titulo-wrap">
+          <div><span>COBRANÇA</span><h2>Contas a receber</h2></div>
+          <div class="acoes-inline">
+            <input type="search" id="pesquisaReceber" placeholder="Cliente, contrato, documento ou descrição">
+            <select id="statusReceber">
+              <option value="">Todos os status</option>
+              <option value="ABERTO">Em aberto</option>
+              <option value="PARCIAL">Parcial</option>
+              <option value="PAGO">Pago</option>
+              <option value="VENCIDO">Vencido</option>
+              <option value="CANCELADO">Cancelado</option>
+            </select>
+            <button type="button" class="btn-primario" id="btnNovoReceber2">+ Nova conta</button>
+          </div>
+        </div>
+        <div id="filtroContratoReceberAviso" class="filtro-contrato-aviso" hidden><span id="filtroContratoReceberTexto"></span><button id="btnRemoverFiltroContrato" class="btn-secundario" type="button">Exibir todas as contas</button></div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Vencimento</th><th>Empresa</th><th>Cliente</th><th>Documento</th><th>Origem</th><th>Contrato</th><th>Parcela</th><th>Valor</th><th>Recebido</th><th>Saldo</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tabelaReceber"><tr><td colspan="12">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+
+    <section id="tab-contratos-financeiro" class="tab-painel">
+      <div class="painel-card">
+        <div class="painel-titulo painel-titulo-wrap">
+          <div><span>CONTRATOS E COBRANÇAS</span><h2>Parcelas vinculadas aos contratos</h2></div>
+          <a href="conciliacao_contratos.html" class="btn-secundario fin-link">Conciliar contratos antigos</a>
+        </div>
+        <p class="fin-descricao">Apenas contratos <strong>ATIVOS</strong> geram cobranças automaticamente, após a instalação do SQL da integração. Contratos antigos exigem conciliação. Esta tela apresenta o que foi efetivamente retornado pelo Supabase, sem criar parcelas.</p>
+        <div id="situacaoIntegracao" class="fin-situacao" role="status" aria-live="polite">Carregando situação da integração...</div>
+        <div class="fin-contratos-kpis">
+          <div><span>Contratos ativos</span><strong id="finQtdContratosAtivos">—</strong></div>
+          <div><span>Com parcelas vinculadas</span><strong id="finQtdComParcelas">—</strong></div>
+          <div><span>Ativos sem parcelas</span><strong id="finQtdSemParcelas">—</strong></div>
+          <div><span>Valor das parcelas vinculadas</span><strong id="finTotalVinculado">—</strong></div>
+        </div>
+        <div class="acoes-inline fin-busca-contratos">
+          <input type="search" id="pesquisaContratosFinanceiro" placeholder="Número do contrato, cliente ou empresa" aria-label="Pesquisar contratos no financeiro">
+          <select id="situacaoContratosFinanceiro" aria-label="Filtrar contratos por integração">
+            <option value="">Todos os contratos</option>
+            <option value="COM_PARCELAS">Com parcelas</option>
+            <option value="SEM_PARCELAS">Ativos sem parcelas</option>
+            <option value="SEM_FINANCEIRO">Sem parcelas (todos os status)</option>
+          </select>
+          <button id="btnAtualizarContratosFinanceiro" type="button" class="btn-secundario">↻ Atualizar dados</button>
+        </div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Contrato</th><th>Empresa</th><th>Cliente</th><th>Status contrato</th><th>Parcelas</th><th>Valor gerado</th><th>Recebido</th><th>Saldo</th><th>Situação financeira</th><th>Ações</th></tr></thead>
+            <tbody id="tabelaContratosFinanceiro"><tr><td colspan="10">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-recebimentos" class="tab-painel">
+      <article class="painel-card">
+        <div class="painel-titulo">
+          <div><span>BAIXAS</span><h2>Recebimentos registrados</h2></div>
+          <button type="button" class="btn-secundario" id="btnExportarRecebimentos">Exportar CSV</button>
+        </div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Data</th><th>Empresa</th><th>Cliente</th><th>Documento</th><th>Forma</th><th>Valor</th><th>Referência</th><th>Observação</th></tr></thead>
+            <tbody id="tabelaRecebimentos"><tr><td colspan="8">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="tab-pagar" class="tab-painel">
+      <article class="painel-card">
+        <div class="painel-titulo painel-titulo-wrap">
+          <div><span>DESPESAS</span><h2>Contas a pagar</h2></div>
+          <div class="acoes-inline">
+            <input type="search" id="pesquisaPagar" placeholder="Fornecedor, documento ou descrição">
+            <select id="statusPagar">
+              <option value="">Todos os status</option>
+              <option value="ABERTO">Em aberto</option>
+              <option value="PAGO">Pago</option>
+              <option value="VENCIDO">Vencido</option>
+              <option value="CANCELADO">Cancelado</option>
+            </select>
+            <button type="button" class="btn-primario" id="btnNovoPagar">+ Nova despesa</button>
+          </div>
+        </div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Vencimento</th><th>Empresa</th><th>Fornecedor</th><th>Categoria</th><th>Documento</th><th>Valor</th><th>Pago</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tabelaPagar"><tr><td colspan="9">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="tab-fluxo" class="tab-painel">
+      <div class="painel-grid painel-grid-2">
+        <article class="painel-card">
+          <div class="painel-titulo"><div><span>CAIXA</span><h2>Fluxo realizado</h2></div></div>
+          <div class="chart-box"><canvas id="graficoFluxoCaixa"></canvas></div>
+        </article>
+        <article class="painel-card resumo-fluxo">
+          <div class="painel-titulo"><div><span>PERÍODO</span><h2>Resumo de caixa</h2></div></div>
+          <div class="linha-resumo"><span>Entradas realizadas</span><strong id="fluxoEntradas">R$ 0,00</strong></div>
+          <div class="linha-resumo"><span>Saídas realizadas</span><strong id="fluxoSaidas">R$ 0,00</strong></div>
+          <div class="linha-resumo linha-resumo-total"><span>Saldo realizado</span><strong id="fluxoSaldo">R$ 0,00</strong></div>
+          <div class="linha-resumo"><span>A receber previsto</span><strong id="fluxoPrevistoEntradas">R$ 0,00</strong></div>
+          <div class="linha-resumo"><span>A pagar previsto</span><strong id="fluxoPrevistoSaidas">R$ 0,00</strong></div>
+        </article>
+      </div>
+      <article class="painel-card">
+        <div class="painel-titulo"><div><span>MOVIMENTAÇÃO</span><h2>Linha do tempo financeira</h2></div><button type="button" class="btn-secundario" id="btnExportarFluxo">Exportar CSV</button></div>
+        <div class="tabela-wrapper">
+          <table>
+            <thead><tr><th>Data</th><th>Tipo</th><th>Empresa</th><th>Descrição</th><th>Documento</th><th>Entrada</th><th>Saída</th><th>Saldo acumulado</th></tr></thead>
+            <tbody id="tabelaFluxo"><tr><td colspan="8">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="tab-relatorios" class="tab-painel">
+      <div class="relatorios-grid">
+        <button type="button" class="relatorio-card" data-relatorio="clientes">
+          <strong>Financeiro por cliente</strong><span>Contratado/lançado, recebido, a receber e vencido.</span>
+        </button>
+        <button type="button" class="relatorio-card" data-relatorio="inadimplencia">
+          <strong>Inadimplência</strong><span>Clientes, valores e dias em atraso.</span>
+        </button>
+        <button type="button" class="relatorio-card" data-relatorio="receitas">
+          <strong>Receitas</strong><span>Recebimentos por empresa, período e forma de pagamento.</span>
+        </button>
+        <button type="button" class="relatorio-card" data-relatorio="despesas">
+          <strong>Despesas</strong><span>Pagamentos por categoria, fornecedor e empresa.</span>
+        </button>
+      </div>
+      <article class="painel-card">
+        <div class="painel-titulo"><div><span>RELATÓRIO</span><h2 id="tituloRelatorio">Financeiro por cliente</h2></div><button type="button" class="btn-secundario" id="btnExportarRelatorio">Exportar CSV</button></div>
+        <div class="tabela-wrapper"><table><thead id="cabecalhoRelatorio"></thead><tbody id="tabelaRelatorio"></tbody></table></div>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="modalReceber" class="modal-financeiro">
+    <form method="dialog" id="formReceber" class="modal-conteudo">
+      <div class="modal-cabecalho"><div><span>CONTA A RECEBER</span><h2 id="tituloModalReceber">Nova conta</h2></div><button type="button" class="modal-fechar" data-fechar="modalReceber">×</button></div>
+      <input type="hidden" id="receberId">
+      <div class="form-grid-financeiro">
+        <div><label for="receberEmpresa">Empresa *</label><select id="receberEmpresa" required><option value="">Selecione</option></select></div>
+        <div><label for="receberCliente">Cliente *</label><select id="receberCliente" required><option value="">Selecione</option></select></div>
+        <div><label for="receberDocumento">Documento</label><input id="receberDocumento" type="text" placeholder="Ex.: FAT-001"></div>
+        <div><label for="receberDescricao">Descrição *</label><input id="receberDescricao" type="text" required></div>
+        <div><label for="receberParcela">Parcela</label><input id="receberParcela" type="number" min="1" value="1"></div>
+        <div><label for="receberTotalParcelas">Total de parcelas</label><input id="receberTotalParcelas" type="number" min="1" value="1"></div>
+        <div><label for="receberCompetencia">Competência</label><input id="receberCompetencia" type="date"></div>
+        <div><label for="receberVencimento">Vencimento *</label><input id="receberVencimento" type="date" required></div>
+        <div><label for="receberValor">Valor *</label><input id="receberValor" type="number" min="0.01" step="0.01" required></div>
+        <div><label for="receberFormaPrevista">Forma prevista</label><select id="receberFormaPrevista"><option value="">Não definida</option><option>PIX</option><option>BOLETO</option><option>TRANSFERENCIA</option><option>CARTAO</option><option>DINHEIRO</option><option>OUTRO</option></select></div>
+        <div class="campo-span-2"><label for="receberObservacao">Observação</label><textarea id="receberObservacao" rows="3"></textarea></div>
+      </div>
+      <div class="integracao-futura-box"><strong>Lançamento manual:</strong> utilize este formulário somente para cobranças avulsas. As parcelas de contratos ATIVOS são geradas pela integração no Supabase; confira os resultados na aba <strong>Parcelas de contratos</strong>. Para ajustar valores ou vencimentos dessas parcelas, edite o contrato.</div>
+      <div class="modal-acoes"><button type="button" class="btn-secundario" data-fechar="modalReceber">Cancelar</button><button type="submit" class="btn-primario">Salvar conta</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="modalBaixa" class="modal-financeiro">
+    <form method="dialog" id="formBaixa" class="modal-conteudo modal-menor">
+      <div class="modal-cabecalho"><div><span>RECEBIMENTO</span><h2>Dar baixa</h2></div><button type="button" class="modal-fechar" data-fechar="modalBaixa">×</button></div>
+      <input type="hidden" id="baixaContaId">
+      <div class="resumo-baixa" id="resumoBaixa"></div>
+      <div class="form-grid-financeiro">
+        <div><label for="baixaData">Data do recebimento *</label><input id="baixaData" type="date" required></div>
+        <div><label for="baixaValor">Valor recebido *</label><input id="baixaValor" type="number" min="0.01" step="0.01" required></div>
+        <div><label for="baixaForma">Forma de pagamento *</label><select id="baixaForma" required><option value="">Selecione</option><option>PIX</option><option>DINHEIRO</option><option>BOLETO</option><option>TRANSFERENCIA</option><option>CARTAO</option><option>OUTRO</option></select></div>
+        <div><label for="baixaReferencia">Referência</label><input id="baixaReferencia" type="text" placeholder="NSU, ID PIX, boleto..."></div>
+        <div class="campo-span-2"><label for="baixaObservacao">Observação</label><textarea id="baixaObservacao" rows="3"></textarea></div>
+      </div>
+      <div class="modal-acoes"><button type="button" class="btn-secundario" data-fechar="modalBaixa">Cancelar</button><button type="submit" class="btn-primario">Confirmar recebimento</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="modalPagar" class="modal-financeiro">
+    <form method="dialog" id="formPagar" class="modal-conteudo">
+      <div class="modal-cabecalho"><div><span>CONTA A PAGAR</span><h2 id="tituloModalPagar">Nova despesa</h2></div><button type="button" class="modal-fechar" data-fechar="modalPagar">×</button></div>
+      <input type="hidden" id="pagarId">
+      <div class="form-grid-financeiro">
+        <div><label for="pagarEmpresa">Empresa *</label><select id="pagarEmpresa" required><option value="">Selecione</option></select></div>
+        <div><label for="pagarCategoria">Categoria</label><select id="pagarCategoria"><option value="">Sem categoria</option></select></div>
+        <div><label for="pagarFornecedor">Fornecedor *</label><input id="pagarFornecedor" type="text" required></div>
+        <div><label for="pagarCpfCnpj">CPF/CNPJ</label><input id="pagarCpfCnpj" type="text"></div>
+        <div><label for="pagarDocumento">Documento</label><input id="pagarDocumento" type="text"></div>
+        <div><label for="pagarDescricao">Descrição *</label><input id="pagarDescricao" type="text" required></div>
+        <div><label for="pagarCompetencia">Competência</label><input id="pagarCompetencia" type="date"></div>
+        <div><label for="pagarVencimento">Vencimento *</label><input id="pagarVencimento" type="date" required></div>
+        <div><label for="pagarValor">Valor *</label><input id="pagarValor" type="number" min="0.01" step="0.01" required></div>
+        <div><label for="pagarFormaPrevista">Forma prevista</label><select id="pagarFormaPrevista"><option value="">Não definida</option><option>PIX</option><option>BOLETO</option><option>TRANSFERENCIA</option><option>CARTAO</option><option>DINHEIRO</option><option>OUTRO</option></select></div>
+        <div class="campo-span-2"><label for="pagarObservacao">Observação</label><textarea id="pagarObservacao" rows="3"></textarea></div>
+      </div>
+      <div class="modal-acoes"><button type="button" class="btn-secundario" data-fechar="modalPagar">Cancelar</button><button type="submit" class="btn-primario">Salvar despesa</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="modalPagamento" class="modal-financeiro">
+    <form method="dialog" id="formPagamento" class="modal-conteudo modal-menor">
+      <div class="modal-cabecalho"><div><span>PAGAMENTO</span><h2>Dar baixa na despesa</h2></div><button type="button" class="modal-fechar" data-fechar="modalPagamento">×</button></div>
+      <input type="hidden" id="pagamentoContaId">
+      <div class="resumo-baixa" id="resumoPagamento"></div>
+      <div class="form-grid-financeiro">
+        <div><label for="pagamentoData">Data do pagamento *</label><input id="pagamentoData" type="date" required></div>
+        <div><label for="pagamentoForma">Forma de pagamento *</label><select id="pagamentoForma" required><option value="">Selecione</option><option>PIX</option><option>DINHEIRO</option><option>BOLETO</option><option>TRANSFERENCIA</option><option>CARTAO</option><option>OUTRO</option></select></div>
+        <div><label for="pagamentoReferencia">Referência</label><input id="pagamentoReferencia" type="text"></div>
+        <div><label for="pagamentoValor">Valor pago *</label><input id="pagamentoValor" type="number" min="0.01" step="0.01" required></div>
+        <div class="campo-span-2"><label for="pagamentoObservacao">Observação</label><textarea id="pagamentoObservacao" rows="3"></textarea></div>
+      </div>
+      <div class="modal-acoes"><button type="button" class="btn-secundario" data-fechar="modalPagamento">Cancelar</button><button type="submit" class="btn-primario">Confirmar pagamento</button></div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="financeiro.js?v=20261012-integracao-financeiro-1"></script>
+</body>
+</html>

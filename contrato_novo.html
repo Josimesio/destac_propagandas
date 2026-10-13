@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Contratos | Destac Propagandas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+
+  <style>
+    .cabecalho-contrato {
+      display: none;
+      margin-top: 24px;
+      background: #ffffff;
+      border: 1px solid #1f1f1f;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .cabecalho-contrato-topo {
+      display: grid;
+      grid-template-columns: 41% 59%;
+      min-height: 255px;
+      align-items: center;
+    }
+
+    .cabecalho-logo {
+      min-height: 255px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px 26px;
+      box-sizing: border-box;
+      background: #ffffff;
+    }
+
+    .cabecalho-logo img {
+      display: block;
+      width: 100%;
+      max-width: 520px;
+      max-height: 165px;
+      object-fit: contain;
+    }
+
+    .cabecalho-logo span {
+      color: #8b8299;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .cabecalho-titulo {
+      padding: 24px 24px 24px 8px;
+      text-align: right;
+      box-sizing: border-box;
+    }
+
+    .cabecalho-titulo h2 {
+      margin: 0 0 8px;
+      color: #000000;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .cabecalho-dados {
+      color: #000000;
+      font-size: 17px;
+      line-height: 1.45;
+      text-align: right;
+      font-weight: 500;
+      opacity: 1;
+    }
+
+    .cabecalho-dados .linha {
+      margin: 2px 0;
+      white-space: nowrap;
+    }
+
+    .cabecalho-dados span,
+    .cabecalho-dados strong,
+    .cabecalho-dados .razao-social {
+      display: inline !important;
+      color: #000000 !important;
+      font-size: inherit;
+      font-weight: inherit;
+      opacity: 1 !important;
+    }
+
+    .cabecalho-dados a {
+      display: inline !important;
+      color: #0000cc !important;
+      text-decoration: underline;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1100px) {
+      .cabecalho-titulo h2 {
+        font-size: 22px;
+      }
+
+      .cabecalho-dados {
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .cabecalho-contrato-topo {
+        grid-template-columns: 1fr;
+      }
+
+      .cabecalho-logo {
+        min-height: 150px;
+      }
+
+      .cabecalho-titulo {
+        padding: 10px 16px 20px;
+        text-align: center;
+      }
+
+      .cabecalho-titulo h2,
+      .cabecalho-dados .linha,
+      .cabecalho-dados a {
+        white-space: normal;
+      }
+
+      .cabecalho-dados {
+        text-align: center;
+      }
+    }
+  
+    .bloco-cliente-contrato {
+      display: none;
+      margin-top: 24px;
+      border: 1px solid #1f1f1f;
+      background: #ffffff;
+    }
+
+    .cliente-contrato-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    }
+
+    .dados-cliente-preview,
+    .dados-contrato-form {
+      padding: 20px 18px;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .dados-cliente-preview {
+      border-right: 1px solid #1f1f1f;
+      border-bottom: none;
+      padding: 22px 18px 24px 18px;
+      background: #ffffff;
+      overflow-x: auto;
+      min-width: 0;
+    }
+
+    .linha-preview {
+      display: block !important;
+      width: 100% !important;
+      margin: 2px 0 !important;
+      color: #000000 !important;
+      font-size: 18px !important;
+      line-height: 1.42 !important;
+      font-weight: 400 !important;
+      white-space: nowrap !important;
+      overflow: visible !important;
+    }
+
+    .linha-preview strong {
+      display: inline !important;
+      color: #000000 !important;
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      white-space: nowrap !important;
+    }
+
+    .linha-preview span {
+      display: inline !important;
+      color: #000000 !important;
+      font-size: 18px !important;
+      font-weight: 400 !important;
+      white-space: nowrap !important;
+    }
+
+    .dados-contrato-form .campo-contrato {
+      margin-bottom: 14px;
+    }
+
+    .dados-contrato-form label {
+      display: block;
+      margin-bottom: 6px;
+      color: #2f2a45;
+      font-weight: 800;
+    }
+
+    .dados-contrato-form input,
+    .dados-contrato-form select,
+    .dados-contrato-form textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #d9d5e8;
+      border-radius: 10px;
+      font: inherit;
+      background: #ffffff;
+    }
+
+    .dados-contrato-form input[readonly] {
+      background: #f7f5fb;
+      color: #4b445d;
+    }
+
+    .datas-contrato-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Somente a vigência: mantém os outros grids e o layout A4 intactos. */
+    .vigencia-contrato-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+    .vigencia-contrato-grid .campo-contrato,
+    .vigencia-coluna-datas { min-width: 0; }
+    /* Mantém os dois campos superiores na mesma linha apesar do rótulo
+       de duração ocupar duas linhas; o término continua sob o início. */
+    @media (min-width: 861px) {
+      .vigencia-coluna-datas > .campo-contrato:first-child > label,
+      .vigencia-contrato-grid > .campo-contrato > label {
+        box-sizing: border-box;
+        min-height: 2.65em;
+      }
+    }
+    #ajudaDuracaoContrato {
+      margin: 0 0 16px;
+      color: #5e5770;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 860px) {
+      .datas-contrato-grid, .vigencia-contrato-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  
+    .horarios-insercoes {
+      display: none;
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top: 1px solid #1f1f1f;
+    }
+
+    .horarios-insercoes h3 {
+      margin: 0 0 4px;
+      text-align: center;
+      color: #111111;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .grupo-horarios {
+      margin-top: 8px;
+    }
+
+    .grupo-horarios + .grupo-horarios {
+      margin-top: 6px;
+    }
+
+    .grupo-horarios h4 {
+      margin: 0 0 6px;
+      text-align: center;
+      color: #111111;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .grid-horarios {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid #1f1f1f;
+      border-left: 1px solid #1f1f1f;
+      background: #ffffff;
+    }
+
+    .grid-horarios.fim-semana {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-horarios.semana {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .grid-horarios .celula-horario {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1f1f1f;
+      background: #ffffff;
+      box-sizing: border-box;
+      padding: 2px 6px;
+    }
+
+    .grid-horarios input[type="time"] {
+      width: 100%;
+      height: 40px;
+      padding: 0 4px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      color: #111111;
+      font-size: 21px;
+      font-weight: 400;
+      text-align: center;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .grid-horarios input[type="time"]:focus {
+      background: #f8f6fb;
+      box-shadow: inset 0 0 0 2px #b39ac7;
+    }
+
+    @media (max-width: 900px) {
+      .grid-horarios.fim-semana {
+        grid-template-columns: repeat(4, minmax(110px, 1fr));
+      }
+
+      .grid-horarios.semana {
+        grid-template-columns: repeat(6, minmax(110px, 1fr));
+      }
+
+      .grid-horarios {
+        overflow-x: auto;
+      }
+    }
+    }
+
+
+    .bloco-cliente-contrato {
+      overflow: hidden;
+    }
+
+    .cliente-contrato-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    }
+
+    .horarios-insercoes {
+      clear: both;
+      width: 100%;
+      box-sizing: border-box;
+      padding-left: 24px;
+      padding-right: 24px;
+      padding-bottom: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .cliente-contrato-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dados-cliente-preview {
+        border-right: none;
+        border-bottom: none;
+      }
+    }
+
+
+    .observacoes-fixas {
+      margin-top: 0;
+      padding: 14px 26px 18px;
+      border-top: 1px solid #1f1f1f;
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .observacoes-fixas h3 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 23px;
+      font-weight: 800;
+      text-decoration: underline;
+      color: #111111;
+    }
+
+    .observacoes-fixas ul {
+      margin: 0;
+      padding-left: 46px;
+    }
+
+    .observacoes-fixas li {
+      margin: 4px 0;
+      padding-left: 6px;
+      font-size: 18px;
+      line-height: 1.42;
+      color: #111111;
+    }
+
+
+    /* Opção administrativa: não entra no arquivo do contrato. */
+    .config-assinante {
+      padding: 16px 26px;
+      border-top: 1px solid #d8d2e4;
+      background: #faf8fd;
+      color: #302a46;
+    }
+    .config-assinante label {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .config-assinante input {
+      width: 100%;
+      max-width: 480px;
+      padding: 11px 12px;
+      border-radius: 9px;
+      border: 1px solid #b9accd;
+      background: #fff;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 17px;
+    }
+    .config-assinante small {
+      display: block;
+      margin-top: 7px;
+      color: #625b70;
+      font-size: 13px;
+    }
+
+    .assinaturas-contrato {
+      position: relative;
+      min-height: 250px;
+      padding: 28px 26px 20px;
+      border-top: 1px solid #1f1f1f;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .data-assinatura {
+      text-align: right;
+      color: #111111;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 110px;
+    }
+
+    .assinaturas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+
+    .assinatura-coluna {
+      text-align: center;
+      color: #111111;
+    }
+
+    .assinatura-nome {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .assinatura-empresa {
+      margin: 2px 0 0;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .assinatura-linha {
+      width: 68%;
+      margin: 0 auto 6px;
+      border-top: 1px solid #111111;
+    }
+
+    @media (max-width: 760px) {
+      .assinaturas-contrato {
+        min-height: 0;
+      }
+
+      .data-assinatura {
+        margin-bottom: 60px;
+        text-align: center;
+      }
+
+      .assinaturas-grid {
+        grid-template-columns: 1fr;
+        gap: 55px;
+      }
+    }
+
+
+    .acoes-documento {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      justify-content: flex-end;
+    }
+
+    .btn-documento {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-word {
+      background: #6d5a98;
+      color: #ffffff;
+    }
+
+    .btn-pdf {
+      background: #b16f96;
+      color: #ffffff;
+    }
+
+    .btn-documento:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .contrato-exportacao {
+      width: 190mm;
+      background: #ffffff;
+      color: #000000;
+      font-family: Arial, Helvetica, sans-serif;
+      box-sizing: border-box;
+    }
+
+    .contrato-exportacao * {
+      box-sizing: border-box;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+
+      #areaContratoExportacao,
+      #areaContratoExportacao * {
+        visibility: visible !important;
+      }
+
+      #areaContratoExportacao {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+
+
+    .controle-salvamento-contrato {
+      margin-top: 22px;
+      padding: 18px;
+      border: 1px solid #e1dbea;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .numero-contrato-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-size: 16px;
+      color: #2f2a45;
+    }
+
+    .numero-contrato-box strong {
+      font-weight: 800;
+    }
+
+    #numeroContratoExibicao {
+      font-weight: 800;
+      color: #7b61a8;
+    }
+
+    .estado-nao-salvo {
+      color: #a44f69;
+      font-weight: 800;
+    }
+
+    .estado-salvo {
+      color: #4f7a57;
+      font-weight: 800;
+    }
+
+    .acoes-salvamento {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-salvar-contrato {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      background: #7b61a8;
+      color: #ffffff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-salvar-contrato:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+
+    .texto-audio-cliente {
+      margin-top: 0;
+      padding: 18px 26px 20px;
+      border-top: 1px solid #1f1f1f;
+      background: #ffffff;
+    }
+
+    .texto-audio-cliente label {
+      display: block;
+      margin-bottom: 8px;
+      color: #111111;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .texto-audio-cliente textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px 14px;
+      border: 1px solid #bdb6ca;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font: inherit;
+      color: #111111;
+      background: #ffffff;
+      resize: vertical;
+    }
+
+
+    .audio-upload-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #cfc7dc;
+    }
+
+    .audio-upload-box label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2f2a45;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .audio-upload-box input[type="file"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .audio-status {
+      margin-top: 8px;
+      min-height: 18px;
+      color: #6e688f;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .audio-player-preview {
+      display: none;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+
+    .voltar-pagina {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 10px 14px;
+      border: 1px solid #ddd5e7;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #5f4d78;
+      text-decoration: none;
+      font-weight: 800;
+      transition: background .18s ease, border-color .18s ease;
+    }
+
+    .voltar-pagina:hover {
+      background: #f7f2fa;
+      border-color: #cdbddd;
+    }
+
+  
+
+/* Resumo dos quatro valores: 2 colunas, leitura simples e sem campos para digitar. */
+.resumo-valores-contrato {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 18px;
+  padding: 18px 12px;
+  margin: 8px 0 22px;
+  background: #fff;
+  border: 1px solid #e3dbe9;
+  border-radius: 12px;
+}
+.resumo-valores-contrato .resumo-valor-item { min-width: 0; }
+.resumo-valores-contrato .resumo-valor-item label {
+  display: block;
+  margin: 0 0 8px;
+  min-height: 0;
+  color: #176878;
+  font-size: clamp(16px, 1.45vw, 20px);
+  font-style: italic;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.resumo-valores-contrato .resumo-valor-item #valorMensal[readonly],
+.resumo-valores-contrato .resumo-valor-item output {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 0 2px;
+  border: 0;
+  outline: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #176878;
+  -webkit-text-fill-color: #176878;
+  font-size: clamp(17px, 1.6vw, 23px);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.35;
+}
+@media (max-width: 440px) {
+  .resumo-valores-contrato { grid-template-columns: 1fr; }
+}
+/* Valores por modalidade; nunca mostrar campos que não pertencem à escolha. */
+.resumo-valores-contrato .resumo-valor-item[hidden],
+.resumo-divisao-mista[hidden] { display:none!important; }
+.resumo-divisao-mista { display:grid; gap:7px; padding:14px 16px; margin:0 0 16px; border:1px solid #ddd3ea; background:#f7f4fb; border-radius:12px; color:#252038; font-size:15px; }
+.resumo-divisao-mista strong { font-weight:800; }
+/* Precificação de inserções: mantém alinhamento em desktop e mobile */
+.precificacao-insercoes .datas-contrato-grid > div { min-width:0; }
+.precificacao-insercoes .datas-contrato-grid label { min-height:2.8em; display:flex; align-items:flex-end; }
+.precificacao-insercoes #valorUnitarioInsercao,
+.precificacao-insercoes #insercoesMensais { width:100%; box-sizing:border-box; }
+.precificacao-insercoes .ajuda-preco-insercao { font-size:13px; line-height:1.5; margin:10px 0 6px; color:#514865; }
+.precificacao-insercoes .btn-restaurar-insercoes { border:1px solid #b9a7cc; border-radius:8px; background:#f7f3fa; color:#423353; padding:7px 10px; cursor:pointer; font-weight:600; }
+#valorMensal[readonly] { background:#f2eef7; font-weight:750; }
+</style>
+<style>.destac-campos-extras{margin:20px 0;padding:20px;border:1px solid #ded5e9;border-radius:12px;background:#faf8fc}.destac-extras-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.destac-extra{display:flex;flex-direction:column;gap:6px;font-weight:600}.destac-extra input,.destac-extra select,.destac-extra textarea{width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #cfcbd5;border-radius:7px;font:inherit}.destac-extra:first-child{grid-column:1/-1}.destac-campos-extras .destac-extras-grid label.destac-extra{color:#252038!important;font-weight:700!important;opacity:1!important}.destac-campos-extras .destac-extras-grid label.destac-extra>span{display:block!important;color:#252038!important;-webkit-text-fill-color:#252038!important;opacity:1!important;font-size:14px!important;line-height:1.45!important}.destac-campos-extras h3{color:#171326!important}.destac-campos-extras p{color:#383147!important}@media print{.destac-campos-extras{display:none!important}}</style>
+<style>
+.destac-valores-mistos{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:12px 0 22px;padding:14px;border:1px solid #c9b5df;border-radius:10px;background:white}.destac-valores-mistos .destac-extra{margin:0;color:#252038}.destac-valores-mistos [hidden]{display:none!important}.destac-valores-mistos .destac-extra textarea,.destac-valores-mistos .destac-extra input,.destac-valores-mistos .destac-extra select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfcbd5;border-radius:7px;font:inherit}.destac-valores-mistos label.destac-extra,.destac-valores-mistos label.destac-extra>span{color:#252038!important;-webkit-text-fill-color:#252038!important;opacity:1!important}.destac-valores-mistos .destac-extra span{font-size:14px;font-weight:700}.destac-valores-mistos input[readonly]{background:#f2eff8;color:#3c334e}
+.destac-previsao-financeira{margin:12px 0 22px;padding:16px 20px;border:1px solid #cfbddb;border-radius:12px;background:#f7f3fb;color:#252038}
+.destac-previsao-financeira h3{margin:0 0 8px;font-size:17px}
+.destac-previsao-financeira p{margin:6px 0;line-height:1.55}
+.destac-previsao-financeira .destac-regra-financeira{font-size:13px !important;line-height:1.45 !important;color:#403a4f !important;margin-top:10px}.destac-previsao-financeira .destac-regra-financeira strong,.destac-previsao-financeira .destac-regra-financeira span{font-size:13px !important;line-height:1.45 !important;font-weight:700 !important;color:#403a4f !important;display:inline !important}.destac-previsao-financeira .destac-regra-formula{font-weight:700 !important;white-space:normal !important}
+.destac-previsao-financeira .destac-alerta-financeiro{color:#9f263f;font-weight:700}
+.destac-extra[hidden]{display:none!important}.destac-previsao-lista td,.destac-previsao-lista th{border-bottom:1px solid #ddd2e8;padding:7px;text-align:left}.destac-previsao-lista td:last-child,.destac-previsao-lista th:last-child{text-align:right}@media print{.destac-previsao-financeira{display:none!important}}
+
+/* Três modalidades exclusivas: à vista, 100% permuta e misto 50/50. */
+.destac-desconto-vista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0;padding:14px;border:1px solid #c9b5df;border-radius:10px;background:#faf8fd}
+.destac-desconto-vista[hidden]{display:none!important}
+.destac-desconto-vista label{display:block;font-size:14px;color:#252038}
+.destac-desconto-vista label strong{display:block;margin-bottom:6px}
+.destac-desconto-vista input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfcbd5;border-radius:7px;font:inherit}
+.destac-desconto-vista input[readonly]{background:#f2eff8}
+.destac-desconto-vista small{grid-column:1/-1;color:#625b70}
+@media(max-width:700px){.destac-desconto-vista{grid-template-columns:1fr}}
+
+.destac-modalidades-secao { margin-top:22px; }
+.destac-modalidades-secao h3 { margin:0 0 10px; font-size:20px; }
+.destac-modalidades-lista { margin:14px 0 12px; padding:0; border:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; min-width:0; }
+.destac-modalidades-lista legend { font-size:15px; font-weight:800; color:#252038; padding:0 0 8px; }
+.destac-modalidade-opcao { display:flex; align-items:flex-start; gap:10px; box-sizing:border-box; padding:14px; min-width:0; border:2px solid #d5cce4; border-radius:12px; background:#fff; color:#252038; cursor:pointer; line-height:1.35; }
+.destac-modalidade-opcao:has(input:checked) { border-color:#7b61a8; background:#f0eaf7; }
+.destac-modalidade-opcao:focus-within { outline:2px solid #7b61a8; outline-offset:2px; }
+.destac-modalidade-opcao input { width:18px!important; height:18px!important; margin:2px 0 0; flex:0 0 18px; accent-color:#7b61a8; }
+.destac-modalidade-opcao span { display:block; min-width:0; }
+.destac-modalidade-opcao strong { display:block; font-size:16px; margin-bottom:4px; color:#252038; }
+.destac-modalidade-opcao small { display:block; font-size:13px; font-weight:400; color:#625b70; }
+.destac-modalidades-aviso { font-size:13px; line-height:1.4; }
+@media(max-width:900px) { .destac-modalidades-lista { grid-template-columns:1fr; } }
+@media print { .destac-modalidades-secao { display:none!important; } }
+
+/* Cadastro guiado: uma tarefa por vez, campos e foco claramente visíveis. */
+.destac-modalidades-lista{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.destac-modalidade-opcao{min-height:94px;align-items:center;padding:16px;border-width:2px;transition:none}
+.destac-modalidade-opcao strong{font-size:17px;line-height:1.3}
+.destac-modalidade-opcao small{font-size:14px;line-height:1.4}
+.destac-modalidade-opcao input{width:22px!important;height:22px!important;flex-basis:22px}
+.destac-modalidades-secao .destac-introducao{font-size:15px;line-height:1.5}
+.destac-modalidades-secao input:not([type=radio]), .destac-modalidades-secao select, .destac-modalidades-secao textarea{min-height:48px;font-size:16px}
+.destac-modalidades-secao :is(input,textarea,select):focus-visible{outline:3px solid #7b61a8;outline-offset:2px}
+.destac-modalidades-secao [hidden],.destac-pagamento-detalhes[hidden],#orientacaoPermuta[hidden],#avisoModalidadeLegada[hidden]{display:none!important}
+.destac-pagamento-detalhes{margin:16px 0;padding:16px;border:1px solid #cdbddd;border-radius:10px;background:#fff}
+.destac-pagamento-detalhes h4{margin:0 0 6px;color:#252038;font-size:17px}
+.destac-pagamento-detalhes p,.destac-ajuda-contextual,.destac-ajuda-atencao{font-size:14px;line-height:1.55;color:#514865}
+.destac-ajuda-atencao{padding:10px;border:1px solid #ab8dbc;border-radius:8px}
+.destac-valores-mistos{margin-bottom:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.destac-pagamento-detalhes .destac-extras-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.destac-valores-mistos .destac-extra:first-child{grid-column:auto}
+@media(max-width:760px){.destac-modalidades-lista{grid-template-columns:1fr}.destac-valores-mistos,.destac-pagamento-detalhes .destac-extras-grid{grid-template-columns:1fr}}
+
+/* Ajuda progressiva: mostra somente o exemplo da opção de pagamento marcada. */
+.destac-exemplo-pagamento {
+  display: none;
+  padding: 14px 16px;
+  margin: 2px 0 16px;
+  border: 1px solid #d5cce4;
+  border-radius: 10px;
+  background: #f8f6fb;
+  color: #252038;
+  line-height: 1.45;
+}
+.destac-exemplo-pagamento > strong { display: block; font-size: 15px; margin-bottom: 6px; }
+.destac-exemplo-pagamento p { display: none; font-size: 15px; margin: 0 0 8px; }
+.destac-exemplo-pagamento p b { font-weight: 750; }
+.destac-exemplo-pagamento > small { display: block; font-size: 12px; color: #514865; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"]:checked) .destac-exemplo-pagamento { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="VISTA"]:checked) .destac-exemplo-pagamento p[data-forma="VISTA"] { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="VISTA_DESCONTO"]:checked) .destac-exemplo-pagamento p[data-forma="VISTA_DESCONTO"] { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="MENSAL"]:checked) .destac-exemplo-pagamento p[data-forma="MENSAL"] { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="PARCELADO_DESCONTO"]:checked) .destac-exemplo-pagamento p[data-forma="PARCELADO_DESCONTO"] { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="MISTO"]:checked) .destac-exemplo-pagamento p[data-forma="MISTO"] { display: block; }
+.destac-modalidades-secao:has(input[name="tipoModalidadeVisual"][value="PERMUTA"]:checked) .destac-exemplo-pagamento p[data-forma="PERMUTA"] { display: block; }
+@media print { .destac-exemplo-pagamento { display: none !important; } }
+</style>
+</head>
+
+<body>
+
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+
+    <div
+      id="usuarioConectadoBox"
+      style="
+        margin: 14px 12px 22px;
+        padding: 12px;
+        border: 1px solid rgba(123,97,168,.18);
+        border-radius: 12px;
+        background: rgba(255,255,255,.55);
+      "
+    >
+      <div
+        style="
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .08em;
+          color: #8a7caf;
+          margin-bottom: 6px;
+        "
+      >
+        USUÁRIO CONECTADO
+      </div>
+
+      <div
+        id="nomeUsuarioConectado"
+        style="
+          font-weight: 800;
+          color: #2f2a45;
+          line-height: 1.25;
+        "
+      >
+        Carregando...
+      </div>
+
+      <div
+        id="perfilUsuarioConectado"
+        style="
+          margin-top: 4px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #7b61a8;
+        "
+      ></div>
+    </div>
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a class="active" href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios">Usuários</a>
+    </nav>
+
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+
+    <a href="contratos.html" class="voltar-pagina">
+      ← Voltar para contratos
+    </a>
+
+
+    <header>
+      <div>
+        <span>CADASTRO</span>
+
+        <h1>Contratos</h1>
+
+        <p>
+          Cadastre e gerencie os contratos da empresa.
+        </p>
+      </div>
+    </header>
+
+    <section class="summary">
+
+      <h2 id="tituloModoContrato">Novo contrato</h2>
+
+      <p style="margin: 0 0 18px; color: #6e688f; font-size: 14px;">
+        * Campos obrigatórios
+      </p>
+
+      <form id="formContrato">
+
+        <div class="form-grid">
+
+          <div>
+            <label for="empresaId">Empresa *</label>
+
+            <select id="empresaId" required>
+              <option value="">Selecione a empresa</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="clienteId">Cliente *</label>
+
+            <select id="clienteId" required disabled>
+              <option value="">Selecione primeiro a empresa</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div
+          id="mensagemContrato"
+          style="
+            margin-top: 15px;
+            font-weight: 700;
+          "
+        ></div>
+
+        <p id="avisoClienteGlobalEdicao" style="display:none;color:#625b70;font-size:13px;margin:12px 0 0;">
+          Empresa e cliente podem ser trocados neste contrato. Os dados cadastrais exibidos abaixo
+          pertencem aos cadastros globais de Empresas e Clientes e não são alterados aqui.
+        </p>
+
+        <div
+          id="cabecalhoContrato"
+          class="cabecalho-contrato"
+        >
+
+          <div class="cabecalho-contrato-topo">
+
+            <div class="cabecalho-logo">
+              <img
+                id="logoEmpresaContrato"
+                alt="Logo da empresa"
+                style="display:none;"
+              >
+
+              <span id="semLogoEmpresa">
+                Logo da empresa
+              </span>
+            </div>
+
+            <div class="cabecalho-titulo">
+
+              <h2>
+                AUTORIZAÇÃO DE MÍDIA E SERVIÇOS
+              </h2>
+
+              <div class="cabecalho-dados">
+
+                <p class="linha">
+                  <span id="razaoSocialEmpresa" class="razao-social">-</span> - CNPJ: <span id="cnpjEmpresa">-</span>
+                </p>
+
+                <p class="linha">
+                  <span id="enderecoEmpresa">-</span>
+                </p>
+
+                <p class="linha">
+                  Telefones <span id="telefoneEmpresa">-</span> / <span id="celularEmpresa">-</span> - <span id="cidadeUfEmpresa">-</span>
+                </p>
+
+                <p class="linha">
+                  E-mail: <a id="emailEmpresaLink" href="#"><span id="emailEmpresa">-</span></a>
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          id="blocoClienteContrato"
+          class="bloco-cliente-contrato"
+        >
+          <div class="cliente-contrato-grid">
+
+            <div class="dados-cliente-preview">
+
+              <p class="linha-preview">
+                <strong>Razão Social:</strong> <span id="clienteRazaoSocial">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>CNPJ:</strong> <span id="clienteCnpj">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>Fantasia:</strong><span id="clienteFantasia">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>Endereço:</strong> <span id="clienteEndereco">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>Telefone:</strong> <span id="clienteTelefone">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>Contato:</strong> <span id="clienteContato">-</span>
+              </p>
+
+              <p class="linha-preview">
+                <strong>E-mail:</strong><span id="clienteEmail">-</span>
+              </p>
+
+            </div>
+
+            <div class="dados-contrato-form">
+
+              <div class="campo-contrato">
+                <label for="veiculoExecutor">
+                  Veículo Executor *
+                </label>
+
+                <input
+                  type="text"
+                  id="veiculoExecutor"
+                  value="Serviço de sonorização da Feira do Produtor"
+                  required
+                >
+              </div>
+
+              <div class="vigencia-contrato-grid">
+
+                <div class="vigencia-coluna-datas">
+                  <div class="campo-contrato">
+                    <label for="dataInicio">Início *</label>
+                    <input type="date" id="dataInicio" required>
+                  </div>
+
+                  <div class="campo-contrato">
+                    <label for="dataTermino">Término calculado *</label>
+                    <input type="date" id="dataTermino" readonly required
+                      title="Calculado automaticamente pela data inicial e duração em meses">
+                  </div>
+                </div>
+
+                <div class="campo-contrato">
+                  <label for="duracaoMeses">Duração do contrato (meses) *</label>
+                  <input type="number" id="duracaoMeses" min="1" max="120" step="1"
+                    inputmode="numeric" placeholder="Ex.: 6" required
+                    aria-describedby="ajudaDuracaoContrato">
+                </div>
+
+              </div>
+              <p id="ajudaDuracaoContrato" role="status" aria-live="polite">
+                Informe a data de início e a duração em meses. O término será calculado automaticamente.
+                A quantidade de parcelas mensais será sugerida com o mesmo número de meses, mas poderá ser alterada.
+              </p>
+
+              <div class="campo-contrato">
+                <label>
+                  Número de inserções por dia *
+                </label>
+
+                <div class="datas-contrato-grid">
+
+                  <div>
+                    <label for="insercoesTercaQuinta">
+                      Terças e quintas *
+                    </label>
+
+                    <input
+                      type="number"
+                      id="insercoesTercaQuinta"
+                      min="0"
+                      step="1"
+                      required
+                      placeholder="Ex.: 12"
+                    >
+                  </div>
+
+                  <div>
+                    <label for="insercoesSabadoDomingo">
+                      Sábados e domingos *
+                    </label>
+
+                    <input
+                      type="number"
+                      id="insercoesSabadoDomingo"
+                      min="0"
+                      step="1"
+                      required
+                      placeholder="Ex.: 8"
+                    >
+                  </div>
+
+                </div>
+
+                <div
+                  id="resumoInsercoes"
+                  style="
+                    margin-top:10px;
+                    padding:10px 12px;
+                    background:#f7f5fb;
+                    border:1px solid #e1dbea;
+                    border-radius:10px;
+                    color:#4b445d;
+                    font-weight:600;
+                  "
+                >
+                  Informe as duas quantidades de inserções.
+                </div>
+              </div>
+
+              <div class="campo-contrato precificacao-insercoes">
+                <label>Precificação das inserções *</label>
+                <div class="datas-contrato-grid">
+                  <div>
+                    <label for="valorUnitarioInsercao">Valor unitário por inserção (R$) *</label>
+                    <input type="text" id="valorUnitarioInsercao" inputmode="decimal"
+                      placeholder="Ex.: 10,00" aria-describedby="ajudaCalculoInsercoes">
+                  </div>
+                  <div>
+                    <label for="insercoesMensais">Quantidade de inserções no mês *</label>
+                    <input type="number" id="insercoesMensais" min="1" max="100000" step="1"
+                      inputmode="numeric" placeholder="Calculado automaticamente"
+                      aria-describedby="ajudaCalculoInsercoes">
+                  </div>
+                </div>
+                <p id="ajudaCalculoInsercoes" class="ajuda-preco-insercao" aria-live="polite">
+                  Sugestão de 4 semanas: (inserções por terça/quinta × 2 + inserções por sábado/domingo × 2) × 4.
+                  Ajuste o total mensal para meses com mais veiculações.
+                </p>
+                <button type="button" id="btnRestaurarInsercoesMensais" class="btn-restaurar-insercoes">
+                  Usar quantidade mensal sugerida
+                </button>
+              </div>
+              <!-- Quadro-resumo comercial: as quatro informações de valores no mesmo lugar. -->
+              <div class="campo-contrato resumo-valores-contrato" aria-label="Resumo dos valores do contrato">
+                <div class="resumo-valor-item">
+                  <label for="valorMensal" id="rotuloResumoMensal">Valor Mensal</label>
+                  <input type="text" id="valorMensal" placeholder="—" readonly
+                    aria-readonly="true" required title="Valor unitário × inserções mensais">
+                </div>
+                <div class="resumo-valor-item" id="resumoItemMensalDesconto" hidden>
+                  <label for="valorMensalComDesconto">Valor Mensal com Desconto</label>
+                  <output id="valorMensalComDesconto" aria-live="polite">—</output>
+                </div>
+                <div class="resumo-valor-item">
+                  <label for="valorTotalSemDescontoResumo" id="rotuloResumoTotal">Valor Total</label>
+                  <output id="valorTotalSemDescontoResumo" aria-live="polite">—</output>
+                </div>
+                <div class="resumo-valor-item" id="resumoItemTotalDesconto" hidden>
+                  <label for="valorTotalComDescontoResumo">Valor Total com Desconto</label>
+                  <output id="valorTotalComDescontoResumo" aria-live="polite">—</output>
+                </div>
+              </div>
+              <div id="resumoDivisaoMista" class="resumo-divisao-mista" hidden aria-live="polite">
+                <div><strong>Permuta:</strong> <output id="resumoPercentualPermuta">—</output> do total</div>
+                <div><strong>Valor em permuta:</strong> <output id="resumoValorPermuta">—</output></div>
+                <div><strong>Valor em dinheiro:</strong> <output id="resumoValorDinheiro">—</output></div>
+              </div>
+
+              <div class="campo-contrato">
+                <label for="statusContratoEdicao">Status do contrato *</label>
+                <select id="statusContratoEdicao" required aria-describedby="avisoStatusFinanceiro">
+                  <option value="PENDENTE" selected>PENDENTE — não gerar parcelas</option>
+                  <option value="ATIVO">ATIVO — gerar parcelas automaticamente</option>
+                  <option value="SUSPENSO">SUSPENSO — não gerar novas parcelas</option>
+                  <option value="ENCERRADO">ENCERRADO — não gerar novas parcelas</option>
+                  <option value="CANCELADO">CANCELADO — cancelar parcelas pendentes</option>
+                </select>
+                <small id="avisoStatusFinanceiro">Somente contratos ATIVOS geram cobranças no Financeiro.</small>
+              </div>
+
+</div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+        <section class="destac-campos-extras destac-modalidades-secao" aria-labelledby="tituloValoresContrato">
+          <h3 id="tituloValoresContrato">Valores do contrato</h3>
+          <p class="destac-introducao">Escolha <strong>uma opção</strong>. Preencha somente os campos que aparecerem. Os valores são calculados automaticamente.</p>
+          <fieldset class="destac-modalidades-lista">
+            <legend>Como será o pagamento? *</legend>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="VISTA" checked>
+              <span><strong>À vista</strong><small>Paga tudo de uma vez.</small></span>
+            </label>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="VISTA_DESCONTO">
+              <span><strong>À vista com desconto</strong><small>Paga tudo de uma vez, com desconto.</small></span>
+            </label>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="MENSAL">
+              <span><strong>Contrato mensal</strong><small>Paga uma vez por mês, sem desconto.</small></span>
+            </label>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="PARCELADO_DESCONTO">
+              <span><strong>Parcelado com desconto</strong><small>Paga em parcelas, com desconto.</small></span>
+            </label>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="MISTO">
+              <span><strong>Permuta + dinheiro</strong><small>Paga parte com produtos ou serviços e parte com dinheiro.</small></span>
+            </label>
+            <label class="destac-modalidade-opcao">
+              <input type="radio" name="tipoModalidadeVisual" value="PERMUTA">
+              <span><strong>Somente permuta</strong><small>Paga apenas com produtos ou serviços.</small></span>
+            </label>
+          </fieldset>
+          <div class="destac-exemplo-pagamento" aria-label="Exemplo da forma de pagamento escolhida">
+            <strong>Exemplo desta opção</strong>
+            <p data-forma="VISTA">Contrato de R$ 1.200,00: o cliente paga <b>R$ 1.200,00 uma única vez</b>.</p>
+            <p data-forma="VISTA_DESCONTO">Contrato de R$ 1.200,00 com 10% de desconto: o cliente paga <b>R$ 1.080,00 uma única vez</b>.</p>
+            <p data-forma="MENSAL">Contrato de 12 meses: o cliente paga <b>12 mensalidades de R$ 100,00</b>, sem desconto.</p>
+            <p data-forma="PARCELADO_DESCONTO">Contrato de R$ 1.200,00 com 10% de desconto: o cliente paga <b>12 parcelas de R$ 90,00</b>, totalizando R$ 1.080,00.</p>
+            <p data-forma="MISTO">Contrato de R$ 1.200,00 com 25% de permuta: <b>R$ 300,00 em produtos ou serviços</b> e <b>R$ 900,00 em dinheiro</b>.</p>
+            <p data-forma="PERMUTA">Contrato de R$ 1.200,00: o cliente entrega <b>R$ 1.200,00 em produtos ou serviços</b> e não paga em dinheiro.</p>
+            <small>Os valores acima são apenas exemplos. Os valores reais do contrato são calculados abaixo.</small>
+          </div>
+          <p id="avisoModalidadeLegada" class="destac-ajuda-atencao" role="status" hidden>Contrato antigo com parcelas. Os dados existentes serão mantidos até você escolher uma nova opção.</p>
+          <select id="modalidadeContrato" hidden aria-hidden="true" tabindex="-1">
+            <option value="FINANCEIRO" selected>Financeiro</option>
+            <option value="PERMUTA">Permuta</option>
+            <option value="MISTO">Misto</option>
+          </select>
+          <div class="destac-valores-mistos" aria-label="Composição de valores">
+            <label class="destac-extra" id="grupoPercentualPermuta" hidden><span>Qual percentual será em permuta? (%) *</span><input id="percentualPermuta" type="text" inputmode="decimal" placeholder="Ex.: 40" aria-describedby="orientacaoPermuta"><small>Digite de 0,01 até 99,99.</small></label>
+            <label class="destac-extra" id="grupoValorPermuta" hidden><span>Valor em permuta (R$) — calculado</span><input id="valorPermuta" type="text" readonly aria-readonly="true" placeholder="Calculado automaticamente" aria-describedby="orientacaoPermuta"></label>
+            <label class="destac-extra" id="grupoDescricaoPermuta" hidden><span>O que será entregue na permuta? *</span><textarea id="descricaoPermuta" rows="3" placeholder="Descreva produtos ou serviços e quantidades"></textarea></label>
+            <label class="destac-extra" id="grupoValorFinanceiro"><span>Valor em dinheiro / PIX / boleto / cartão (R$)</span><input id="valorFinanceiroContrato" type="text" readonly aria-readonly="true" placeholder="Calculado automaticamente"></label>
+            <label class="destac-extra"><span>Total comercial do contrato (R$)</span><input id="valorTotalContrato" type="text" readonly aria-readonly="true" placeholder="Calculado pelas inserções"></label>
+          </div>
+          <p id="orientacaoPermuta" class="destac-ajuda-contextual" hidden>Exemplo: 40% de permuta significa 60% em dinheiro. Você não precisa calcular os valores.</p>
+          <div id="grupoDescontoVista" class="destac-desconto-vista" hidden>
+            <label for="percentualDescontoVista"><strong id="rotuloPercentualDesconto">Desconto à vista (%) *</strong>
+              <input id="percentualDescontoVista" type="text" inputmode="decimal" value="0" placeholder="Ex.: 10" aria-describedby="ajudaDescontoVista">
+            </label>
+            <label for="valorVista"><strong id="rotuloValorFinalDesconto">Valor final à vista (R$)</strong>
+              <input id="valorVista" type="text" readonly aria-readonly="true" placeholder="Calculado automaticamente">
+            </label>
+            <small id="ajudaDescontoVista">Digite um percentual maior que 0 e menor que 100. Ex.: 10 = 10% de desconto.</small>
+          </div>
+          <div class="destac-pagamento-detalhes" id="dadosPagamentoFinanceiro">
+            <h4>Pagamento em dinheiro</h4>
+            <p>Preencha a forma de pagamento e o vencimento. Se for parcelado, informe as parcelas.</p>
+            <div class="destac-extras-grid"><label class="destac-extra" id="grupoFormaPagamento"><span>Forma de pagamento financeiro *</span><select id="formaPagamento"><option value="">Selecione</option><option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Transferência">Transferência</option><option value="Cartão">Cartão</option><option value="Dinheiro">Dinheiro</option><option value="Outro">Outro</option></select></label><label class="destac-extra" id="grupoCondicaoPagamento"><span>Como será pago o restante em dinheiro? *</span><select id="condicaoPagamento"><option value="PARCELADO">Em parcelas mensais</option><option value="AVISTA" selected>À vista, sem desconto</option></select></label><label class="destac-extra" id="grupoParcelas"><span id="rotuloQuantidadeParcelas">Quantidade de parcelas * (sem contar a entrada)</span><input id="quantidadeParcelas" type="number" min="1" max="120" step="1"><small id="avisoParcelasMensais" hidden>No contrato mensal, as parcelas seguem a duração do contrato e não podem ser alteradas aqui.</small></label><label class="destac-extra" id="grupoEntrada"><span>Entrada incluída no total (R$)</span><input id="valorEntrada" type="text" inputmode="decimal" placeholder="R$ 0,00"></label><label class="destac-extra" id="grupoVencimentoEntrada"><span>Vencimento da entrada * (se houver entrada)</span><input id="dataVencimentoEntrada" type="date"></label><label class="destac-extra" id="grupoPrimeiroVencimento"><span id="labelPrimeiroVencimento">Data do primeiro vencimento *</span><input id="dataPrimeiroVencimento" type="date"></label><label class="destac-extra" hidden><span>Periodicidade</span><input id="periodicidadeParcelas" value="Mensal" readonly aria-label="Periodicidade mensal"></label><label class="destac-extra" hidden><span>Dia do vencimento (automático)</span><input id="diaVencimento" type="number" min="1" max="31" readonly title="Calculado pela data do primeiro vencimento"></label></div>
+          </div>
+          <p class="destac-modalidades-aviso">A permuta faz parte do total comercial, mas não gera cobrança monetária no Financeiro.</p>
+        </section>
+
+              <div class="horarios-insercoes">
+
+                <h3>Horários das Inserções</h3>
+
+                <div id="grupoSabadoDomingo" class="grupo-horarios">
+                  <h4>Sábados e Domingos</h4>
+
+                  <div
+                    id="horariosSabadoDomingo"
+                    class="grid-horarios fim-semana"
+                  ></div>
+                </div>
+
+                <div id="grupoTercaQuinta" class="grupo-horarios">
+                  <h4>Terças e Quintas</h4>
+
+                  <div
+                    id="horariosTercaQuinta"
+                    class="grid-horarios semana"
+                  ></div>
+                        </div>
+
+
+        <div class="texto-audio-cliente">
+          <label for="textoAudioCliente">
+            Texto do áudio enviado ao cliente
+          </label>
+
+          <textarea
+            id="textoAudioCliente"
+            rows="5"
+            placeholder="Digite ou cole aqui o texto do áudio enviado ao cliente."
+          ></textarea>
+
+          <div class="audio-upload-box">
+            <label for="arquivoAudioCliente">
+              Arquivo de áudio enviado ao cliente
+            </label>
+
+            <input
+              type="file"
+              id="arquivoAudioCliente"
+              accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac"
+            >
+
+            <div
+              id="statusAudioCliente"
+              class="audio-status"
+            ></div>
+            <div id="audioAtualContrato" class="audio-status" style="display:none;margin-top:10px;">
+              <strong>Áudio atual:</strong>
+              <a id="linkAudioAtualContrato" href="#" target="_blank" rel="noopener noreferrer">Abrir arquivo</a>
+              <label style="display:block;margin-top:8px;font-weight:500;">
+                <input id="removerAudioContrato" type="checkbox" style="width:auto;">
+                Remover o áudio atual ao salvar
+              </label>
+            </div>
+
+            <audio
+              id="previewAudioCliente"
+              class="audio-player-preview"
+              controls
+              preload="metadata"
+            ></audio>
+          </div>
+        </div>
+
+        <section class="destac-campos-extras" aria-label="Condições contratuais e assinatura">
+          <h3>Condições contratuais, pagamento e assinatura</h3><div class="destac-extras-grid"><label class="destac-extra"><span>Observações adicionais</span><textarea id="observacoes" rows="3"></textarea></label><label class="destac-extra"><span>Data da assinatura</span><input id="dataAssinatura" type="date"></label><label class="destac-extra"><span>Responsável pela empresa</span><input id="responsavelEmpresaContrato" type="text"></label><label class="destac-extra"><span>Responsável pelo cliente</span><input id="responsavelClienteContrato" type="text"></label><label class="destac-extra"><span>Status da assinatura</span><select id="statusAssinatura"><option value="">Selecione</option><option value="Pendente">Pendente</option><option value="Assinado">Assinado</option><option value="Recusado">Recusado</option><option value="Cancelado">Cancelado</option></select></label><label class="destac-extra"><span>Endereço do PDF assinado (URL)</span><input id="pdfUrl" type="url"></label><label class="destac-extra"><span>Data/hora do cancelamento</span><input id="canceladoEm" type="datetime-local"></label><label class="destac-extra"><span>Motivo do cancelamento</span><textarea id="motivoCancelamento" rows="3"></textarea></label></div></section>
+        <section class="destac-previsao-financeira" id="previsaoFinanceiraContrato" aria-live="polite" aria-label="Prévia das cobranças">
+          <h3>Prévia do Contas a Receber</h3>
+          <p id="resumoFinanceiroContrato">Informe a condição de pagamento e os valores para visualizar as cobranças.</p><div class="destac-previsao-lista" style="overflow-x:auto"><table id="tabelaPreviaFinanceiro" style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th>Descrição</th><th>Vencimento</th><th>Valor</th></tr></thead><tbody id="linhasPreviaFinanceiro"></tbody></table></div>
+          <p id="alertasFinanceirosContrato" class="destac-regra-financeira"></p>
+          <p id="regraFinanceiraContrato" class="destac-regra-financeira"><span class="destac-regra-rotulo">Regra:</span> <span class="destac-regra-formula">Selecione uma modalidade de pagamento para ver a regra.</span></p>
+        </section>
+        <div class="observacoes-fixas">
+          <h3>OBS:</h3>
+
+          <ul>
+            <li>
+              Terças e quintas das 13:30h às 21h na praça Wilson Jofre.
+            </li>
+
+            <li>
+              Sábados das 8h às 12h em frente à Prefeitura.
+            </li>
+
+            <li>
+              Domingos das 8h às 12h na praça Wilson Jofre.
+            </li>
+
+            <li>
+              A não publicação por motivo de força maior, não implicará em inadimplência contratual por parte da Destac Propagandas que comunicará por escrito, cessando os pagamentos subsequentes desde o momento em que deixar de ser veiculado o apoio contratado.
+            </li>
+          </ul>
+        </div>
+
+        <div class="config-assinante">
+          <label for="assinanteEmpresaContrato">Nome do representante que assinará pela empresa</label>
+          <input id="assinanteEmpresaContrato" type="text" maxlength="150" value="Celso Dondoni"
+                 placeholder="Digite o nome do representante" autocomplete="off">
+          <small>Celso Dondoni é o padrão da DESTAC. Digite outro nome, se necessário.
+          A alteração será usada na assinatura deste contrato após salvar.</small>
+        </div>
+
+        <div class="assinaturas-contrato">
+
+          <div
+            id="dataAssinaturaContrato"
+            class="data-assinatura"
+          >
+            Cascavel, -
+          </div>
+
+          <div class="assinaturas-grid">
+
+            <div class="assinatura-coluna">
+              <p
+                id="assinaturaResponsavelEmpresa"
+                class="assinatura-nome"
+              >
+                -
+              </p>
+
+              <p
+                id="assinaturaNomeEmpresa"
+                class="assinatura-empresa"
+              >
+                -
+              </p>
+            </div>
+
+            <div class="assinatura-coluna">
+              <div class="assinatura-linha"></div>
+              <p id="assinaturaResponsavelCliente" class="assinatura-nome"></p>
+
+              <p
+                id="assinaturaCliente"
+                class="assinatura-empresa"
+              >
+                -
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </form>
+
+      <div class="controle-salvamento-contrato">
+        <div class="numero-contrato-box">
+          <strong>Número do contrato:</strong>
+          <span id="numeroContratoExibicao">Será gerado ao salvar</span>
+          <span id="estadoSalvamentoContrato" class="estado-nao-salvo">• Não salvo</span>
+        </div>
+
+        <div class="acoes-salvamento">
+          <button
+            type="button"
+            id="btnSalvarContrato"
+            class="btn-salvar-contrato"
+          >
+            Salvar contrato
+          </button>
+          <a id="btnVoltarConsultaEdicao" href="consultar_contratos.html" class="btn-salvar-contrato"
+             style="display:none;text-decoration:none;background:#625b70;">Voltar à consulta</a>
+        </div>
+      </div>
+
+      <div class="acoes-documento">
+        <button
+          type="button"
+          id="btnGerarWord"
+          class="btn-documento btn-word"
+          disabled
+          title="Salve o contrato antes de gerar o Word."
+        >
+          Gerar contrato em Word
+        </button>
+
+        <button
+          type="button"
+          id="btnGerarPdf"
+          class="btn-documento btn-pdf"
+          disabled
+          title="Salve o contrato antes de gerar o PDF."
+        >
+          Gerar contrato em PDF
+        </button>
+      </div>
+
+</section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="opcoes_impressao_contrato.js"></script>
+  <script src="contratos.js"></script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[type="number"]').forEach((input) => {
+        input.addEventListener('wheel', (event) => {
+          if (document.activeElement === input) {
+            event.preventDefault();
+            input.blur();
+          }
+        }, { passive: false });
+      });
+    });
+  </script>
+
+</body>
+</html>

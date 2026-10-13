@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empresas | Destac Propagandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="usuario-padrao.css">
+
+  <style>
+    #tabelaEmpresas th:nth-child(7),
+    #tabelaEmpresas td:nth-child(7),
+    #tabelaEmpresas th:nth-child(8),
+    #tabelaEmpresas td:nth-child(8) {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    #tabelaEmpresas td:nth-child(7) .status-ativo,
+    #tabelaEmpresas td:nth-child(7) .status-inativo {
+      margin: 0 auto;
+    }
+
+    #tabelaEmpresas td:nth-child(8) .acoes-usuario {
+      justify-content: center;
+    }
+  </style>
+
+</head>
+<body>
+
+  <aside>
+    <img src="assets/logo-destac.png" alt="Destac Propagandas">
+
+    <div
+      id="usuarioConectadoBox"
+      style="
+        margin: 14px 12px 22px;
+        padding: 12px;
+        border: 1px solid rgba(123,97,168,.18);
+        border-radius: 12px;
+        background: rgba(255,255,255,.55);
+      "
+    >
+      <div
+        style="
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .08em;
+          color: #8a7caf;
+          margin-bottom: 6px;
+        "
+      >
+        USUÁRIO CONECTADO
+      </div>
+
+      <div
+        id="nomeUsuarioConectado"
+        style="
+          font-weight: 800;
+          color: #2f2a45;
+          line-height: 1.25;
+        "
+      >
+        Carregando...
+      </div>
+
+      <div
+        id="perfilUsuarioConectado"
+        style="
+          margin-top: 4px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #7b61a8;
+        "
+      ></div>
+    </div>
+
+
+        <nav aria-label="Navegação principal">
+      <a href="admin.html">Início</a>
+      <a class="active" href="empresas.html">Empresas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="contratos.html">Contratos</a>
+      <a class="disabled" aria-disabled="true" title="Módulo em desenvolvimento">Campanhas</a>
+      <a href="financeiro.html">Financeiro</a>
+      <a href="conciliacao_contratos.html">Conciliar contratos antigos</a>
+      <a href="consultar_cnpj.html">Consultar CNPJ</a>
+      <a href="buscar_cep.html">Buscar CEP</a>
+      <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+    </nav>
+
+    <a class="sair" href="#" id="btnSair">Sair</a>
+  </aside>
+
+  <main>
+
+    <header>
+      <div>
+        <span>CADASTRO</span>
+        <h1>Empresas</h1>
+        <p>Cadastre e gerencie as empresas utilizadas no sistema.</p>
+      </div>
+    </header>
+
+    <section class="summary">
+      <h2>Nova empresa</h2>
+
+      <p style="margin:0 0 18px;color:#6e688f;font-size:14px;">
+        * Campos obrigatórios
+      </p>
+
+      <form id="formEmpresa">
+
+        <div class="form-grid">
+
+          <div>
+            <label for="razao_social">Razão social *</label>
+            <input type="text" id="razao_social" required>
+          </div>
+
+          <div>
+            <label for="nome_fantasia">Nome fantasia</label>
+            <input type="text" id="nome_fantasia">
+          </div>
+
+          <div>
+            <label for="cpf_cnpj">CPF / CNPJ *</label>
+            <input type="text" id="cpf_cnpj" required>
+          </div>
+
+          <div>
+            <label for="inscricao_estadual">Inscrição estadual</label>
+            <input type="text" id="inscricao_estadual">
+          </div>
+
+          <div>
+            <label for="responsavel">Responsável</label>
+            <input type="text" id="responsavel">
+          </div>
+
+          <div>
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone" inputmode="numeric" placeholder="(00) 0000-0000">
+          </div>
+
+          <div>
+            <label for="celular_whatsapp">Celular / WhatsApp</label>
+            <input type="text" id="celular_whatsapp" inputmode="numeric" placeholder="(00) 00000-0000">
+          </div>
+
+          <div>
+            <label for="email">E-mail</label>
+            <input type="email" id="email">
+          </div>
+
+          <div>
+            <label for="endereco">Endereço</label>
+            <input type="text" id="endereco">
+          </div>
+
+          <div>
+            <label for="numero">Número</label>
+            <input type="text" id="numero">
+          </div>
+
+          <div>
+            <label for="complemento">Complemento</label>
+            <input type="text" id="complemento">
+          </div>
+
+          <div>
+            <label for="bairro">Bairro</label>
+            <input type="text" id="bairro">
+          </div>
+
+          <div>
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade">
+          </div>
+
+          <div>
+            <label for="estado">Estado</label>
+            <input type="text" id="estado" maxlength="2">
+          </div>
+
+          <div>
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" inputmode="numeric" placeholder="00000-000">
+          </div>
+
+          <div>
+            <label for="site">Site</label>
+            <input type="url" id="site" placeholder="https://">
+          </div>
+
+          <div>
+            <label for="ativo">Status *</label>
+            <select id="ativo" required>
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
+            </select>
+          </div>
+
+          <div style="grid-column:1 / -1;">
+            <label for="observacoes">Observações</label>
+            <textarea id="observacoes" rows="4" style="width:100%;padding:12px 14px;border:1px solid #d9d5e8;border-radius:10px;font:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+          </div>
+
+          <div style="grid-column:1 / -1;">
+            <label for="logo_empresa">Logo da empresa</label>
+            <input type="file" id="logo_empresa" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+
+            <div
+              id="previewLogoEmpresaBox"
+              style="
+                display:none;
+                margin-top:14px;
+                padding:12px;
+                border:1px solid #e2deee;
+                border-radius:12px;
+                background:#fff;
+                max-width:320px;
+              "
+            >
+              <div
+                style="
+                  font-size:12px;
+                  font-weight:800;
+                  color:#6e688f;
+                  margin-bottom:8px;
+                "
+              >
+                Prévia da logo
+              </div>
+
+              <img
+                id="previewLogoEmpresa"
+                alt="Prévia da logo da empresa"
+                style="
+                  display:block;
+                  max-width:100%;
+                  max-height:140px;
+                  object-fit:contain;
+                  margin:auto;
+                "
+              >
+            </div>
+
+            <small style="display:block;margin-top:8px;color:#6e688f;">PNG, JPG ou WEBP.</small>
+          </div>
+
+        </div>
+
+        <div style="margin-top:25px;">
+          <button type="submit" class="btnCadastrar">Cadastrar empresa</button>
+        </div>
+
+        <div id="mensagem" style="margin-top:15px;font-weight:700;"></div>
+      </form>
+    </section>
+
+    <section class="summary">
+
+      <div class="usuarios-topo">
+        <div>
+          <span>EMPRESAS CADASTRADAS</span>
+          <h2>Empresas do sistema</h2>
+        </div>
+
+        <button type="button" id="btnAtualizarEmpresas" class="btnSecundario">
+          Atualizar lista
+        </button>
+      </div>
+
+      <div class="tabela-wrapper">
+        <table class="tabela-usuarios" id="tabelaEmpresas">
+
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Razão Social</th>
+              <th>CPF / CNPJ</th>
+              <th>Cidade</th>
+              <th>Telefone</th>
+              <th>E-mail</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaEmpresas">
+            <tr>
+              <td colspan="8">Carregando empresas...</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="empresas.js"></script>
+
+</body>
+</html>
