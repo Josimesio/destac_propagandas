@@ -1,0 +1,10 @@
+DESTAC PROPAGANDAS — RESTAURAÇÃO DO SELETOR DE EMPRESAS (20/10/2026)
+
+O seletor Empresa voltou a usar a consulta anterior ao Supabase: tabela empresas, campos id, razao_social, nome_fantasia, cpf_cnpj e ativo, filtrando ativo=true e ordenando pela razão social.
+Se ocorrer falha de conexão, permissão ou consulta, a página mostra o motivo retornado pelo Supabase e um botão para tentar novamente.
+Mantidos os seletores <select> nativos e as regras da grade de horários.
+A referência do script recebeu um identificador de versão para evitar cache do navegador.
+
+PUBLICAÇÃO: substitua somente contrato_novo.html e contratos.js no seu site. Atualize a página. Não execute SQL.
+
+ATENÇÃO: se aparecer uma mensagem de erro do Supabase, envie a mensagem. O projeto não tem acesso ao seu banco de produção para confirmar permissões em tempo real.

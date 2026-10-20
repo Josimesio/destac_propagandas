@@ -1,0 +1,17 @@
+DESTAC PROPAGANDAS — Valor unitário por inserção
+
+1. Faça backup do Supabase.
+2. Execute sql/INSTALAR_VALOR_UNITARIO_INSERCAO.sql no SQL Editor.
+3. Publique todos os arquivos do ZIP na pasta raiz do projeto.
+4. Pressione Ctrl+F5 e teste um NOVO contrato com status PENDENTE primeiro.
+
+Regra: preço unitário × inserções mensais = mensalidade. Mensalidade × meses da vigência = total comercial.
+Quantidade de inserções mensal sugerida: (ter/qui ×2 + sáb/dom ×2) × 4 semanas.
+Edite a quantidade mensal se o mês tiver dias adicionais. Essa convenção não conta automaticamente o calendário de cada mês.
+
+Modalidade Financeiro: 100% do total calculado em valores financeiros.
+Modalidade Permuta: 100% do total calculado em permuta.
+Modalidade Misto: digite a permuta; a parcela financeira resulta do saldo. Só a parte financeira entra no Contas a Receber.
+
+Os contratos antigos sem esses dois campos mantêm os valores anteriores na edição.
+Não execute migrações financeiras antigas novamente.

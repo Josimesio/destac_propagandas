@@ -1,0 +1,23 @@
+DESTAC PROPAGANDAS — três modalidades visíveis no cadastro de contratos
+
+MODALIDADES:
+- Somente valores: dinheiro / PIX / boleto / cartão / transferência, sem permuta.
+- Somente permuta: valor e descrição da permuta, sem contas a receber monetárias.
+- Misto: permuta + financeiro, com valores separados. Total comercial = soma dos dois.
+
+ALTERAÇÕES DESTA VERSÃO:
+- contrato_novo.html: três opções visíveis em cartões, seção Valores do contrato
+  posicionada acima dos horários e campos correspondentes por modalidade.
+- contratos.js: sincronização das três opções com a modalidade já existente,
+  preservando o salvamento, a edição, os cálculos e a geração de documentos.
+
+O SQL de modalidade mista fornecido na versão anterior continua necessário
+caso ainda não tenha sido instalado. Esta atualização da interface, isoladamente,
+não requer execução de novo SQL.
+
+TESTES LOCAIS:
+- Somente valores: visibilidade do valor financeiro e cobrança monetária.
+- Somente permuta: exibe permuta e descrição, sem cobranças monetárias.
+- Misto: exibe os dois valores e soma total, mas cobra apenas parte financeira.
+- Edição: seleção da modalidade antiga é refletida nas opções visíveis.
+- Testes foram simulados; salvar em Supabase real exige validação no ambiente.

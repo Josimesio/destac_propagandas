@@ -418,13 +418,30 @@ function preencherCabecalho(
 }
 
 
-async function carregarEmpresas() {
+// Os cadastros globais podem ter mais de 1.000 clientes (limite por consulta da API).
+async function listarCadastrosAtivos(tabela, colunas) {
+  const pagina = 1000;
+  const resultado = [];
+  for (let inicio = 0; inicio < 100000; inicio += pagina) {
+    const { data, error } = await supabaseClient.from(tabela)
+      .select(colunas).eq('ativo', true).order('id', { ascending: true })
+      .range(inicio, inicio + pagina - 1);
+    if (error) throw error;
+    resultado.push(...(data || []));
+    if (!data || data.length < pagina) return resultado;
+  }
+  throw new Error('Quantidade de cadastros excedeu o limite de segurança.');
+}
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
+// Consulta de empresas restaurada da versão anterior que utilizava os
+// cadastros reais da tabela public.empresas (sem a paginação dos clientes).
+async function carregarEmpresas() {
+  if (!empresaId) return;
+  empresaId.disabled = true;
+  empresaId.innerHTML = '<option value="">Carregando empresas cadastradas...</option>';
+
+  try {
+    const { data, error } = await supabaseClient
       .from('empresas')
       .select(`
         id,
@@ -433,167 +450,85 @@ async function carregarEmpresas() {
         cpf_cnpj,
         ativo
       `)
-      .eq(
-        'ativo',
-        true
-      )
-      .order(
-        'razao_social'
-      );
+      .eq('ativo', true)
+      .order('razao_social');
 
+    if (error) throw error;
+    empresaId.innerHTML = '<option value="">Selecione a empresa</option>';
 
-  if (error) {
-
-    console.error(
-      error
-    );
-
-    mensagemContrato.style.color =
-      '#a44f69';
-
-    mensagemContrato.textContent =
-      'Não foi possível carregar as empresas.';
-
-    return;
-  }
-
-
-  empresaId.innerHTML =
-    '<option value="">Selecione a empresa</option>';
-
-
-  for (
-    const empresa of data || []
-  ) {
-
-    const option =
-      document.createElement(
-        'option'
-      );
-
-    option.value =
-      empresa.id;
-
-    option.textContent =
-      empresa.nome_fantasia
+    for (const empresa of data || []) {
+      const option = document.createElement('option');
+      option.value = String(empresa.id);
+      option.textContent = empresa.nome_fantasia
         ? `${empresa.nome_fantasia} — ${empresa.razao_social}`
-        : empresa.razao_social;
+        : (empresa.razao_social || `Empresa ${empresa.id}`);
+      option.dataset.documento = String(empresa.cpf_cnpj || '').replace(/\D/g, '');
+      empresaId.appendChild(option);
+    }
+    empresaId.disabled = false;
 
-    empresaId.appendChild(
-      option
-    );
+    // Um aviso de erro anterior não deve continuar depois de uma recarga bem-sucedida.
+    if (mensagemContrato?.dataset.erroCarregamentoEmpresas === 'sim') {
+      mensagemContrato.textContent = '';
+      delete mensagemContrato.dataset.erroCarregamentoEmpresas;
+    }
+    if (!data?.length && mensagemContrato) {
+      mensagemContrato.style.color = '#a44f69';
+      mensagemContrato.textContent = 'Não encontrei empresas ativas disponíveis. Confira Empresas → Cadastros e as permissões do seu usuário.';
+      mensagemContrato.dataset.erroCarregamentoEmpresas = 'sim';
+    }
+  } catch (error) {
+    console.error('Não foi possível consultar os cadastros de empresas:', error);
+    empresaId.disabled = true;
+    empresaId.innerHTML = '<option value="">Falha ao buscar empresas cadastradas</option>';
+    if (mensagemContrato) {
+      mensagemContrato.style.color = '#a44f69';
+      mensagemContrato.textContent = `Falha ao consultar empresas no Supabase: ${error?.message || 'erro de conexão ou permissão'}.`;
+      mensagemContrato.dataset.erroCarregamentoEmpresas = 'sim';
+      // Botão aparece SOMENTE em caso de falha, sem alterar o seletor nativo.
+      const tentarNovamente = document.createElement('button');
+      tentarNovamente.type = 'button';
+      tentarNovamente.id = 'btnRecarregarEmpresasContrato';
+      tentarNovamente.textContent = 'Tentar buscar empresas novamente';
+      tentarNovamente.style.cssText = 'display:block;margin-top:8px;padding:8px 12px;font-size:14px;cursor:pointer;';
+      tentarNovamente.addEventListener('click', carregarEmpresas);
+      mensagemContrato.appendChild(tentarNovamente);
+    }
   }
 }
 
 
 async function carregarClientesGlobais() {
-
-  clienteId.disabled =
-    true;
-
-  clienteId.innerHTML =
-    '<option value="">Carregando clientes...</option>';
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('clientes')
-      .select(`
-        id,
-        razao_social,
-        nome_fantasia,
-        cpf_cnpj,
-        endereco,
-        numero,
-        complemento,
-        bairro,
-        cidade,
-        estado,
-        telefone,
-        celular_whatsapp,
-        contato,
-        responsavel,
-        email,
-        ativo
-      `)
-      .eq(
-        'ativo',
-        true
-      )
-      .order(
-        'razao_social'
-      );
-
-
-  if (error) {
-
-    console.error(
-      error
-    );
-
-    clienteId.innerHTML =
-      '<option value="">Erro ao carregar clientes</option>';
-
-    mensagemContrato.style.color =
-      '#a44f69';
-
-    mensagemContrato.textContent =
-      'Não foi possível carregar os clientes.';
-
-    return;
-  }
-
-
-  clienteId.innerHTML =
-    '<option value="">Selecione o cliente</option>';
-
-
-  for (
-    const cliente of [...(data || [])].sort((a, b) => {
-        const nomeA = String(a.nome_fantasia || a.razao_social || '').trim();
-        const nomeB = String(b.nome_fantasia || b.razao_social || '').trim();
-        return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base', numeric: true }) ||
-          String(a.razao_social || '').localeCompare(String(b.razao_social || ''), 'pt-BR', { sensitivity: 'base', numeric: true }) ||
-          Number(a.id) - Number(b.id);
-      })
-  ) {
-
-    const option =
-      document.createElement(
-        'option'
-      );
-
-    option.value =
-      cliente.id;
-
-    option.textContent =
-      cliente.nome_fantasia
-        ? `${cliente.nome_fantasia} — ${cliente.razao_social}`
-        : cliente.razao_social;
-
-    clienteId.appendChild(
-      option
-    );
-  }
-
-
-  clienteId.disabled =
-    false;
-
-
-  if (
-    !data ||
-    data.length === 0
-  ) {
-
-    mensagemContrato.style.color =
-      '#a44f69';
-
-    mensagemContrato.textContent =
-      'Nenhum cliente ativo cadastrado.';
+  clienteId.disabled = true;
+  clienteId.innerHTML = '<option value="">Carregando clientes...</option>';
+  try {
+    const dados = await listarCadastrosAtivos('clientes', `id,razao_social,nome_fantasia,cpf_cnpj,
+      endereco,numero,complemento,bairro,cidade,estado,telefone,celular_whatsapp,
+      contato,responsavel,email,ativo`);
+    clienteId.innerHTML = '<option value="">Selecione o cliente</option>';
+    for (const cliente of dados.sort((a,b) => {
+      const aNome = String(a.nome_fantasia || a.razao_social || '').trim();
+      const bNome = String(b.nome_fantasia || b.razao_social || '').trim();
+      return aNome.localeCompare(bNome, 'pt-BR', { sensitivity: 'base', numeric: true }) ||
+        Number(a.id) - Number(b.id);
+    })) {
+      const option = document.createElement('option');
+      option.value = cliente.id;
+      option.textContent = cliente.nome_fantasia
+        ? `${cliente.nome_fantasia} — ${cliente.razao_social}` : cliente.razao_social;
+      option.dataset.documento = String(cliente.cpf_cnpj || '').replace(/\D/g, '');
+      clienteId.appendChild(option);
+    }
+    clienteId.disabled = false;
+    if (!dados.length) {
+      mensagemContrato.style.color = '#a44f69';
+      mensagemContrato.textContent = 'Nenhum cliente ativo disponível. Confira as permissões e os cadastros globais.';
+    }
+  } catch (error) {
+    console.error('Erro ao carregar clientes:', error);
+    clienteId.innerHTML = '<option value="">Erro ao carregar clientes</option>';
+    mensagemContrato.style.color = '#a44f69';
+    mensagemContrato.textContent = `Não foi possível carregar os clientes: ${error.message || 'erro na consulta ao Supabase'}.`;
   }
 }
 
@@ -854,233 +789,199 @@ async function carregarClienteSelecionado(
 
 
 
-const horariosPadraoSabadoDomingo = [
-  '08:10',
-  '08:45',
-  '09:10',
-  '09:45',
-  '10:10',
-  '10:45',
-  '11:10',
-  '11:45'
-];
-
-const horariosPadraoTercaQuinta = [
-  '15:10',
-  '15:45',
-  '16:10',
-  '16:45',
-  '17:10',
-  '17:45',
-  '18:10',
-  '18:45',
-  '19:10',
-  '19:45',
-  '20:10',
-  '20:45'
-];
-
-
-function renderizarCamposHorario(
-  containerId,
-  quantidade,
-  prefixo,
-  horariosPadrao
-) {
-
-  const container =
-    document.getElementById(
-      containerId
-    );
-
-
-  if (!container) {
-    return;
-  }
-
-
-  const quantidadeNumerica =
-    Math.max(
-      0,
-      Number(
-        quantidade || 0
-      )
-    );
-
-
-  // Ao alterar a quantidade de inserções, preserve os horários já editados.
-  const horariosAtuais = Array.from(container.querySelectorAll('input[type="time"]'))
-    .map(input => input.value);
-
-  container.innerHTML =
-    '';
-
-
-  if (
-    quantidadeNumerica === 0
-  ) {
-
-    const aviso =
-      document.createElement(
-        'div'
-      );
-
-    aviso.textContent =
-      'Informe a quantidade de inserções acima.';
-
-    aviso.style.gridColumn =
-      '1 / -1';
-
-    aviso.style.color =
-      '#6e688f';
-
-    aviso.style.fontSize =
-      '13px';
-
-    aviso.style.textAlign =
-      'center';
-
-    container.appendChild(
-      aviso
-    );
-
-    return;
-  }
-
-
-  for (
-    let i = 0;
-    i < quantidadeNumerica;
-    i++
-  ) {
-
-    const input =
-      document.createElement(
-        'input'
-      );
-
-    input.type =
-      'time';
-
-    input.id =
-      `${prefixo}_${i + 1}`;
-
-    input.name =
-      `${prefixo}[]`;
-
-    input.required =
-      true;
-
-    input.value =
-      horariosAtuais[i] ?? horariosPadrao[i] ?? '';
-
-    input.title =
-      `Horário ${i + 1}`;
-
-    const celula =
-      document.createElement(
-        'div'
-      );
-
-    celula.className =
-      'celula-horario';
-
-    celula.appendChild(
-      input
-    );
-
-    container.appendChild(
-      celula
-    );
-  }
+// A grade e compartilhada por veiculo executor entre empresas diferentes.
+// Todos os horarios sao conferidos no servidor para toda a vigencia do contrato.
+const destacGrade = {
+  slots: { TERCA_QUINTA: [], SABADO_DOMINGO: [] },
+  consultada: false,
+  contexto: '',
+  versao: 0,
+  timer: null,
+  atualizando: false
+};
+const destacarHorario = horario => {
+  const m = String(horario || '').match(/^(\d\d):(\d\d)(?::(\d\d))?$/);
+  return m ? `${m[1]}:${m[2]}:${m[3] || '00'}` : String(horario || '');
+};
+function disponibilidadeContexto() {
+  return [valorCampo('dataInicio'), valorCampo('dataTermino'), valorCampo('veiculoExecutor').trim().toLowerCase()].join('|');
 }
-
-
-
+function slotsGradeGerados(grupo) {
+  const inicio = grupo === 'TERCA_QUINTA' ? 13*3600+30*60 : 8*3600;
+  const blocos = grupo === 'TERCA_QUINTA' ? 75 : 40;
+  const lista = [];
+  for (let b=0;b<blocos;b++) for(let i=0;i<4;i++) {
+    const seg = inicio+b*360+i*30;
+    lista.push(`${String(Math.floor(seg/3600)).padStart(2,'0')}:${String(Math.floor((seg%3600)/60)).padStart(2,'0')}:${String(seg%60).padStart(2,'0')}`);
+  }
+  return lista;
+}
+function gradeStatus(texto, situacao='info') {
+  const box=document.getElementById('statusGradeHorarios');
+  if (box) { box.textContent=texto;box.dataset.situacao=situacao; }
+}
+function horariosSelecionados(containerId) {
+  return Array.from(document.querySelectorAll(`#${containerId} select[data-grade-horario]`)).map(e=>e.value);
+}
+function renderizarCamposHorario(containerId, quantidade, prefixo) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const anteriores = horariosSelecionados(containerId);
+  const grupo = containerId==='horariosTercaQuinta'?'TERCA_QUINTA':'SABADO_DOMINGO';
+  const lugares = destacGrade.consultada ? destacGrade.slots[grupo] : [];
+  const livres = lugares.filter(p=>p.disponivel).map(p=>p.horario);
+  const usados = new Set();
+  const capacidade=grupo==='TERCA_QUINTA'?300:160;
+  const qtdInformada=Number(quantidade)||0;
+  const qtd=qtdInformada>capacidade?0:Math.max(0,Math.min(capacidade,qtdInformada));
+  if(qtdInformada>capacidade) gradeStatus(`A capacidade maxima e ${capacidade} anuncios por dia neste grupo. Reduza a quantidade de insercoes.`,'erro');
+  const fragment=document.createDocumentFragment();
+  if (!qtd) {
+    const msg=document.createElement('span');msg.textContent='Nenhuma inserção nesse grupo.';fragment.append(msg);
+  }
+  for(let i=0;i<qtd;i++) {
+    const celula=document.createElement('div');celula.className='celula-horario';
+    const label=document.createElement('label');label.textContent=`Anúncio ${i+1}`;label.htmlFor=`${prefixo}_${i+1}`;
+    const sel=document.createElement('select');sel.id=`${prefixo}_${i+1}`;sel.name=`${prefixo}[]`;
+    sel.dataset.gradeHorario=grupo;sel.required=true;
+    const vazio=document.createElement('option');vazio.value='';vazio.textContent='Escolha um horário';sel.append(vazio);
+    let valor=destacarHorario(anteriores[i]||'');
+    if (!valor && livres.length) {
+      // Distribuir automaticamente os anuncios ao longo de toda a feira.
+      for(let tentativa=0;tentativa<livres.length;tentativa++) {
+        const sugestao=livres[(Math.floor((i+.5)*livres.length/qtd)+tentativa)%livres.length];
+        if (!usados.has(sugestao)) {valor=sugestao;break;}
+      }
+    }
+    const valoresNovos=new Set(lugares.map(p=>p.horario));
+    if (valor && !valoresNovos.has(valor)) {
+      const antigo=document.createElement('option');antigo.value=valor;
+      antigo.textContent=`${valor} (horário antigo; confira)`;
+      sel.append(antigo);
+    }
+    for(const item of lugares) {
+      const opt=document.createElement('option');opt.value=item.horario;
+      opt.textContent=item.horario.slice(0,5)+(item.horario.endsWith(':30')?':30':'');
+      if (!item.disponivel) {opt.disabled=true;opt.textContent+=' — ocupado';}
+      sel.append(opt);
+    }
+    sel.value=valor;
+    usados.add(valor);
+    sel.addEventListener('change',()=>{
+      ajustarDisponibilidadeCampos();
+      marcarContratoComoAlterado();
+    });
+    celula.append(label,sel);fragment.append(celula);
+  }
+  container.replaceChildren(fragment);
+  ajustarDisponibilidadeCampos();
+}
+function ajustarDisponibilidadeCampos() {
+  let invalidos=0;
+  for(const containerId of ['horariosTercaQuinta','horariosSabadoDomingo']) {
+    const grupo=containerId==='horariosTercaQuinta'?'TERCA_QUINTA':'SABADO_DOMINGO';
+    const campos=Array.from(document.querySelectorAll(`#${containerId} select[data-grade-horario]`));
+    const todos=campos.map(e=>e.value);
+    const livres=new Set(destacGrade.slots[grupo].filter(e=>e.disponivel).map(e=>e.horario));
+    campos.forEach(campo=>{
+      const conflito=destacGrade.consultada && (!campo.value||!livres.has(campo.value)||todos.filter(v=>v&&v===campo.value).length>1);
+      campo.classList.toggle('destac-grade-invalido',!!conflito);
+      campo.setCustomValidity(conflito ? 'Horário indisponível, repetido ou não escolhido.' : '');
+      if(conflito) invalidos++;
+      [...campo.options].forEach(opt=>{
+        if(!opt.value) return;
+        const item=destacGrade.slots[grupo].find(p=>p.horario===opt.value);
+        opt.disabled = Boolean(item && (!item.disponivel || (opt.value!==campo.value && todos.includes(opt.value))));
+      });
+    });
+  }
+  if(destacGrade.consultada) {
+    const livresSemana=destacGrade.slots.TERCA_QUINTA.filter(s=>s.disponivel).length;
+    const livresFim=destacGrade.slots.SABADO_DOMINGO.filter(s=>s.disponivel).length;
+    gradeStatus(`${livresSemana} posições disponíveis por terça/quinta; ${livresFim} por sábado/domingo. ${invalidos ? `${invalidos} horário(s) precisam ser alterados antes de salvar.` : 'Seleções válidas para a vigência consultada.'}`,invalidos?'erro':'ok');
+  }
+  return invalidos===0;
+}
 function atualizarCamposHorarios() {
-
-  const tercaQuinta =
-    document.getElementById(
-      'insercoesTercaQuinta'
-    );
-
-  const sabadoDomingo =
-    document.getElementById(
-      'insercoesSabadoDomingo'
-    );
-
-  const blocoHorarios =
-    document.querySelector(
-      '.horarios-insercoes'
-    );
-
-  const grupoSabadoDomingo =
-    document.getElementById(
-      'grupoSabadoDomingo'
-    );
-
-  const grupoTercaQuinta =
-    document.getElementById(
-      'grupoTercaQuinta'
-    );
-
-  const qtdSabadoDomingo =
-    Number(
-      sabadoDomingo?.value || 0
-    );
-
-  const qtdTercaQuinta =
-    Number(
-      tercaQuinta?.value || 0
-    );
-
-  const existeHorario =
-    qtdSabadoDomingo > 0 ||
-    qtdTercaQuinta > 0;
-
-
-  if (blocoHorarios) {
-    blocoHorarios.style.display =
-      existeHorario
-        ? 'block'
-        : 'none';
+  const qtdSemana=Math.max(0,Number(valorCampo('insercoesTercaQuinta'))||0);
+  const qtdFim=Math.max(0,Number(valorCampo('insercoesSabadoDomingo'))||0);
+  const bloco=document.querySelector('.horarios-insercoes');
+  if (bloco) bloco.style.display=qtdSemana+qtdFim?'block':'none';
+  const grupoFim=document.getElementById('grupoSabadoDomingo');
+  const grupoSemana=document.getElementById('grupoTercaQuinta');
+  if(grupoFim) grupoFim.style.display=qtdFim?'block':'none';
+  if(grupoSemana) grupoSemana.style.display=qtdSemana?'block':'none';
+  renderizarCamposHorario('horariosSabadoDomingo',qtdFim,'horarioSabadoDomingo');
+  renderizarCamposHorario('horariosTercaQuinta',qtdSemana,'horarioTercaQuinta');
+  if(qtdSemana>300 || qtdFim>160) {
+    gradeStatus(`Quantidade acima da capacidade: máximo de 300 anúncios às terças/quintas e 160 aos sábados/domingos, por dia.`,'erro');
   }
-
-
-  if (
-    grupoSabadoDomingo
-  ) {
-    grupoSabadoDomingo.style.display =
-      qtdSabadoDomingo > 0
-        ? 'block'
-        : 'none';
-  }
-
-  if (
-    grupoTercaQuinta
-  ) {
-    grupoTercaQuinta.style.display =
-      qtdTercaQuinta > 0
-        ? 'block'
-        : 'none';
-  }
-
-
-  renderizarCamposHorario(
-    'horariosSabadoDomingo',
-    qtdSabadoDomingo,
-    'horarioSabadoDomingo',
-    horariosPadraoSabadoDomingo
-  );
-
-
-  renderizarCamposHorario(
-    'horariosTercaQuinta',
-    qtdTercaQuinta,
-    'horarioTercaQuinta',
-    horariosPadraoTercaQuinta
-  );
 }
+async function consultarGradeHorarios(forcar=false) {
+  const inicio=valorCampo('dataInicio'),fim=valorCampo('dataTermino'),veiculo=valorCampo('veiculoExecutor').trim();
+  const contexto=disponibilidadeContexto();
+  if(!inicio||!fim||fim<inicio||!veiculo) {
+    destacGrade.consultada=false; destacGrade.contexto='';
+    gradeStatus('Informe início, duração e veículo executor para consultar a grade.');
+    return false;
+  }
+  if(!forcar && destacGrade.consultada && destacGrade.contexto===contexto) return true;
+  const versao=++destacGrade.versao;
+  destacGrade.consultada=false;
+  destacGrade.atualizando=true;
+  gradeStatus('Consultando os horários disponíveis para todas as feiras do contrato...');
+  try {
+    const {data,error}=await supabaseClient.rpc('destac_grade_disponibilidade',{
+      p_inicio:inicio,p_fim:fim,p_veiculo:veiculo,p_ignorar_id:contratoSalvoId||null
+    });
+    if(versao!==destacGrade.versao) return false;
+    if(error) throw error;
+    const dados=Array.isArray(data)?data:[];
+    if(dados.length!==460) throw new Error('A consulta não retornou a grade completa (460 posições).');
+    destacGrade.slots={
+      TERCA_QUINTA:dados.filter(p=>p.grupo==='TERCA_QUINTA').map(p=>({horario:destacarHorario(p.horario),disponivel:p.disponivel===true})),
+      SABADO_DOMINGO:dados.filter(p=>p.grupo==='SABADO_DOMINGO').map(p=>({horario:destacarHorario(p.horario),disponivel:p.disponivel===true}))
+    };
+    destacGrade.consultada=true;destacGrade.contexto=contexto;
+    atualizarCamposHorarios();
+    return true;
+  } catch(erro) {
+    if(versao!==destacGrade.versao) return false;
+    destacGrade.consultada=false;destacGrade.contexto='';
+    gradeStatus(`Não foi possível consultar os horários: ${erro.message}. Execute primeiro o SQL da grade no Supabase.`,'erro');
+    return false;
+  } finally {if(versao===destacGrade.versao) destacGrade.atualizando=false;}
+}
+function agendarConsultaGrade() {
+  clearTimeout(destacGrade.timer);
+  destacGrade.consultada=false;
+  destacGrade.contexto='';
+  destacGrade.versao++;
+  gradeStatus('Atualizando disponibilidade após mudar os dados do contrato...');
+  destacGrade.timer=setTimeout(()=>consultarGradeHorarios(true),350);
+}
+async function validarGradeAntesDeSalvar() {
+  clearTimeout(destacGrade.timer);
+  const ok=await consultarGradeHorarios(true);
+  if(!ok) return false;
+  const qtdSemana=Number(valorCampo('insercoesTercaQuinta'))||0;
+  const qtdFim=Number(valorCampo('insercoesSabadoDomingo'))||0;
+  const escolhidosSemana=horariosSelecionados('horariosTercaQuinta');
+  const escolhidosFim=horariosSelecionados('horariosSabadoDomingo');
+  const validos=ajustarDisponibilidadeCampos() && escolhidosSemana.length===qtdSemana && escolhidosFim.length===qtdFim;
+  if(!validos) {
+    gradeStatus('Existe horário ocupado, duplicado ou vazio. Selecione posições disponíveis para todas as inserções.','erro');
+    document.getElementById('statusGradeHorarios')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return false;
+  }
+  return true;
+}
+for(const id of ['dataInicio','dataTermino','duracaoMeses','veiculoExecutor']) {
+  const campo=document.getElementById(id);
+  if(campo) for(const evento of ['change','input']) campo.addEventListener(evento, agendarConsultaGrade);
+}
+document.getElementById('btnAtualizarGrade')?.addEventListener('click',()=>consultarGradeHorarios(true));
+
 
 
 function atualizarResumoInsercoes() {
@@ -1155,6 +1056,7 @@ for (
         atualizarResumoInsercoes();
         atualizarQuantidadeMensalSugerida();
         atualizarCamposHorarios();
+        if (!destacGrade.consultada) agendarConsultaGrade();
       }
     );
   }
@@ -1937,6 +1839,32 @@ function atualizarResumoQuatroValores(f) {
   preencher('resumoValorDinheiro', misto ? formatar(f.financeiroCentavos) : '—');
 }
 
+function montarRegraFinanceira(f, valorBR) {
+  const percentualPermuta = lerPercentualPermuta();
+  const temEntrada = !!normalizarDataISO(valorCampo('dataVencimentoEntrada')) && parseMoedaInsercao(valorCampo('valorEntrada')) > 0;
+  const complementoEntrada = temEntrada ? ' Se houver entrada, ela entra na parte financeira e também gera cobrança.' : '';
+  switch (tipoPagamentoSelecionado) {
+    case 'VISTA':
+      return `Regra: o valor total a receber é ${valorBR(f.comercialCentavos)}. É uma cobrança única, à vista, sem desconto e sem permuta.`;
+    case 'VISTA_DESCONTO':
+      return `Regra: o desconto à vista reduz o valor da cobrança. Total comercial: ${valorBR(f.comercialCentavos)}. Desconto: ${f.percentualDesconto ?? '—'}%. Valor final à vista: ${valorBR(f.totalCentavos)}.`;
+    case 'MENSAL':
+      return `Regra: contrato mensal sem desconto. O valor total a receber é dividido em ${f.cobrancas.length || 0} parcela(s) mensal(is) de acordo com a duração do contrato.${complementoEntrada}`;
+    case 'PARCELADO_DESCONTO':
+      return `Regra: o desconto parcelado reduz primeiro o valor total a receber. Depois, o valor com desconto (${valorBR(f.totalCentavos)}) é dividido em ${f.cobrancas.length || 0} parcela(s).${complementoEntrada}`;
+    case 'MISTO': {
+      const perc = percentualPermuta === null ? '—' : `${percentualPermuta.toLocaleString('pt-BR')}%`;
+      return `Regra: parte do contrato é permuta e parte é dinheiro. Permuta: ${perc} do total (${valorBR(f.permutaCentavos)}). Parte financeira: ${valorBR(f.financeiroCentavos)}. Somente a parte financeira gera cobrança.${complementoEntrada}`;
+    }
+    case 'PERMUTA':
+      return `Regra: 100% do contrato é permuta. Valor comercial em permuta: ${valorBR(f.comercialCentavos)}. Não gera contas a receber no Financeiro.`;
+    case 'LEGADO_PARCELADO':
+      return `Regra: contrato antigo parcelado. O valor financeiro ${valorBR(f.financeiroCentavos)} é dividido nas parcelas configuradas.${complementoEntrada}`;
+    default:
+      return 'Regra: selecione uma modalidade de pagamento para ver a regra correta.';
+  }
+}
+
 function atualizarPreviaFinanceira() {
   controlarModalidadeContrato();
   const f = dadosFinanceirosDoFormulario();
@@ -1968,11 +1896,13 @@ function atualizarPreviaFinanceira() {
   if(alerta) {
     alerta.textContent = statusContrato==='ATIVO'
       ? f.erro.length ? `Impossível ativar: ${f.erro.join('; ')}.`
-      : f.temFinanceiro ? `${f.cobrancas.length} cobrança(s) prevista(s), somando ${valorBR(f.totalCentavos)}. A permuta não gera cobrança.`
+      : f.temFinanceiro ? `${f.cobrancas.length} cobrança(s) prevista(s), somando ${valorBR(f.totalCentavos)}.${f.temPermuta ? ' A permuta não gera cobrança.' : ''}`
       : 'Contrato em permuta: nenhuma cobrança financeira será gerada.'
       : 'Contrato não ATIVO: nenhuma nova cobrança será gerada.';
     alerta.classList.toggle('destac-alerta-financeiro',statusContrato==='ATIVO' && f.erro.length>0);
   }
+  const regra = document.getElementById('regraFinanceiraContrato');
+  if (regra) regra.textContent = montarRegraFinanceira(f, valorBR);
 }
 // Seis escolhas visíveis; Contrato Mensal é FINANCEIRO/PARCELADO sem desconto.
 document.querySelectorAll('input[name="tipoModalidadeVisual"]').forEach(radio => {
@@ -2070,6 +2000,12 @@ async function salvarContrato() {
     mensagemContrato.textContent = `Complete o financeiro antes de salvar: ${financeiro.erro.join('; ')}.`;
     atualizarPreviaFinanceira();
     document.getElementById('previsaoFinanceiraContrato')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (!(await validarGradeAntesDeSalvar())) {
+    mensagemContrato.style.color='#a44f69';
+    mensagemContrato.textContent='Verifique os horários do contrato: não é permitido usar posições ocupadas ou repetidas.';
     return;
   }
 
@@ -2177,9 +2113,9 @@ async function salvarContrato() {
     valor_unitario_insercao: precoInsercao.valido ? precoInsercao.unitario : null,
     insercoes_mensais: precoInsercao.valido ? precoInsercao.qtd : null,
     horarios_terca_quinta:
-      obterHorariosDoGrupo('#horariosTercaQuinta input[type="time"]'),
+      obterHorariosDoGrupo('#horariosTercaQuinta select[data-grade-horario]'),
     horarios_sabado_domingo:
-      obterHorariosDoGrupo('#horariosSabadoDomingo input[type="time"]'),
+      obterHorariosDoGrupo('#horariosSabadoDomingo select[data-grade-horario]'),
     valor_mensal: moedaParaNumero(valorCampo('valorMensal')),
     valor_vista: financeiro.temFinanceiro && financeiro.condicao === 'AVISTA' ? moedaParaNumero(valorCampo('valorVista')) : null,
     texto_audio_cliente:
@@ -2374,7 +2310,7 @@ document.addEventListener(
   event => {
     if (
       event.target.matches(
-        '#horariosSabadoDomingo input[type="time"], #horariosTercaQuinta input[type="time"]'
+        '#horariosSabadoDomingo select[data-grade-horario], #horariosTercaQuinta select[data-grade-horario]'
       )
     ) {
       marcarContratoComoAlterado();
@@ -2657,12 +2593,12 @@ function montarHtmlContrato(incluirCondicoes = false) {
 
   const horariosFimSemana =
     coletarHorarios(
-      '#horariosSabadoDomingo input[type="time"]'
+      '#horariosSabadoDomingo select[data-grade-horario]'
     );
 
   const horariosSemana =
     coletarHorarios(
-      '#horariosTercaQuinta input[type="time"]'
+      '#horariosTercaQuinta select[data-grade-horario]'
     );
 
 
@@ -3766,11 +3702,21 @@ async function iniciarPagina() {
           try { horas = JSON.parse(horas); } catch (_) { horas = []; }
         }
         (Array.isArray(horas) ? horas : []).forEach((hora, i) => {
-          if (inputs[i]) inputs[i].value = typeof hora === 'string' ? hora : (hora?.horario || '');
+          if (inputs[i]) {
+            const valor=destacarHorario(typeof hora === 'string' ? hora : (hora?.horario || ''));
+            if (valor && !Array.from(inputs[i].options).some(opt=>opt.value===valor)) {
+              inputs[i].add(new Option(`${valor} (horário anterior)`,valor));
+            }
+            inputs[i].value=valor;
+          }
         });
       };
-      definirHorarios('#horariosTercaQuinta input[type="time"]', contrato.horarios_terca_quinta);
-      definirHorarios('#horariosSabadoDomingo input[type="time"]', contrato.horarios_sabado_domingo);
+      definirHorarios('#horariosTercaQuinta select[data-grade-horario]', contrato.horarios_terca_quinta);
+      definirHorarios('#horariosSabadoDomingo select[data-grade-horario]', contrato.horarios_sabado_domingo);
+      // Excluir o proprio contrato da ocupacao ao editar. O ID ainda nao foi
+      // atribuido por marcarContratoComoSalvo, que vem algumas linhas abaixo.
+      contratoSalvoId = contrato.id;
+      await consultarGradeHorarios(true);
       if (clienteAtualParaAssinatura) atualizarAssinaturaCliente(clienteAtualParaAssinatura);
 
       audioContratoUrl = contrato.audio_url || null;
@@ -3817,5 +3763,6 @@ if (btnSair) {
 
 
 atualizarCamposHorarios();
+agendarConsultaGrade();
 
 iniciarPagina();

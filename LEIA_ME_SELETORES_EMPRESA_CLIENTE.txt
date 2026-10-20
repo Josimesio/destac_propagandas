@@ -1,0 +1,17 @@
+DESTAC PROPAGANDAS — Seletor de Empresa e Seletor de Cliente
+
+Correção pontual: restaurados os dois seletores nativos de cadastros ativos.
+- Empresa: seleção de uma empresa previamente cadastrada.
+- Cliente: seleção de um cliente global previamente cadastrado, após escolher a empresa.
+- Listas em ordem alfabética, carregamento em lotes (inclui mais de 1000 clientes).
+- Sem campo de pesquisa adicional ou combobox customizada.
+- Preservados os IDs empresaId e clienteId usados no salvamento e na edição.
+- A grade de horários, a validação de conflitos, as seis modalidades de pagamento,
+  a prévia financeira e a geração PDF/Word não sofreram alterações.
+
+INSTALAÇÃO
+1. Faça cópia de segurança da sua versão atual.
+2. Publique apenas contrato_novo.html e contratos.js, ou o projeto completo deste ZIP.
+3. Atualize a página com Ctrl+F5.
+4. Abra Gerar Contrato; selecione Empresa e depois Cliente.
+5. Não é necessário rodar SQL.

@@ -1,0 +1,31 @@
+DESTAC PROPAGANDAS — DURAÇÃO DO CONTRATO EM MESES
+Data: 12/10/2026
+
+Arquivos alterados nesta entrega:
+  - contrato_novo.html
+  - contratos.js
+
+FUNCIONAMENTO
+1. Em Novo contrato, informe a Data de início e a Duração do contrato (1 a 120 meses).
+2. A Data de término é calculada automaticamente: data de início + meses - 1 dia.
+   Exemplo: 10/10/2026 + 6 meses = 09/04/2027.
+3. A quantidade de parcelas mensais recebe inicialmente a mesma quantidade de meses.
+4. Caso o usuário altere manualmente a quantidade de parcelas, essa escolha é preservada.
+5. Na edição de contrato, a duração é reconstruída das datas salvas, sem nova coluna no banco.
+6. Em contratos antigos cujas datas não correspondam exatamente ao cálculo por meses,
+   o sistema mantém a vigência antiga ao editar. Ao preencher meses, a data de término
+   será atualizada. Não recalcula datas antigas de forma silenciosa.
+7. O término é um campo calculado (somente leitura). A duração deve ser informada para
+   salvar contratos novos. A quantidade de parcelas continua podendo ser diferente da duração.
+
+INSTALAÇÃO
+- Publique o conteúdo do ZIP na raiz atual do seu site (mesma pasta de admin.html).
+- Atualize a página com Ctrl+F5.
+- Não precisa executar SQL. As datas de início e término já são campos do contrato.
+- O restante do projeto (Financeiro, visualização do contrato, PDF e Word) foi preservado.
+
+VALIDAÇÃO
+- Validação de sintaxe do contratos.js com Node.js.
+- Teste do JavaScript completo em navegador Chromium com Supabase simulado: OK.
+- Testes de cálculo, intervalo do mês e preservação de parcelas personalizadas: OK.
+- A gravação no Supabase da sua instalação precisa ser testada no ambiente real.

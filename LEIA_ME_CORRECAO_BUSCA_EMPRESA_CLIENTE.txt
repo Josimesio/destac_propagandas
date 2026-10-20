@@ -1,0 +1,25 @@
+DESTAC PROPAGANDAS — Correção da busca Empresa e Cliente (20/10/2026)
+
+ALTERAÇÕES
+- Empresa e Cliente: agora é possível digitar nome, nome fantasia e CPF/CNPJ.
+- Os resultados aparecem logo abaixo do campo. Clique no cadastro desejado.
+- É possível navegar pelas sugestões usando as setas para cima/baixo e Enter.
+- Cadastros globais carregados em lotes de até 1.000 registros (não para no primeiro lote).
+- A escolha é encaminhada aos seletores originais do projeto, preservando as rotinas de cadastro e edição dos contratos.
+- A mensagem “Escolha uma opção” voltou ao tamanho normal.
+- Se a consulta ao Supabase falhar ou não retornar empresas/clientes, uma mensagem explica o problema.
+
+ARQUIVOS FUNCIONAIS MODIFICADOS
+- contrato_novo.html
+- contratos.js
+
+INSTALAÇÃO
+1. Mantenha a grade de horários instalada no Supabase, já confirmada anteriormente.
+2. Substitua os arquivos HTML e JS da versão atual pelos do ZIP.
+3. Atualize a página com Ctrl + F5.
+4. Em Gerar Contrato, digite parte do nome da empresa, selecione-a e depois digite parte do nome do cliente.
+5. Teste também por CNPJ e a edição de um contrato existente.
+
+Não é necessário executar SQL novamente.
+Não atualiza nem apaga contratos, clientes ou recebimentos.
+Caso apareça “Não foi possível carregar as empresas”, leia a mensagem exibida no próprio formulário; isso indica falha de consulta/permissão, que precisa ser resolvida no Supabase.

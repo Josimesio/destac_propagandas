@@ -1,0 +1,16 @@
+DESTAC PROPAGANDAS - CONTRATOS: FORMULÁRIO GUIADO
+
+Quatro opções: À vista, À vista com desconto, Permuta + dinheiro, Somente permuta.
+
+À vista: cobra o valor comercial integral, em uma cobrança.
+À vista com desconto: usuário informa percentual e recebe o valor descontado, em uma cobrança.
+Permuta + dinheiro: usuário informa o valor da permuta (qualquer valor positivo e menor que o total); o restante é financeiro e pode ser pago em parcelas ou à vista sem desconto.
+Somente permuta: valor integral da permuta e zero contas a receber monetário.
+
+Para usar a regra mista de valor livre: execute no Supabase SQL Editor,
+DEPOIS dos SQL anteriores, sql/ATUALIZAR_4_FORMAS_PAGAMENTO_PERMUTA_LIVRE.sql.
+A migração não altera contratos antigos nem cria cobranças retroativas.
+Em contratos antigos com pagamento parcelado, o sistema preserva a condição até que seja escolhida explicitamente outra das quatro formas.
+
+Realize backup do banco antes de migrar. Publique todos os arquivos e pressione Ctrl+F5.
+Teste a geração real no seu Supabase com um contrato PENDENTE antes de ativar e conferir as parcelas.

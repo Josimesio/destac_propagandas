@@ -1,0 +1,16 @@
+DESTAC PROPAGANDAS — Condições financeiras seguras
+
+1. Faça backup do Supabase.
+2. Confirme que a integração automática e a conciliação de contratos antigos estão instaladas.
+3. No SQL Editor, execute SOMENTE sql/ATUALIZAR_CONDICOES_FINANCEIRAS_DESCONTO_VISTA.sql.
+4. Se aparecer Success, publique TODOS os arquivos do projeto (sem subpasta).
+5. Ctrl + F5 no navegador e teste um NOVO contrato PENDENTE; depois ative-o para conferir o Financeiro.
+
+Padrão PENDENTE: não cria cobranças. Contrato ATIVO: exige valor total comercial explícito, condição à vista ou parcelado, forma de pagamento e vencimento.
+À vista: valor_vista é o único valor a cobrar (uma parcela); valor total comercial permanece armazenado para referência e desconto.
+Parcelado: entrada incluída no total e vencimento próprio; demais parcelas distribuem o saldo e os centavos.
+Dia das parcelas é determinado pela primeira data de vencimento (meses curtos são ajustados).
+Contratos antigos permanecem aguardando autorização na tela de conciliação.
+
+Importante: os scripts SQL pré-existentes do ZIP são históricos/pré-requisitos. NÃO os execute novamente após esta atualização.
+Os dados e lançamentos existentes não são alterados apenas pela execução da nova migração.

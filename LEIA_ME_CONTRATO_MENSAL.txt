@@ -1,0 +1,12 @@
+DESTAC PROPAGANDAS — Contrato Mensal sem desconto
+
+Nova opção em Gerar Contrato → Valores do contrato.
+- Parcela mensal fixa sem desconto e sem entrada independente.
+- Quantidade de parcelas = duração (meses), ajustada quando a duração muda.
+- Parcela = valor mensal; total = mensal × duração.
+- Primeiro vencimento e forma de pagamento continuam obrigatórios para contratos ATIVOS.
+- Integração reutiliza FINANCEIRO + PARCELADO, não exige novo SQL.
+- Contratos antigos não foram modificados no banco. Na consulta, contratos parcelados sem desconto com parcelas equivalentes aos meses podem ser identificados como mensais.
+- Contratos antigos com parcelamento diferente continuam personalizáveis.
+
+Não modifica dados nem aplica migração automaticamente. Teste em ambiente de homologação antes da publicação.

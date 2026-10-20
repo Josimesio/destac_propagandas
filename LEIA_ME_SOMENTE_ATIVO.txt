@@ -1,0 +1,22 @@
+DESTAC PROPAGANDAS — Regra de Financeiro: somente contrato ATIVO gera parcelas
+
+1. Faça backup do projeto e do banco de dados antes de publicar.
+2. No SQL Editor do Supabase da DESTAC, execute:
+   sql/ATUALIZAR_PARCELAS_SOMENTE_CONTRATOS_ATIVOS.sql
+3. Publique os arquivos do ZIP na mesma pasta do sistema; depois atualize o navegador (Ctrl+F5).
+4. Testes recomendados: 
+   - Novo PENDENTE: salva contrato, SEM criar parcelas.
+   - Editar PENDENTE -> ATIVO, com condições financeiras completas: CRIA parcelas.
+   - Editar ATIVO sem mudar dados financeiros: não duplica parcelas.
+   - Cancelar contrato: cancela contas ainda não quitadas e mantém pagamentos registrados.
+
+IMPORTANTE:
+- PENDENTE, SUSPENSO e ENCERRADO não criam nem recalculam parcelas.
+- Ao sair de ATIVO para um status não cancelado, cobranças antigas permanecem inalteradas.
+  Isso evita cancelar valores com recebimento sem uma regra de negócio aprovada.
+- CANCELADO mantém a regra já existente de cancelar cobranças não quitadas.
+- A migração NAO retroage para corrigir possíveis parcelas já criadas para contratos não ativos.
+  Reveja tais contratos no Financeiro, caso tenham sido gerados por versões antigas.
+- Não execute um script de integração ANTIGO depois desta atualização: ele substituiria a função.
+- A entrada continua INCLUIDA no valor total.
+- Os demais recursos do sistema, inclusive o contrato A4 e as assinaturas, foram preservados.

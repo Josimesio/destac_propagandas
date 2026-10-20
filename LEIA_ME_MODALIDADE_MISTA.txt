@@ -1,0 +1,24 @@
+DESTAC PROPAGANDAS - Contratos com permuta e pagamento financeiro (modo misto)
+
+NOVIDADE EM GERAR CONTRATO > VALORES DO CONTRATO:
+1. Somente financeiro (dinheiro/PIX/boleto/cartao)
+2. Somente permuta
+3. Misto - permuta + financeiro
+
+Valor total comercial = valor de permuta + valor financeiro (ambos antes de desconto).
+Somente o componente FINANCEIRO gera contas a receber. O valor da entrada está dentro do
+componente financeiro e NAO é somado uma segunda vez.
+À vista: o preço com desconto se aplica somente ao componente financeiro.
+Somente permuta: não é exigido vencimento financeiro, não gera parcelas.
+
+INSTALACAO OBRIGATORIA:
+1) Faça backup do banco Supabase.
+2) Confirme que financeiro, integracao automatica, conciliacao e atualizacao das condicoes financeiras JA estao instalados.
+3) Execute sql/INSTALAR_MODALIDADE_MISTA_PERMUTA_FINANCEIRO.sql no SQL Editor do Supabase.
+4) Somente se ocorrer Success, publique o conteudo deste ZIP na raiz do projeto.
+5) Ctrl + F5 e teste: contrato PENDENTE, depois ATIVO; consulte Financeiro > Parcelas de contratos.
+
+Contratos antigos e pagamentos existentes ficam preservados. Contratos antigos na conciliacao
+continuam aguardando autorizacao individual, sem geracao retroativa automatica.
+O sistema foi testado localmente com dados simulados. A execucao do SQL e as gravacoes reais
+no seu Supabase ainda precisam ser validadas.

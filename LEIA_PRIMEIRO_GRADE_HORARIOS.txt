@@ -1,0 +1,21 @@
+DESTAC PROPAGANDAS | Grade de horarios publicitarios | 20/10/2026
+
+1. Faca backup do Supabase antes da mudanca.
+2. No Supabase > SQL Editor execute sql/INSTALAR_GRADE_HORARIOS_20261020.sql.
+3. Execute sql/VERIFICAR_GRADE_HORARIOS_20261020.sql: as 3 linhas devem indicar INSTALADO.
+4. Publique TODOS os arquivos HTML e JS da pasta deste pacote (ou apenas contrato_novo.html e contratos.js, caso o restante do site ja esteja atualizado).
+5. Atualize o navegador com Ctrl+F5. Entre em Contratos > Gerar Contrato, informe empresa, cliente, veiculo, inicio, meses e insercoes por dia.
+6. Os horarios de 30 segundos sao consultados ao Supabase, com 4 insercoes por bloco de 6 minutos, deixando os outros 4 minutos para musica.
+7. Confira os horarios sugeridos. Se necessario, troque por outro horario marcado como disponivel. Atualizar horarios disponiveis consulta o banco novamente.
+8. Ao salvar, uma nova consulta e uma validacao no banco impedem sobreposicao ou repeticao, inclusive de dois usuarios simultaneos.
+
+REGRAS E LIMITACOES
+- Feira: terca/quinta 13:30-21:00 (300 anuncios/dia); sabado/domingo 08:00-12:00 (160 anuncios/dia).
+- O formulario utiliza o MESMO conjunto de horarios para terca e quinta, e outro mesmo conjunto para sabado e domingo. Um horario so aparece livre se estiver livre em TODAS as datas do grupo durante a vigencia, no mesmo veiculo executor.
+- A grade e compartilhada entre empresas se o campo Veiculo Executor for igual (ignorando maiusculas, minusculas e espacos nas pontas). Padronize exatamente esse campo para todos os contratos da mesma feira/sonorizacao.
+- Contratos ATIVOS e PENDENTES bloqueiam horarios. CANCELADOS, SUSPENSOS e ENCERRADOS nao reservam. A regra de que SOMENTE ATIVO gera contas a receber foi mantida.
+- Nao altera contratos antigos automaticamente. Horarios antigos que nao pertencem ao novo bloco serao reconhecidos na consulta; por cautela, seu bloco de 6 minutos e tratado como ocupado.
+- Contratos antigos podem manter seus horarios se a grade nao for modificada. Ao alterar grade, datas ou veiculo, os horarios devem ser adequados a nova regra.
+- A grade e uma RESERVA recorrente por dia da semana. O sistema ainda nao envia ou substitui automaticamente a playlist do ZaraRadio, que depende da configuracao de musicas e audio do operador.
+- A validacao SQL foi preparada para Supabase Postgres e usa as colunas JSONB de horarios ja existentes. Nenhuma tabela financeira e recriada.
+- A instalacao no Supabase real deve ser testada em ambiente de homologacao antes de usar contratos de producao.

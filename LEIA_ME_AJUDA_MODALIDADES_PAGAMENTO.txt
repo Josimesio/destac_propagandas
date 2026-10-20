@@ -1,0 +1,11 @@
+DESTAC PROPAGANDAS — Ajuda guiada nas formas de pagamento
+
+Alteração restrita a contrato_novo.html.
+
+As seis opções de pagamento agora apresentam descrições curtas e objetivas.
+Abaixo delas, aparece um único exemplo ilustrativo: o da opção selecionada.
+Ao mudar a opção, o exemplo também muda, sem criar campos obrigatórios novos.
+Os valores reais e todas as regras do Financeiro permanecem inalterados.
+
+Para instalar: substitua contrato_novo.html (ou publique o ZIP completo), atualize com Ctrl+F5.
+Não é necessário executar SQL.

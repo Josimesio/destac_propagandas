@@ -1,0 +1,40 @@
+DESTAC PROPAGANDAS — ACOMPANHAMENTO DE PARCELAS DE CONTRATOS NO FINANCEIRO
+
+PROBLEMA IDENTIFICADO
+- A última versão alterava contratos/SQL, mas não atualizava de fato o painel financeiro.
+- O Financeiro ainda mostrava mensagem de integração futura.
+- Parcelas vinculadas a contratos podiam ser reabertas como lançamentos manuais.
+
+CORREÇÃO
+- Nova aba Financeiro > Parcelas de contratos.
+- Indicadores: contratos ATIVOS, com parcelas, ATIVOS sem parcelas e valor gerado.
+- Pesquisa e filtros por empresa, contrato e situação.
+- Acesso de "Ver parcelas" mostra apenas as cobranças daquele contrato em Contas a Receber.
+- Tabela Contas a Receber distingue origem CONTRATO e MANUAL, com número do contrato.
+- Lançamentos CONTRATO: permitem dar baixa, mas não editar/cancelar pela tela manual.
+- Mensagem desatualizada "integração futura" removida.
+- Em falhas de leitura do banco, não apresenta lançamentos locais como se fossem do Supabase.
+
+ARQUIVOS DE APLICAÇÃO ALTERADOS
+financeiro.html
+financeiro.css
+financeiro.js
+
+VERIFICAÇÃO SQL OPCIONAL
+sql/DIAGNOSTICAR_INTEGRACAO_FINANCEIRA_SOMENTE_LEITURA.sql
+O diagnóstico contém apenas SELECT. Execute apenas se a geração automática não aparecer na tela.
+
+ATENÇÃO
+Esta atualização NÃO instala triggers, não gera novas parcelas por conta própria e
+não reconcilia contratos antigos. A geração depende da migração SQL de integração
+já fornecida e do contrato estar ATIVO. Contratos legados exigem autorização de conciliação.
+Se "ATIVOS sem parcelas" aparecer diferente de zero, verificar o motivo antes de gerar cobranças.
+
+INSTALL
+1. Publique os arquivos na raiz do site, substituindo os existentes.
+2. Force recarga (Ctrl+F5).
+3. No Financeiro, abra "Parcelas de contratos" e clique em "Atualizar dados".
+4. Se não houver parcelas após salvar/ativar um contrato novo, execute o SQL
+   de diagnóstico e envie o resultado. NÃO execute migrations antigas repetidamente.
+
+Testado localmente em navegador com dados simulados. Integração real do Supabase não testada.

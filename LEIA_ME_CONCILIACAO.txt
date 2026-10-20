@@ -1,0 +1,49 @@
+DESTAC PROPAGANDAS - CONCILIACAO DE CONTRATOS ANTIGOS
+====================================================
+
+OBJETIVO
+A tela conciliacao_contratos.html permite conferir, autorizar individualmente
+ou em lote e classificar contratos antigos ANTES de gerar parcelas financeiras.
+A instalacao do SQL NAO cria parcelas automaticamente.
+
+INSTALACAO - ORDEM IMPORTANTE
+1. Faça backup do Supabase e verifique que as tabelas do Financeiro existem.
+2. No SQL Editor do Supabase DESTAC, execute SOMENTE:
+   sql/INSTALAR_CONCILIACAO_CONTRATOS_ANTIGOS.sql
+3. Após a mensagem Success, publique todos os arquivos do ZIP na raiz do site.
+4. Atualize o navegador com Ctrl+F5.
+5. Abra Financeiro -> Conciliar contratos antigos.
+6. Confira os contratos ATIVOS, datas, valores, parcelas e cobranças manuais.
+7. Autorize individualmente; lote apenas após revisão detalhada.
+
+IMPORTANTE
+- Apenas ADMINISTRADOR e SUPER_USUARIO podem autorizar, conforme acesso
+  à empresa em perfis_usuario.
+- Contratos que já estavam no banco no instante da instalação são capturados
+  uma única vez. Criar um contrato novo DEPOIS continua gerando parcelas
+  automaticamente somente se estiver ATIVO.
+- Editar um contrato ANTIGO ainda não autorizado não cria parcelas.
+- Contratos ANTIGOS com cobranças vinculadas têm opção "Conferir existente",
+  que não insere nem atualiza nenhuma parcela.
+- Possíveis lançamentos manuais exigem atenção: a tela não pode determinar
+  com certeza a qual contrato pertencem quando não estão vinculados.
+- A entrada é parte do valor total, não adicional.
+- Pagamentos já registrados permanecem intocados na instalação e na
+  autorização. Não há importação ou baixa automática de pagamentos antigos.
+- Contratos com informações incompletas: editar e conferir antes de autorizar.
+- Autorização e geração são uma transação: falhou uma, as duas revertem.
+- NÃO execute novamente os scripts antigos de integração financeira APÓS
+  instalar este SQL, pois substituirão a função com controle de conciliação.
+
+TESTES
+A interface e os cálculos foram testados com respostas simuladas; a execução
+no seu Supabase precisa ser validada após instalar a migração.
+
+ARQUIVOS NOVOS
+conciliacao_contratos.html
+conciliacao_contratos.css
+conciliacao_contratos.js
+sql/INSTALAR_CONCILIACAO_CONTRATOS_ANTIGOS.sql
+
+Nenhum SQL é executado pelo arquivo HTML sem autorização. A migração deve ser
+executada manualmente no projeto Supabase correto. Não usa chave service_role.

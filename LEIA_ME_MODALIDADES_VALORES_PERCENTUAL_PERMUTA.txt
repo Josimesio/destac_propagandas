@@ -1,0 +1,8 @@
+1) À vista -> somente valor mensal e valor total.
+2) À vista com desconto -> os quatro valores, incluindo descontos.
+3) Somente permuta -> valor mensal e total identificados como permuta.
+4) Misto -> escolha percentual da permuta; sistema calcula valor permuta e saldo financeiro.
+
+A visualização, a consulta, os PDFs e os Words seguem o mesmo critério.
+
+Não há SQL novo; utiliza campos existentes de permuta.

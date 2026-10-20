@@ -1,0 +1,20 @@
+DESTAC PROPAGANDAS — Correção de gravação e exibição do Financeiro
+
+Arquivos funcionais alterados: financeiro.js, financeiro.html, financeiro.css.
+
+Correções:
+- Compara ID da empresa do filtro de forma consistente entre string e número.
+- Ao salvar uma conta, exige que o Supabase retorne o ID gravado.
+- Confere a gravação após recarregar a lista e mostra mensagem de sucesso ou erro.
+- Remove os filtros que poderiam esconder a conta recém-salva.
+- Sem filtros iniciais, exibe todos os períodos; botão Limpar filtros disponível.
+- Conserva empresa e período selecionados ao atualizar o navegador (sessionStorage).
+- Proteção básica contra clique duplo no botão Salvar.
+- Atualização de cache do financeiro.js para garantir a nova versão.
+
+Não é necessário executar SQL novo. Nenhum arquivo de contratos ou de clientes foi alterado.
+Não houve acesso ao Supabase real; validar na instalação do usuário.
+
+Instalação: substituir os arquivos na pasta do site e atualizar com Ctrl+F5.
+Teste: Financeiro > Contas a receber > Nova conta > salvar.
+Se surgir mensagem de erro, ela identifica a falha de gravação/consulta.

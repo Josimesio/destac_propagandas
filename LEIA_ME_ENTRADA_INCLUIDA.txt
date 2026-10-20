@@ -1,0 +1,17 @@
+DESTAC PROPAGANDAS — Entrada incluída no valor total do contrato
+
+Regra: valor total = entrada + soma das parcelas mensais. Nunca adicionar entrada por fora.
+Se o valor total do contrato estiver em branco, calcula mensal × quantidade de parcelas, antes de descontar a entrada.
+A entrada gera cobrança separada com vencimento na data de início, segundo o SQL existente.
+A quantidade de parcelas refere-se às parcelas mensais, NÃO à entrada.
+Os centavos excedentes são distribuídos nas primeiras parcelas, como no trigger SQL.
+
+Arquivos funcionais alterados:
+- contrato_novo.html: rótulos, resumo do financeiro, indicação dos campos necessários.
+- contratos.js: prévia do financeiro e validação antes do salvamento.
+
+O trigger da integração que acompanha o projeto JÁ desconta a entrada; não foi necessário alterar o SQL.
+Para geração automática de contas a receber, é necessário que o supabase_integracao_automatica_contratos.sql já tenha sido executado na base da DESTAC.
+Nenhum arquivo de layout de PDF/Word, consulta de clientes, assinatura ou navegação foi alterado.
+
+Importante: valide com um contrato de teste. Este pacote NÃO foi conectado ao Supabase real.

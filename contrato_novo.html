@@ -780,6 +780,25 @@
 .precificacao-insercoes .ajuda-preco-insercao { font-size:13px; line-height:1.5; margin:10px 0 6px; color:#514865; }
 .precificacao-insercoes .btn-restaurar-insercoes { border:1px solid #b9a7cc; border-radius:8px; background:#f7f3fa; color:#423353; padding:7px 10px; cursor:pointer; font-weight:600; }
 #valorMensal[readonly] { background:#f2eef7; font-weight:750; }
+
+    .destac-grade-intro{font-size:14px;line-height:1.45;margin:8px 0 14px;color:#403951}
+    .destac-grade-status{border:1px solid #d6cce9;border-radius:9px;padding:10px 12px;font-size:14px;line-height:1.5;background:#f7f4fc;color:#342b49;margin-bottom:9px}
+    .destac-grade-status[data-situacao="erro"]{border-color:#c53a48;color:#8f2636;background:#fff3f3}
+    .destac-grade-status[data-situacao="ok"]{border-color:#5c9472;background:#f0faf3}
+    .destac-grade-atualizar{background:#fff;color:#33244f;border:1px solid #8b7aa7;border-radius:8px;padding:9px 13px;margin:0 0 12px;cursor:pointer;font-weight:600}
+    .horarios-insercoes select[data-grade-horario]{min-width:125px;max-width:100%;padding:8px 10px;border-radius:8px;border:1px solid #bcb3d2;background:white;font-size:14px}
+    .horarios-insercoes select[data-grade-horario].destac-grade-invalido{border:2px solid #c53a48;background:#fff3f3}
+    .horarios-insercoes .celula-horario{display:flex;flex-direction:column;gap:4px;min-width:0}
+    .horarios-insercoes .celula-horario label{font-size:12px;font-weight:650;color:#413653}
+    @media print {.destac-grade-intro,.destac-grade-status,.destac-grade-atualizar{display:none!important}}
+
+/* Mantém textos explicativos com tamanho proporcional ao formulário. */
+.summary .destac-modalidades-secao .destac-introducao strong {
+  display: inline !important; font-size: inherit !important;
+  line-height: inherit !important; font-weight: 800 !important;
+  margin: 0 !important; color: inherit !important;
+}
+
 </style>
 <style>.destac-campos-extras{margin:20px 0;padding:20px;border:1px solid #ded5e9;border-radius:12px;background:#faf8fc}.destac-extras-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.destac-extra{display:flex;flex-direction:column;gap:6px;font-weight:600}.destac-extra input,.destac-extra select,.destac-extra textarea{width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #cfcbd5;border-radius:7px;font:inherit}.destac-extra:first-child{grid-column:1/-1}.destac-campos-extras .destac-extras-grid label.destac-extra{color:#252038!important;font-weight:700!important;opacity:1!important}.destac-campos-extras .destac-extras-grid label.destac-extra>span{display:block!important;color:#252038!important;-webkit-text-fill-color:#252038!important;opacity:1!important;font-size:14px!important;line-height:1.45!important}.destac-campos-extras h3{color:#171326!important}.destac-campos-extras p{color:#383147!important}@media print{.destac-campos-extras{display:none!important}}</style>
 <style>
@@ -1319,10 +1338,13 @@
 
               <div class="horarios-insercoes">
 
-                <h3>Horários das Inserções</h3>
+                <h3>Horários das inserções — grade de 6 minutos</h3>
+                <p class="destac-grade-intro">Cada bloco tem <strong>4 anúncios de 30 segundos</strong> e <strong>1 música de 4 minutos</strong>. Os horários abaixo são posições fixas repetidas nas feiras durante a vigência.</p>
+                <div id="statusGradeHorarios" class="destac-grade-status" role="status" aria-live="polite">Informe início, duração e veículo executor para consultar horários livres.</div>
+                <button id="btnAtualizarGrade" class="destac-grade-atualizar" type="button">Atualizar horários disponíveis</button>
 
                 <div id="grupoSabadoDomingo" class="grupo-horarios">
-                  <h4>Sábados e Domingos</h4>
+                  <h4>Sábados e domingos — 08h às 12h</h4>
 
                   <div
                     id="horariosSabadoDomingo"
@@ -1331,7 +1353,7 @@
                 </div>
 
                 <div id="grupoTercaQuinta" class="grupo-horarios">
-                  <h4>Terças e Quintas</h4>
+                  <h4>Terças e quintas — 13h30 às 21h</h4>
 
                   <div
                     id="horariosTercaQuinta"
@@ -1516,7 +1538,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="opcoes_impressao_contrato.js"></script>
-  <script src="contratos.js"></script>
+  <script src="contratos.js?v=20261020-empresas-restauradas-2"></script>
 
 
   <script>
