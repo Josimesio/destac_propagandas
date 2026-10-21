@@ -1,19 +1,14 @@
-DESTAC — SITE HÍBRIDO V6 (REVISÃO DO ACESSO ADMINISTRATIVO)
+DESTAC PROPAGANDAS — LEMBRAR LOGIN POR DISPOSITIVO
 
-Base: destac_propagandas(8).zip enviado pelo proprietário.
+1. Extraia aplicar_lembrar_login.py e destac-session.js na raiz do repositório.
+2. Na pasta do repositório, execute: python aplicar_lembrar_login.py
+3. Teste logins marcado e desmarcado; confira git diff.
+4. Publique SOMENTE os arquivos alterados necessários e destac-session.js.
+5. Não publique os backups *.antes_lembrar_login.bak.
 
-Alterações exclusivas em index.html e app.js:
-- Integração do modal de login com o app.js ORIGINAL do projeto.
-- Links de acesso administrativo abrem o modal, sem redirecionamento a login.html inexistente.
-- Proteção do menu antigo do app.js para não interferir no novo menu responsivo.
-- Tratamento explícito de falha da biblioteca Supabase e da conexão.
-- Mantidas as imagens locais geradas por IA, identidade e demais 100+ itens da base.
+Marcado: sessão Supabase persistida no navegador deste dispositivo.
+Desmarcado: sessão na aba/sessão do navegador (sessionStorage).
+A senha não é armazenada pelo site. O gerenciador de senhas do navegador é independente.
 
-COMO PUBLICAR
-1) Faça backup de seu site atual.
-2) Extraia TODO o conteúdo do ZIP na raiz do repositório do GitHub Pages.
-3) Não crie uma pasta adicional ao extrair: index.html, app.js e admin.html devem estar juntos.
-4) Para testar localmente, abra com servidor HTTP (Live Server) usando a raiz correta.
-5) Limpe o cache com Ctrl+F5 e teste Área administrativa → login → admin.html.
-
-OBSERVAÇÃO: Validação estática realizada. Login real requer navegador com acesso ao Supabase, credenciais e perfil ativo.
+IMPORTANTE: este é um kit de alterações para aplicação na sua cópia do site,
+não é o ZIP completo do site. O código analisado foi o publicado no GitHub/main.

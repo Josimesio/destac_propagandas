@@ -1,0 +1,15 @@
+SANEADOR DESTAC - FEIRA
+
+1. Instale dependências:
+   py -m pip install pandas openpyxl pypdf xlrd
+2. Para arquivos DOC antigos, instale antiword (opcional). Sem ele, DOC ficará em Contratos_sem_texto.
+3. Execute no PowerShell:
+   py sanear_feira.py --contratos "C:\\Feira\\TODOS_CONTRATOS.zip" --feira "C:\\Feira\\empresas_escaneadas.xlsx" --saida "clientes_feira.xlsx"
+
+Aba Clientes_confirmados: somente CPF/CNPJ encontrado nos contratos (conferência documental).
+Aba Conferencia: nomes encontrados sem documento e empresas sem contrato identificado.
+Aba Duplicados_ignorados: entradas repetidas na lista.
+Aba Contratos_sem_texto: documentos que não puderam ser lidos, inclusive PDF digitalizado sem OCR.
+
+IMPORTANTE: o script não faz OCR, não verifica validade de CPF/CNPJ e não grava no Supabase.
+Antes da importação definitiva, compare os CPF/CNPJ com os clientes já cadastrados no sistema.
