@@ -37,7 +37,129 @@
     .full{grid-column:1/-1}.full textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;resize:vertical;background:#fff}
     .contador-clientes{display:inline-flex;align-items:center;padding:7px 11px;border-radius:999px;background:#efedf6;color:var(--lilac-dark);font-size:12px;font-weight:800}
     @media(max-width:700px){.clientes-card{padding:18px}.clientes-tabs{display:grid;grid-template-columns:1fr 1fr}.clientes-tab{width:100%}.clientes-toolbar-left{display:grid;grid-template-columns:1fr;width:100%}.clientes-toolbar .campo{min-width:0}.clientes-toolbar-right{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}}
-  </style>
+  
+    .clientes-home {
+      padding-bottom: 40px;
+    }
+
+    .acoes-clientes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 34px;
+      max-width: 1125px;
+    }
+
+    .acao-cliente-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-height: 120px;
+      padding: 24px 30px;
+      border: 1px solid #dfd9e7;
+      border-radius: 24px;
+      background: #ffffff;
+      text-decoration: none;
+      color: inherit;
+      box-sizing: border-box;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .acao-cliente-card:hover {
+      transform: translateY(-2px);
+      border-color: #cfc4dd;
+      box-shadow: 0 12px 28px rgba(92, 76, 124, .08);
+    }
+
+    .acao-cliente-icone {
+      flex: 0 0 60px;
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: #f0ecf7;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .acao-cliente-texto h2 {
+      margin: 0 0 7px;
+      color: #3c3749;
+      font-size: 25px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .acao-cliente-texto p {
+      margin: 0;
+      color: #8a7382;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .resumo-clientes {
+      margin-top: 50px;
+    }
+
+    .resumo-clientes h2 {
+      margin: 0 0 18px;
+      color: #373244;
+      font-size: 31px;
+      font-weight: 800;
+    }
+
+    .resumo-box {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
+      max-width: 720px;
+    }
+
+    .resumo-item {
+      padding: 20px 22px;
+      border: 1px solid #e2dce8;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+
+    .resumo-item span {
+      display: block;
+      margin-bottom: 6px;
+      color: #b36f91;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .resumo-item strong {
+      color: #3b3548;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+      .acoes-clientes {
+        grid-template-columns: 1fr;
+      }
+
+      .resumo-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .clientes-pagina-interna { margin-top:24px; }
+    .clientes-pagina-interna[hidden], .clientes-home[hidden] { display:none!important; }
+    .clientes-voltar { border:1px solid #dfd9e7; border-radius:12px; background:white; color:#594774; padding:11px 17px; font:700 14px Inter,sans-serif; cursor:pointer; }
+    .clientes-voltar:hover { background:#f0ecf7; }
+    .acao-cliente-card { font:inherit; text-align:left; cursor:pointer; width:100%; }
+
+  
+    .destac-ordenar{display:inline-flex;align-items:center;gap:7px;padding:3px 0;border:0;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer;text-align:left;white-space:nowrap}
+    .destac-ordenar:hover,.destac-ordenar:focus-visible{color:#75519b;text-decoration:underline}
+    .destac-seta-ordem{font-size:15px;opacity:.75}
+</style>
 </head>
 <body>
   <aside>
@@ -58,6 +180,7 @@
       <a href="consultar_cnpj.html">Consultar CNPJ</a>
       <a href="buscar_cep.html">Buscar CEP</a>
       <a href="usuarios.html" id="menuUsuarios" style="display:none;">Usuários</a>
+      <a href="permissoes.html">Permissões</a>
     </nav>
     <a class="sair" href="#" id="btnSair">Sair</a>
   </aside>
@@ -65,12 +188,34 @@
   <main>
     <header>
       <div>
-        <span>CADASTRO E CONSULTA</span>
+        <span>ÁREA ADMINISTRATIVA</span>
         <h1>Clientes</h1>
-        <p>Consulte, cadastre, importe e mantenha todos os clientes em uma única página.</p>
+        <p>Gerencie os clientes da Destac Propagandas.</p>
       </div>
     </header>
 
+    <section class="clientes-home" id="clientesHome" aria-label="Ações de clientes">
+      <div class="acoes-clientes">
+        <button type="button" class="acao-cliente-card" data-clientes-abrir="novo" id="acaoNovoCliente">
+          <div class="acao-cliente-icone">➕</div>
+          <div class="acao-cliente-texto"><h2>Cadastrar cliente novo</h2><p>Registre um novo cliente e consulte seus dados cadastrais.</p></div>
+        </button>
+        <button type="button" class="acao-cliente-card" data-clientes-abrir="consulta" id="acaoConsultarClientes">
+          <div class="acao-cliente-icone">🔎</div>
+          <div class="acao-cliente-texto"><h2>Consultar clientes</h2><p>Pesquise clientes por código, nome, CPF/CNPJ ou cidade.</p></div>
+        </button>
+        <button type="button" class="acao-cliente-card" data-clientes-abrir="editar" id="acaoEditarCliente">
+          <div class="acao-cliente-icone">✏️</div>
+          <div class="acao-cliente-texto"><h2>Editar cliente</h2><p>Localize um cliente na consulta e utilize a ação de edição.</p></div>
+        </button>
+      </div>
+      <section class="resumo-clientes" aria-label="Resumo do módulo">
+        <h2>Resumo</h2>
+        <div class="resumo-box"><div class="resumo-item"><span>Módulo</span><strong>Clientes</strong></div><div class="resumo-item"><span>Ações disponíveis</span><strong>3</strong></div></div>
+      </section>
+    </section>
+    <div class="clientes-pagina-interna" id="clientesConteudo" hidden>
+      <button class="clientes-voltar" id="btnInicioClientes" type="button">← Voltar às opções de clientes</button>
     <div class="clientes-tabs" role="tablist" aria-label="Opções de clientes">
       <button type="button" class="clientes-tab active" id="tabConsulta" data-target="consultaClientes">🔎 Consulta de clientes</button>
       <button type="button" class="clientes-tab" id="tabNovo" data-target="novoCliente">＋ Novo cliente</button>
@@ -118,13 +263,13 @@
           <table class="tabela-usuarios" id="tabelaClientes">
             <thead>
               <tr>
-                <th>Código</th>
-                <th>Cliente</th>
-                <th>Razão social</th>
-                <th>CPF / CNPJ</th>
-                <th>Contato</th>
-                <th>Cidade / UF</th>
-                <th>Status</th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="codigo" aria-label="Ordenar por Código" title="Ordenar por Código">Código <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="cliente" aria-label="Ordenar por Cliente" title="Ordenar por Cliente">Cliente <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="razao" aria-label="Ordenar por Razão social" title="Ordenar por Razão social">Razão social <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="documento" aria-label="Ordenar por CPF / CNPJ" title="Ordenar por CPF / CNPJ">CPF / CNPJ <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="contato" aria-label="Ordenar por Contato" title="Ordenar por Contato">Contato <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="cidade" aria-label="Ordenar por Cidade / UF" title="Ordenar por Cidade / UF">Cidade / UF <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
+                <th aria-sort="none"><button type="button" class="destac-ordenar" data-ordenar-cliente="status" aria-label="Ordenar por Status" title="Ordenar por Status">Status <span class="destac-seta-ordem" aria-hidden="true">↕</span></button></th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -221,10 +366,38 @@
         </form>
       </div>
     </section>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="clientes.js"></script>
+  <script src="clientes.js?v=ordenacao-clientes-v4"></script>
+<script src="controle-acesso.js?v=1"></script>
+
+  <script>
+    (function () {
+      const home = document.getElementById('clientesHome');
+      const conteudo = document.getElementById('clientesConteudo');
+      function exibirInicio() {
+        home.hidden = false;
+        conteudo.hidden = true;
+        if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+      }
+      function abrir(tipo) {
+        home.hidden = true;
+        conteudo.hidden = false;
+        document.getElementById(tipo === 'novo' ? 'tabNovo' : 'tabConsulta').click();
+        if (tipo === 'editar') document.getElementById('pesquisaCliente')?.focus();
+      }
+      document.querySelectorAll('[data-clientes-abrir]').forEach(botao => {
+        botao.addEventListener('click', () => abrir(botao.dataset.clientesAbrir));
+      });
+      document.getElementById('btnInicioClientes').addEventListener('click', exibirInicio);
+      // Links antigos #novo/#consulta continuam funcionando, inclusive edição pela consulta.
+      if (location.hash === '#novo' || location.hash === '#consulta') {
+        home.hidden = true; conteudo.hidden = false;
+      }
+    })();
+  </script>
 </body>
 </html>

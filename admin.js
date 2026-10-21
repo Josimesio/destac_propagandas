@@ -168,6 +168,9 @@ async function iniciarAdmin() {
     perfil.perfil === 'ADMINISTRADOR';
 
 
+  const menuPermissoes = document.getElementById('menuPermissoes');
+  if (menuPermissoes) menuPermissoes.style.display = podeGerenciarUsuarios ? '' : 'none';
+
   if (menuUsuarios) {
 
     menuUsuarios.style.display =

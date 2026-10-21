@@ -439,60 +439,44 @@ async function carregarEmpresas() {
   if (!empresaId) return;
   empresaId.disabled = true;
   empresaId.innerHTML = '<option value="">Carregando empresas cadastradas...</option>';
-
   try {
-    const { data, error } = await supabaseClient
-      .from('empresas')
-      .select(`
-        id,
-        razao_social,
-        nome_fantasia,
-        cpf_cnpj,
-        ativo
-      `)
+    // Mesma fonte, filtro e ordenacao utilizados na consulta de contratos.
+    const { data, error } = await supabaseClient.from('empresas')
+      .select('id,razao_social,nome_fantasia,cpf_cnpj,responsavel,telefone,celular_whatsapp,email,endereco,numero,complemento,bairro,cidade,estado,logo_url')
       .eq('ativo', true)
-      .order('razao_social');
-
+      .order('nome_fantasia', { ascending: true });
     if (error) throw error;
-    empresaId.innerHTML = '<option value="">Selecione a empresa</option>';
-
+    empresaId.replaceChildren(new Option('Selecione a empresa', ''));
     for (const empresa of data || []) {
-      const option = document.createElement('option');
-      option.value = String(empresa.id);
-      option.textContent = empresa.nome_fantasia
-        ? `${empresa.nome_fantasia} — ${empresa.razao_social}`
-        : (empresa.razao_social || `Empresa ${empresa.id}`);
-      option.dataset.documento = String(empresa.cpf_cnpj || '').replace(/\D/g, '');
-      empresaId.appendChild(option);
+      const nome = empresa.nome_fantasia || empresa.razao_social || `Empresa ${empresa.id}`;
+      const opcao = new Option(nome, String(empresa.id));
+      opcao.dataset.documento = String(empresa.cpf_cnpj || '').replace(/\D/g, '');
+      empresaId.appendChild(opcao);
     }
     empresaId.disabled = false;
-
-    // Um aviso de erro anterior não deve continuar depois de uma recarga bem-sucedida.
     if (mensagemContrato?.dataset.erroCarregamentoEmpresas === 'sim') {
-      mensagemContrato.textContent = '';
+      mensagemContrato.replaceChildren();
       delete mensagemContrato.dataset.erroCarregamentoEmpresas;
     }
     if (!data?.length && mensagemContrato) {
       mensagemContrato.style.color = '#a44f69';
-      mensagemContrato.textContent = 'Não encontrei empresas ativas disponíveis. Confira Empresas → Cadastros e as permissões do seu usuário.';
+      mensagemContrato.textContent = 'Nenhuma empresa ativa retornada. Verifique os cadastros e as permissoes de acesso.';
       mensagemContrato.dataset.erroCarregamentoEmpresas = 'sim';
     }
-  } catch (error) {
-    console.error('Não foi possível consultar os cadastros de empresas:', error);
+  } catch (erro) {
+    console.error('Falha ao carregar empresas do cadastro:', erro);
+    empresaId.replaceChildren(new Option('Erro ao buscar empresas', ''));
     empresaId.disabled = true;
-    empresaId.innerHTML = '<option value="">Falha ao buscar empresas cadastradas</option>';
     if (mensagemContrato) {
       mensagemContrato.style.color = '#a44f69';
-      mensagemContrato.textContent = `Falha ao consultar empresas no Supabase: ${error?.message || 'erro de conexão ou permissão'}.`;
+      mensagemContrato.textContent = `Erro ao buscar empresas: ${erro.message || 'falha de conexao'}. `;
       mensagemContrato.dataset.erroCarregamentoEmpresas = 'sim';
-      // Botão aparece SOMENTE em caso de falha, sem alterar o seletor nativo.
-      const tentarNovamente = document.createElement('button');
-      tentarNovamente.type = 'button';
-      tentarNovamente.id = 'btnRecarregarEmpresasContrato';
-      tentarNovamente.textContent = 'Tentar buscar empresas novamente';
-      tentarNovamente.style.cssText = 'display:block;margin-top:8px;padding:8px 12px;font-size:14px;cursor:pointer;';
-      tentarNovamente.addEventListener('click', carregarEmpresas);
-      mensagemContrato.appendChild(tentarNovamente);
+      const botao = document.createElement('button');
+      botao.type = 'button';
+      botao.textContent = 'Tentar novamente';
+      botao.style.cssText = 'display:block;margin-top:8px;padding:8px 12px;cursor:pointer';
+      botao.addEventListener('click', carregarEmpresas);
+      mensagemContrato.appendChild(botao);
     }
   }
 }
@@ -1841,7 +1825,7 @@ function atualizarResumoQuatroValores(f) {
 
 function montarRegraFinanceira(f, valorBR) {
   const percentualPermuta = lerPercentualPermuta();
-  const temEntrada = !!normalizarDataISO(valorCampo('dataVencimentoEntrada')) && parseMoedaInsercao(valorCampo('valorEntrada')) > 0;
+  const temEntrada = Boolean(valorCampo('dataVencimentoEntrada')) && parseMoedaInsercao(valorCampo('valorEntrada')) > 0;
   const complementoEntrada = temEntrada ? ' Se houver entrada, ela entra na parte financeira e também gera cobrança.' : '';
   switch (tipoPagamentoSelecionado) {
     case 'VISTA':
@@ -3762,7 +3746,18 @@ if (btnSair) {
 }
 
 
-atualizarCamposHorarios();
-agendarConsultaGrade();
-
-iniciarPagina();
+// A grade nao pode impedir que os cadastros de empresa/cliente sejam carregados.
+try {
+  atualizarCamposHorarios();
+  agendarConsultaGrade();
+} catch (erroGradeInicial) {
+  console.error('Erro ao inicializar grade de horarios:', erroGradeInicial);
+  gradeStatus('Nao foi possivel inicializar a grade de horarios. O cadastro de empresas permanece disponivel.', 'erro');
+}
+iniciarPagina().catch(erro => {
+  console.error('Erro ao iniciar novo contrato:', erro);
+  if (mensagemContrato) {
+    mensagemContrato.style.color = '#a44f69';
+    mensagemContrato.textContent = `Falha na inicializacao: ${erro.message || 'erro inesperado'}`;
+  }
+});

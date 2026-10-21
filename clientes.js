@@ -66,6 +66,28 @@ let empresaUsuarioLogado = null;
 let dadosCnpjConsultado = null;
 let clienteEditandoId = null;
 
+// Permissões obtidas do servidor; na dúvida, negar a edição.
+let permissaoEditarClientes = false;
+async function conferirEdicaoClientes() {
+  try {
+    const { data, error } = await supabaseClient.rpc('destac_tem_permissao', {
+      p_modulo: 'clientes', p_acao: 'editar'
+    });
+    permissaoEditarClientes = !error && data === true;
+    return permissaoEditarClientes;
+  } catch (erro) {
+    console.error('Permissão de edição de clientes:', erro);
+    permissaoEditarClientes = false;
+    return false;
+  }
+}
+function avisarEdicaoRestrita() {
+  alert('Acesso restrito: seu usuário não possui permissão para editar clientes.');
+}
+// Verificar no carregamento e atualizar os botões, sem liberar acesso durante a consulta.
+conferirEdicaoClientes().then(() => renderizarClientes());
+
+
 function escaparHtml(valor) {
   return String(valor ?? '')
     .replace(/&/g, '&amp;')
@@ -1804,6 +1826,10 @@ function preencherCampo(
 function prepararEdicaoCliente(
   cliente
 ) {
+  if (!permissaoEditarClientes) {
+    avisarEdicaoRestrita();
+    return;
+  }
 
   clienteEditandoId =
     cliente.id;
@@ -2025,6 +2051,12 @@ formCliente.addEventListener(
   async (e) => {
 
     e.preventDefault();
+
+    // Verificação atual no servidor antes de qualquer atualização.
+    if (clienteEditandoId !== null && !(await conferirEdicaoClientes())) {
+      avisarEdicaoRestrita();
+      return;
+    }
 
     if (!destacarCamposObrigatorios()) {
       return;
@@ -2996,6 +3028,41 @@ function clientesFiltrados() {
   });
 }
 
+// Ordenação da lista completa, antes da paginação.
+let colunaOrdenacaoClientes = null;
+let direcaoOrdenacaoClientes = 1;
+const comparadorClientes = new Intl.Collator('pt-BR', {numeric:true, sensitivity:'base'});
+function valorOrdenacaoCliente(cliente, coluna) {
+  switch(coluna) {
+    case 'codigo': return cliente.codigo_cliente || '';
+    case 'cliente': return cliente.nome_fantasia || cliente.razao_social || '';
+    case 'razao': return cliente.razao_social || '';
+    case 'documento': return String(cliente.cpf_cnpj || '').replace(/\D/g, '');
+    case 'contato': return cliente.contato || cliente.responsavel || cliente.telefone || cliente.celular_whatsapp || '';
+    case 'cidade': return [cliente.cidade,cliente.estado].filter(Boolean).join(' / ');
+    case 'status': return cliente.ativo === true ? 'Ativo' : 'Inativo';
+    default: return '';
+  }
+}
+function atualizarIndicadoresOrdenacaoClientes() {
+  document.querySelectorAll('[data-ordenar-cliente]').forEach(botao => {
+    const ativo = botao.dataset.ordenarCliente === colunaOrdenacaoClientes;
+    const th = botao.closest('th');
+    if(th) th.setAttribute('aria-sort', ativo ? (direcaoOrdenacaoClientes === 1 ? 'ascending':'descending') : 'none');
+    const seta = botao.querySelector('.destac-seta-ordem');
+    if(seta) seta.textContent = ativo ? (direcaoOrdenacaoClientes === 1 ? '↑':'↓') : '↕';
+  });
+}
+document.querySelectorAll('[data-ordenar-cliente]').forEach(botao => {
+  botao.addEventListener('click', () => {
+    const coluna = botao.dataset.ordenarCliente;
+    direcaoOrdenacaoClientes = colunaOrdenacaoClientes === coluna ? -direcaoOrdenacaoClientes : 1;
+    colunaOrdenacaoClientes = coluna;
+    paginaAtual = 1;
+    renderizarClientes();
+  });
+});
+
 function obterTamanhoPagina(total) {
   if (!itensPorPagina || itensPorPagina.value === 'all') {
     return Math.max(total, 1);
@@ -3008,6 +3075,11 @@ function renderizarClientes() {
   if (!listaClientes) return;
 
   const filtrados = clientesFiltrados();
+  if (colunaOrdenacaoClientes) {
+    filtrados.sort((a,b) => direcaoOrdenacaoClientes * comparadorClientes.compare(
+      valorOrdenacaoCliente(a,colunaOrdenacaoClientes), valorOrdenacaoCliente(b,colunaOrdenacaoClientes)));
+  }
+  atualizarIndicadoresOrdenacaoClientes();
   const total = filtrados.length;
   const tamanho = obterTamanhoPagina(total);
   const totalPaginas = Math.max(1, Math.ceil(total / tamanho));
@@ -3043,17 +3115,29 @@ function renderizarClientes() {
         </td>
         <td>
           <div class="acoes-usuario">
-            <button type="button" class="btn-editar">Editar</button>
-            <button type="button" class="btn-status">${cliente.ativo ? 'Inativar' : 'Ativar'}</button>
+            ${permissaoEditarClientes ? '<button type="button" class="btn-editar">Editar</button>' : '<span class="destac-edicao-restrita" title="Acesso restrito: sem permissão para editar clientes" style="font-size:12px;opacity:.7">Acesso restrito</span>'}
+            ${permissaoEditarClientes ? `<button type="button" class="btn-status">${cliente.ativo ? 'Inativar' : 'Ativar'}</button>` : ''}
           </div>
         </td>
       `;
 
       const btnEditar = linha.querySelector('.btn-editar');
-      btnEditar?.addEventListener('click', () => prepararEdicaoCliente(cliente));
+      btnEditar?.addEventListener('click', async () => {
+        if (!(await conferirEdicaoClientes())) {
+          avisarEdicaoRestrita();
+          renderizarClientes();
+          return;
+        }
+        prepararEdicaoCliente(cliente);
+      });
 
       const btnStatus = linha.querySelector('.btn-status');
       btnStatus?.addEventListener('click', async () => {
+        if (!(await conferirEdicaoClientes())) {
+          avisarEdicaoRestrita();
+          renderizarClientes();
+          return;
+        }
         const novoStatus = !cliente.ativo;
         const acao = novoStatus ? 'ativar' : 'inativar';
         const nome = cliente.nome_fantasia || cliente.razao_social || cliente.codigo_cliente || 'cliente';
@@ -3224,9 +3308,9 @@ async function iniciarPagina() {
 
   if (window.location.hash === '#novo') {
     mostrarAbaClientes('novoCliente');
-  } else {
+  } else if (window.location.hash === '#consulta') {
     mostrarAbaClientes('consultaClientes');
-  }
+  } // Sem fragmento: apresenta os cartões da página inicial de Clientes.
 }
 
 iniciarPagina();

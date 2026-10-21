@@ -1,0 +1,5 @@
+DESTAC CLIENTES - Ordenação por colunas V4
+Substitua somente clientes.html e clientes.js, preservando as pastas atuais.
+Clique no cabeçalho para alternar entre crescente e decrescente. Ordenação aplicada antes da paginação.
+Mantidos busca geral, paginação e controle de edição por permissão.
+Esta versão substitui a V3 de filtros, que não era o solicitado.

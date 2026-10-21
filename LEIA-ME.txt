@@ -1,0 +1,19 @@
+DESTAC — SITE HÍBRIDO V6 (REVISÃO DO ACESSO ADMINISTRATIVO)
+
+Base: destac_propagandas(8).zip enviado pelo proprietário.
+
+Alterações exclusivas em index.html e app.js:
+- Integração do modal de login com o app.js ORIGINAL do projeto.
+- Links de acesso administrativo abrem o modal, sem redirecionamento a login.html inexistente.
+- Proteção do menu antigo do app.js para não interferir no novo menu responsivo.
+- Tratamento explícito de falha da biblioteca Supabase e da conexão.
+- Mantidas as imagens locais geradas por IA, identidade e demais 100+ itens da base.
+
+COMO PUBLICAR
+1) Faça backup de seu site atual.
+2) Extraia TODO o conteúdo do ZIP na raiz do repositório do GitHub Pages.
+3) Não crie uma pasta adicional ao extrair: index.html, app.js e admin.html devem estar juntos.
+4) Para testar localmente, abra com servidor HTTP (Live Server) usando a raiz correta.
+5) Limpe o cache com Ctrl+F5 e teste Área administrativa → login → admin.html.
+
+OBSERVAÇÃO: Validação estática realizada. Login real requer navegador com acesso ao Supabase, credenciais e perfil ativo.

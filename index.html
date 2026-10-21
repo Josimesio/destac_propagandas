@@ -1,58 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Destac Propagandas | Uma nova experiência vem aí</title>
-<meta name="description" content="O site da Destac Propagandas está em construção. Fale com nossa equipe e acesse a área administrativa.">
-<meta name="theme-color" content="#191b47">
-<link rel="icon" href="assets/logo-destac.png"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="inicio-construcao.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="DESTAC Propagandas. Projetos de comunicação regional, Feira do Produtor Rural, Informativo de Eventos e Rádio do Caminhoneiro.">
+<meta name="theme-color" content="#655474"><link rel="icon" type="image/png" href="logo-destac.png"><title>DESTAC Propagandas | Comunicação que conecta</title>
+<style>
+:root{--navy:#655474;--blue:#9A75A5;--gold:#C896B7;--pale:#F8F5FA;--ink:#514B59;--muted:#736A79;--white:#fff;--line:#E8DFEC}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink);background:#fff}a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}.wrap{max-width:1200px;margin:auto;padding:0 26px}.top{background:var(--navy);color:#dce8fa;font-size:12px;padding:9px 0}.top .wrap{display:flex;justify-content:space-between;gap:12px}.top a:hover{text-decoration:underline}.nav{position:sticky;top:0;z-index:50;background:#fff;box-shadow:0 2px 18px #65547413}.nav-inner{height:82px;display:flex;align-items:center;gap:24px;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px}.mark{height:49px;width:49px;border-radius:15px;background:linear-gradient(140deg,#AB86AD,#51445E);display:grid;place-items:center;color:#fff;font-size:29px;font-weight:900;box-shadow:inset 0 -5px 0 #C896B7}.brand b{display:block;color:var(--navy);letter-spacing:1.3px;font-size:23px;line-height:1}.brand small{font-size:10px;letter-spacing:2.8px;color:#8E8298;font-weight:700}.links{display:flex;align-items:center;gap:24px;font-size:13px;font-weight:700;color:#655474}.links a:hover{color:var(--blue)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 22px;border-radius:11px;font-weight:800;font-size:13px;transition:transform .18s,box-shadow .18s;border:1px solid transparent;cursor:pointer}.btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px #51445E22}.btn-gold{background:var(--gold);color:#3E3348}.btn-outline{border-color:#fff9;color:#fff}.btn-navy{background:var(--navy);color:#fff}.btn-admin{background:#F2EAF5;color:var(--navy);white-space:nowrap}.mobile-toggle{display:none;background:none;border:0;color:var(--navy);font-size:28px;cursor:pointer}.hero{position:relative;overflow:hidden;background:linear-gradient(119deg,#51445E 0%,#756183 52%,#B28EBA 100%);color:#fff}.hero:before{content:"";position:absolute;width:670px;height:670px;border:115px solid #ffffff08;border-radius:50%;right:-210px;top:-270px}.hero:after{content:"";position:absolute;width:310px;height:310px;border:1px solid #FFFFFF24;border-radius:50%;left:44%;bottom:-210px}.hero-inner{min-height:590px;display:grid;grid-template-columns:1.07fr .93fr;gap:50px;align-items:center;padding-top:62px;padding-bottom:70px;position:relative;z-index:1}.eyebrow{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;font-weight:900;color:var(--gold)}.hero h1{font-size:clamp(38px,5vw,65px);letter-spacing:-2.3px;line-height:1.07;margin:18px 0 20px;max-width:680px}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{font-size:17px;line-height:1.7;color:#F4EAF4;max-width:560px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:31px}.hero-art{position:relative;min-height:430px;display:grid;place-items:center}.main-visual{height:370px;width:100%;border-radius:32px;overflow:hidden;position:relative;background:linear-gradient(155deg,#9B80AA,#564A60);box-shadow:0 28px 75px #382F4377;border:1px solid #ffffff36}.main-visual img{width:100%;height:100%;object-fit:cover;opacity:.82}.main-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#51445Ecc,transparent 70%)}.art-label{position:absolute;bottom:25px;left:27px;z-index:2;font-weight:900;font-size:22px;color:#fff;max-width:290px}.floating{position:absolute;z-index:3;right:-12px;top:9px;border-radius:15px;padding:15px 20px;background:#fff;box-shadow:0 10px 35px #061a3650;color:var(--navy);display:flex;align-items:center;gap:10px;font-weight:900;font-size:13px}.floating span{font-size:21px}.mini{position:absolute;z-index:3;bottom:8px;left:-19px;background:var(--gold);color:#4B3D52;padding:14px 20px;font-weight:900;border-radius:13px;transform:rotate(-3deg)}.ribbon{background:#FCFAFD;border-bottom:1px solid var(--line)}.ribbon-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-top:27px;padding-bottom:27px}.ribbon-item{display:flex;align-items:center;gap:14px}.ribbon-icon{background:#EFE6F2;color:var(--blue);display:grid;place-items:center;border-radius:13px;height:51px;width:51px;font-size:22px}.ribbon strong{display:block;font-size:14px}.ribbon small{color:var(--muted);font-size:12px;line-height:1.6}.section{padding:95px 0}.section.alt{background:var(--pale)}.section-header{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:34px}.section h2{font-size:clamp(29px,3.2vw,43px);line-height:1.15;margin:10px 0;color:var(--navy);letter-spacing:-1px}.section-lead{color:var(--muted);font-size:15px;line-height:1.7;max-width:640px;margin:0}.tag{color:#986EAA;font-weight:900;font-size:11px;letter-spacing:2px;text-transform:uppercase}.projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}.project{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 9px 30px #6554740c;transition:transform .2s,box-shadow .2s}.project:hover{transform:translateY(-5px);box-shadow:0 15px 38px #65547426}.photo{height:205px;background:#EEE6F2;position:relative;overflow:hidden}.photo img{width:100%;height:100%;object-fit:cover;display:block}.pill{position:absolute;bottom:14px;left:16px;padding:8px 12px;background:#fff;border-radius:30px;color:var(--navy);font-size:10px;font-weight:900;box-shadow:0 5px 18px #0003}.project-body{padding:25px}.project h3{font-size:21px;margin:0 0 10px;color:var(--navy)}.project p{font-size:13.5px;line-height:1.8;color:var(--muted);min-height:95px;margin:0 0 18px}.text-link{font-size:13px;font-weight:900;color:var(--blue)}.text-link:hover{text-decoration:underline}.wide-promo{margin-top:24px;background:#F1E8F3;border:1px dashed #D2BED9;border-radius:17px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}.wide-promo strong{color:var(--navy)}.wide-promo p{font-size:13px;color:var(--muted);margin:5px 0 0}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:center}.quote{border-radius:25px;background:linear-gradient(135deg,#695678,#A887B3);color:#fff;padding:48px;position:relative;min-height:355px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.quote:after{content:"✦";font-size:230px;position:absolute;right:-5px;bottom:-95px;color:#ffffff14}.quote .huge{font-size:31px;font-weight:900;line-height:1.35;max-width:380px;position:relative;z-index:1}.quote small{font-size:13px;color:#E7D9EB;position:relative;z-index:1}.checks{list-style:none;padding:0;margin:23px 0}.checks li{padding:10px 0;font-weight:700;font-size:14px}.checks li:before{content:'✓';display:inline-grid;place-items:center;margin-right:12px;background:#EFE6F2;color:#846092;width:23px;height:23px;border-radius:50%}.ad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:25px}.ad{border:1px solid var(--line);border-radius:18px;padding:27px;background:#fff}.ad .number{font-size:35px;color:var(--gold);font-weight:900}.ad h3{font-size:17px;color:var(--navy);margin:13px 0 8px}.ad p{font-size:13px;color:var(--muted);line-height:1.7}.contact{background:linear-gradient(110deg,#695678,#A887B3);color:#fff;border-radius:26px;padding:48px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:36px}.contact h2{color:#fff;margin:10px 0;font-size:35px}.contact p{max-width:540px;line-height:1.7;color:#F1E7F3}.footer{background:#50445C;color:#F1E7F3;padding:48px 0 23px}.footer-inner{display:flex;align-items:start;justify-content:space-between;gap:35px;border-bottom:1px solid #FFFFFF24;padding-bottom:36px}.footer b{color:#fff}.footer p{font-size:13px;line-height:1.8;max-width:420px}.footer-nav{display:flex;gap:20px;flex-wrap:wrap;font-size:13px}.copyright{font-size:12px;margin-top:23px;display:flex;justify-content:space-between;gap:15px;color:#DECDDF}.float-contact{position:fixed;bottom:22px;right:20px;z-index:30;border-radius:40px;background:var(--gold);color:var(--navy);padding:14px 20px;box-shadow:0 9px 35px #51445E44;font-size:13px;font-weight:900;display:flex;align-items:center;gap:8px}.float-contact:hover{filter:brightness(1.07)}@media(max-width:920px){.links{display:none;position:absolute;top:82px;left:0;right:0;padding:22px 26px;background:#fff;box-shadow:0 18px 22px #51445E30;flex-direction:column;align-items:stretch;gap:19px}.links.open{display:flex}.mobile-toggle{display:block}.hero-inner{grid-template-columns:1fr;gap:5px;padding-top:70px}.hero-art{min-height:360px}.main-visual{height:315px;max-width:580px}.projects{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{gap:25px}.ribbon-inner{gap:12px}}@media(max-width:650px){.wrap{padding:0 19px}.top .wrap{justify-content:center}.top .extra{display:none}.brand b{font-size:19px}.mark{height:43px;width:43px}.nav-inner{height:70px}.links{top:70px}.hero-inner{padding-top:58px;padding-bottom:45px}.hero h1{font-size:39px;letter-spacing:-1.3px}.hero p{font-size:15px}.hero-art{min-height:280px}.main-visual{height:255px}.floating{right:0;top:3px}.mini{left:0}.ribbon-inner{grid-template-columns:1fr;gap:22px}.projects,.two-col,.ad-grid{grid-template-columns:1fr}.section{padding:68px 0}.section-header{display:block}.project p{min-height:0}.wide-promo,.footer-inner,.copyright{flex-direction:column;align-items:flex-start}.contact{grid-template-columns:1fr;padding:29px}.contact h2{font-size:29px}.quote{padding:30px;min-height:285px}.float-contact{bottom:13px;right:13px}}
+
+/* V2: identidade exclusivamente derivada da logomarca DESTAC. */
+:root { --navy:#655474; --blue:#9A75A5; --gold:#C896B7; --pale:#F8F5FA; --ink:#514B59; --muted:#736A79; --white:#fff; --line:#E8DFEC; }
+.brand-logo { display:block; width:184px; height:72px; object-fit:contain; }
+.nav-inner { min-height:87px; height:auto; }
+.nav .brand { flex:0 0 auto; }
+.footer-logo {display:inline-flex;background:#fff;border-radius:13px;padding:5px 12px}
+.footer-logo .brand-logo {width:190px}
+.hero { background:linear-gradient(118deg,#50445C 0%,#766486 53%,#A287B3 100%); }
+.hero h1 em,.eyebrow { color:#E9C4DC; }
+.btn-gold,.float-contact,.mini {background:#C896B7;color:#392F40}
+.btn-navy {background:#655474}
+.btn-admin {background:#F2EAF5;color:#655474}
+.btn-outline {border-color:#E4D0E5;color:#fff}
+.btn-gold:focus-visible,.btn-admin:focus-visible,.links a:focus-visible {outline:3px solid #D5AFCC;outline-offset:3px}
+.tag,.text-link {color:#926A9F}
+.checks li:before {background:#F1E7F3;color:#775B86}
+.quote {background:linear-gradient(145deg,#655474,#A287B3)}
+.contact {background:linear-gradient(110deg,#655474,#A287B3)}
+.footer {background:#50445C}
+.photo {background:#EAE2EE}
+.ribbon-icon {background:#F0E7F3;color:#80658F}
+.wide-promo {background:#F4EDF6;border-color:#D9C9E1}
+.main-visual {background:#756183}
+@media(max-width:650px){.brand-logo{width:150px;height:64px}.nav-inner{min-height:72px}.footer-logo .brand-logo{width:170px}.links{top:72px}}
+
+/* V4 - imagens IA locais; cores baseadas na identidade oficial */
+.footer-logo {display:inline-flex;background:white;border-radius:13px;padding:4px 10px}
+.footer-logo .brand-logo{width:185px;height:65px;object-fit:contain}
+.photo img { image-rendering:auto; }
+.main-visual img { opacity:.93 }
+</style>
 </head>
-<body class="coming-soon">
-<a class="skip-link" href="#inicio">Ir para o conteúdo</a>
-<header class="topbar">
-<a class="logo-wrap" href="#inicio" aria-label="Destac Propagandas — início"><img src="assets/logo-destac.png" alt="Destac Propagandas — Um elo de sucesso!"></a>
-<nav id="menu" aria-label="Menu principal"><a href="#contato">Fale com a Destac</a></nav>
-<div class="top-actions"><button class="admin-link" id="openLogin">Área administrativa <span aria-hidden="true">↗</span></button><button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button></div>
-</header>
-<main id="inicio">
-<section class="launch-hero" aria-labelledby="launch-title">
-<div class="launch-copy"><span class="status-pill"><span></span> SITE EM CONSTRUÇÃO</span>
-<p class="eyebrow">NOVO VISUAL. A MESMA ESSÊNCIA.</p>
-<h1 id="launch-title">Boas ideias<br>merecem <em>destaque.</em></h1>
-<p class="intro">Estamos preparando uma nova experiência para você conhecer a Destac. Mais criatividade, mais conexão e novas possibilidades para a sua marca.</p>
-<div class="launch-actions"><a class="contact-button" href="https://wa.me/5545999965124" target="_blank" rel="noopener">Vamos conversar <span aria-hidden="true">↗</span></a><a class="email-link" href="mailto:cjdpropagandas@yahoo.com.br">Enviar e-mail <span aria-hidden="true">→</span></a></div>
-<p class="availability"><span></span> Nosso atendimento continua por aqui.</p></div>
-<div class="brand-scene" aria-label="Criatividade que conecta marcas e pessoas" role="img"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><span class="scene-star" aria-hidden="true">✦</span><div class="brand-tile"><span class="tile-caption">CONEXÕES QUE GERAM</span><strong>presença<span>.</span></strong><div class="tile-line"></div><span class="tile-bottom">DESTAC PROPAGANDAS <b aria-hidden="true">↗</b></span></div><div class="floating-note"><span aria-hidden="true">✦</span> Um elo de sucesso!</div><span class="scene-label">CRIATIVIDADE EM MOVIMENTO</span></div>
-</section>
-<section class="contact-strip" id="contato" aria-label="Contato"><div><span class="strip-label">ENQUANTO O NOVO SITE CHEGA</span><h2>Sua marca pode ir mais longe.</h2></div><a href="https://wa.me/5545999965124" target="_blank" rel="noopener"><span>WHATSAPP</span>(45) 99996-5124 ↗</a><a href="mailto:cjdpropagandas@yahoo.com.br"><span>E-MAIL</span>cjdpropagandas@yahoo.com.br ↗</a></section>
+<body>
+<div class="top"><div class="wrap"><span>Comunicação regional que aproxima marcas e pessoas</span><span class="extra">Cascavel • Paraná • Brasil</span></div></div>
+<header class="nav"><div class="wrap nav-inner"><a href="#inicio" class="brand" aria-label="DESTAC Propagandas, início"><img class="brand-logo" src="logo-destac.png" alt="DESTAC Propagandas"></a><button class="mobile-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="mainLinks" aria-expanded="false">☰</button><nav class="links" id="mainLinks" aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#projetos">Nossos projetos</a><a href="#sobre">A DESTAC</a><a href="#anuncie">Anuncie aqui</a><a href="#contato">Contato</a><a class="btn btn-admin" href="#acesso-administrativo" id="openLogin" title="Entrar no sistema administrativo DESTAC">🔒 Área administrativa ↗</a></nav></div></header>
+<main>
+<section class="hero" id="inicio"><div class="wrap hero-inner"><div><span class="eyebrow">▰ Muito além da propaganda</span><h1>Sua marca no lugar certo. <em>Perto das pessoas.</em></h1><p>Da feira à estrada, dos eventos à comunidade. A DESTAC cria conexões entre empresas e públicos por meio de projetos de comunicação que fazem parte da vida real.</p><div class="actions"><a class="btn btn-gold" href="#projetos">Conheça nossos projetos →</a><a class="btn btn-outline" href="#contato">Quero anunciar ↗</a></div></div><div class="hero-art"><div class="main-visual"><img loading="eager" alt="Ilustração criada por IA de comunicação em uma feira" src="imagens/hero-comunicacao.jpg"><div class="art-label">Histórias locais.<br>Grandes conexões.</div></div><div class="floating"><span>📣</span> Comunicação com propósito</div><div class="mini">Sua marca em destaque ✦</div></div></div></section>
+<div class="ribbon"><div class="wrap ribbon-inner"><div class="ribbon-item"><div class="ribbon-icon">📍</div><div><strong>Presença regional</strong><small>Projetos conectados à nossa comunidade.</small></div></div><div class="ribbon-item"><div class="ribbon-icon">📢</div><div><strong>Oportunidades publicitárias</strong><small>Comunicação para diferentes públicos.</small></div></div><div class="ribbon-item"><div class="ribbon-icon">🤝</div><div><strong>Parcerias que aproximam</strong><small>Marcas, pessoas e experiências.</small></div></div></div></div>
+<section class="section alt" id="projetos"><div class="wrap"><div class="section-header"><div><span class="tag">O que fazemos</span><h2>Projetos que levam<br>marcas mais longe.</h2><p class="section-lead">Cada projeto tem um público, uma história e uma oportunidade de comunicação. Conheça nossos principais canais e iniciativas.</p></div></div><div class="projects">
+<article class="project"><div class="photo"><img loading="lazy" alt="Ilustração criada por IA de feira de produtores" src="imagens/feira-produtor.jpg"><span class="pill">📍 Cascavel, PR</span></div><div class="project-body"><h3>Feira do Produtor Rural</h3><p>Um projeto de comunicação que valoriza o comércio local e conecta anunciantes às pessoas que frequentam a feira em Cascavel.</p><a class="text-link" href="#contato" data-interesse="Feira do Produtor Rural">Quero divulgar na feira →</a></div></article>
+<article class="project"><div class="photo"><img loading="lazy" alt="Ilustração criada por IA para o Informativo de Eventos" src="imagens/informativo-eventos.jpg"><span class="pill">📅 Eventos e divulgação</span></div><div class="project-body"><h3>Informativo de Eventos</h3><p>Divulgação e visibilidade para programações, encontros, campanhas e acontecimentos que movimentam a região.</p><a class="text-link" href="#contato" data-interesse="Informativo de Eventos">Divulgar meu evento →</a></div></article>
+<article class="project"><div class="photo"><img loading="lazy" alt="Ilustração criada por IA de caminhão em uma estrada" src="imagens/radio-caminhoneiro.jpg"><span class="pill">🚛 Público das estradas</span></div><div class="project-body"><h3>Rádio do Caminhoneiro</h3><p>Um projeto de comunicação dedicado ao universo dos caminhoneiros e às empresas que desejam conversar com esse público.</p><a class="text-link" href="#contato" data-interesse="Rádio do Caminhoneiro">Anunciar neste projeto →</a></div></article>
+</div><div class="wide-promo"><div><strong>E tem muito mais por vir.</strong><p>Outras ações, campanhas e projetos especiais também fazem parte da DESTAC.</p></div><a href="#contato" class="text-link">Fale com a DESTAC →</a></div></div></section>
+<section class="section" id="sobre"><div class="wrap two-col"><div class="quote"><span class="eyebrow">Nosso jeito de comunicar</span><div class="huge">Não é só aparecer. É estar presente onde a conexão acontece.</div><small>DESTAC PROPAGANDAS • Comunicação que aproxima</small></div><div><span class="tag">Quem somos</span><h2>Uma marca.<br>Muitas possibilidades.</h2><p class="section-lead">A DESTAC reúne diferentes projetos sob uma mesma visão: dar visibilidade a negócios e iniciativas por meio de canais de comunicação próximos de seus públicos.</p><ul class="checks"><li>Projetos com públicos específicos</li><li>Publicidade integrada ao cotidiano</li><li>Espaço para iniciativas de diferentes tamanhos</li><li>Relacionamento próximo com anunciantes</li></ul><a href="#contato" class="btn btn-navy">Vamos conversar →</a></div></div></section>
+<section class="section alt" id="anuncie"><div class="wrap"><span class="tag">Seu negócio em evidência</span><h2>Como anunciar com a DESTAC?</h2><p class="section-lead">Uma conversa simples para entender seu negócio e identificar o projeto mais adequado para sua comunicação.</p><div class="ad-grid"><div class="ad"><div class="number">01</div><h3>Conte seu objetivo</h3><p>Apresente sua empresa, produto, serviço ou evento e o público que deseja alcançar.</p></div><div class="ad"><div class="number">02</div><h3>Escolha onde aparecer</h3><p>Conheça os projetos disponíveis e as possibilidades de divulgação em cada um deles.</p></div><div class="ad"><div class="number">03</div><h3>Solicite sua proposta</h3><p>Entre em contato para conhecer formatos e condições comerciais de publicidade.</p></div></div></div></section>
+<section class="section" id="contato"><div class="wrap"><div class="contact"><div><span class="eyebrow">Vamos fazer sua marca acontecer</span><h2>Sua próxima oportunidade começa aqui.</h2><p>Quer anunciar na Feira do Produtor Rural, no Informativo de Eventos ou na Rádio do Caminhoneiro? Envie sua mensagem e diga em qual projeto tem interesse.</p></div><a class="btn btn-gold" id="contactMail" href="mailto:?subject=Contato%20comercial%20DESTAC%20Propagandas">✉ Solicitar contato comercial ↗</a></div><p style="color:#796F80;font-size:12px;margin-top:16px">O botão abre seu aplicativo de e-mail. O endereço comercial oficial poderá ser configurado na integração com o site existente.</p></div></section>
 </main>
-<footer class="launch-footer"><p>© <span id="year"></span> Destac Propagandas. Todos os direitos reservados.</p><span>Um elo de sucesso!</span></footer>
-<div class="modal" id="loginModal" aria-hidden="true">
-  <div class="backdrop" id="backdrop"></div>
-  <div class="login-box" role="dialog" aria-modal="true" aria-label="Entrar na área administrativa">
-    <button class="close" id="closeLogin" aria-label="Fechar login">×</button>
-    <img src="assets/logo-destac.png" alt="Destac Propagandas">
-    <span class="login-tag">ÁREA ADMINISTRATIVA</span>
-    <h2>Entrar no sistema</h2>
-    <p>Use seu e-mail e senha.</p>
-
+<footer class="footer"><div class="wrap"><div class="footer-inner"><div><a href="#inicio" class="brand"><span class="footer-logo"><img class="brand-logo" src="logo-destac.png" alt="DESTAC Propagandas"></span></a><p>Comunicação regional, projetos e oportunidades para marcas que querem fazer parte do dia a dia das pessoas.</p></div><div class="footer-nav"><a href="#projetos">Projetos</a><a href="#sobre">A DESTAC</a><a href="#anuncie">Anuncie</a><a href="#contato">Contato</a><a href="#acesso-administrativo" data-open-login="true">Área administrativa</a></div></div><div class="copyright"><span>© <span id="year"></span> DESTAC Propagandas. Todos os direitos reservados.</span><span>Cascavel • Paraná</span></div></div></footer>
+<a class="float-contact" href="#contato">✉ Quero anunciar</a>
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();const t=document.getElementById('menuToggle'),nav=document.getElementById('mainLinks');t.addEventListener('click',()=>{let open=nav.classList.toggle('open');t.setAttribute('aria-expanded',String(open));t.textContent=open?'✕':'☰'});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');t.setAttribute('aria-expanded','false');t.textContent='☰'}));document.querySelectorAll('[data-interesse]').forEach(a=>a.addEventListener('click',()=>{const s=a.dataset.interesse,mail=document.getElementById('contactMail');mail.href='mailto:?subject='+encodeURIComponent('Interesse em anunciar — '+s)+'&body='+encodeURIComponent('Olá, gostaria de conhecer as oportunidades de publicidade do projeto '+s+'.')}));
+</script>
+<div class="destac-login" id="loginModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
+  <div class="destac-backdrop" id="backdrop"></div>
+  <div class="destac-login-box" role="document">
+    <button class="destac-close" id="closeLogin" type="button" aria-label="Fechar acesso administrativo">×</button>
+    <img src="assets/logo-destac.png" alt="DESTAC Propagandas" class="destac-login-logo">
+    <div class="destac-login-tag">ÁREA ADMINISTRATIVA</div>
+    <h2 id="loginHeading">Entrar no sistema</h2>
+    <p>Acesse o painel com seu e-mail e sua senha.</p>
     <form id="loginForm">
-      <label>E-mail *
-        <input type="email" id="email" placeholder="seuemail@destac.com.br" required>
-      </label>
-
-      <label>Senha *
-        <input type="password" id="password" placeholder="Sua senha" required>
-      </label>
-
-      <button type="submit" class="btn primary full">Entrar</button>
-      <div id="loginMessage" class="message"></div>
+      <label for="email">E-mail *</label>
+      <input id="email" type="email" placeholder="seuemail@empresa.com.br" autocomplete="username" required>
+      <label for="password">Senha *</label>
+      <input id="password" type="password" placeholder="Sua senha" autocomplete="current-password" required>
+      <button class="destac-submit" type="submit">Entrar no sistema</button>
+      <div id="loginMessage" role="status" aria-live="polite" class="destac-login-message"></div>
     </form>
-
-
   </div>
 </div>
+<style>
+.destac-login{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:22px}
+.destac-login.active{display:flex}.destac-backdrop{position:absolute;inset:0;background:rgba(48,40,67,.75);backdrop-filter:blur(5px)}
+.destac-login-box{position:relative;z-index:1;width:min(100%,435px);border-radius:23px;padding:36px;background:#fff;box-shadow:0 28px 86px rgba(45,35,58,.29);color:#51445e}
+.destac-login-logo{display:block;width:min(235px,82%);height:93px;object-fit:contain;margin:0 auto 12px}.destac-login-tag{text-align:center;color:#9a75a5;font-size:11px;font-weight:800;letter-spacing:2px}
+.destac-login-box h2{text-align:center;margin:9px 0 7px;font-size:27px;color:#51445e}.destac-login-box p{text-align:center;margin:0 0 25px;color:#736a79;font-size:14px}
+.destac-login-box form{display:grid;gap:10px}.destac-login-box label{font-size:13px;font-weight:700;color:#655474}
+.destac-login-box input{width:100%;padding:14px;border:1px solid #d8c9df;border-radius:11px;outline:none;background:#fbf9fc;color:#51445e}
+.destac-login-box input:focus{border-color:#9a75a5;box-shadow:0 0 0 3px #c896b74b}.destac-submit{margin-top:11px;background:linear-gradient(115deg,#9a75a5,#c896b7);color:#fff;border:none;border-radius:11px;padding:15px;font-weight:800;cursor:pointer}
+.destac-submit:disabled{opacity:.55;cursor:wait}.destac-close{position:absolute;right:17px;top:13px;border:0;background:transparent;font-size:29px;color:#655474;cursor:pointer}
+.destac-login-message{min-height:20px;font-size:13px;color:#a44f69;text-align:center}.modal-open{overflow:hidden}@media(max-width:480px){.destac-login-box{padding:26px 20px}}
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
-</body>
-</html>
+<script src="app.js?v=6"></script>
+</body></html>
