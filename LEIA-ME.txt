@@ -1,0 +1,14 @@
+DESTAC PROPAGANDAS — LEMBRAR LOGIN POR DISPOSITIVO
+
+1. Extraia aplicar_lembrar_login.py e destac-session.js na raiz do repositório.
+2. Na pasta do repositório, execute: python aplicar_lembrar_login.py
+3. Teste logins marcado e desmarcado; confira git diff.
+4. Publique SOMENTE os arquivos alterados necessários e destac-session.js.
+5. Não publique os backups *.antes_lembrar_login.bak.
+
+Marcado: sessão Supabase persistida no navegador deste dispositivo.
+Desmarcado: sessão na aba/sessão do navegador (sessionStorage).
+A senha não é armazenada pelo site. O gerenciador de senhas do navegador é independente.
+
+IMPORTANTE: este é um kit de alterações para aplicação na sua cópia do site,
+não é o ZIP completo do site. O código analisado foi o publicado no GitHub/main.

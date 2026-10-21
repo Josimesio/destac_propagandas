@@ -1,0 +1,16 @@
+DESTAC - CONTROLE DE ACESSO V1
+
+1. Faça backup do projeto e do banco.
+2. Execute sql/INSTALAR_CONTROLE_ACESSO_V1.sql no SQL Editor do Supabase correto (projeto kvmayirfbdnexlzqnjvr).
+3. Suba os arquivos modificados e novos pelo GitHub Pages.
+4. Faça login como SUPER_USUARIO e abra permissoes.html.
+5. Selecione cada administrador e conceda as ações. Depois o administrador poderá conceder somente as ações que possui aos usuários comuns.
+6. Superusuário sempre tem acesso total. Usuários sem concessão são bloqueados por padrão no controle de navegação.
+
+ATENÇÃO IMPORTANTE:
+- Esta entrega inclui interface, matriz persistente, verificações RPC do lado do servidor e bloqueio de NAVEGAÇÃO por módulo.
+- NÃO constitui ainda bloqueio completo das operações nas tabelas de negócio, pois políticas RLS atuais de empresas/clientes/contratos/financeiro precisam ser revisadas e substituídas conforme o modelo de autorização. Até isso ser feito, chamadas diretas à API podem continuar permitidas pelas políticas antigas.
+- Ações específicas (Criar/Editar/Excluir/Exportar) ficam registradas e delegadas no banco, mas é necessário integrá-las aos botões e às políticas de cada módulo.
+- Cadastro/criação/edição/inativação de usuários depende das Edge Functions criar-usuario e atualizar-usuario. Atualmente só o superusuário acessa usuarios.html conforme usuarios.js; não foi alterado para evitar elevação indevida de privilégio. A gestão de permissões do administrador é feita em permissoes.html.
+- O registro de LOG será implementado na próxima etapa, como solicitado.
+- A implantação deve ser validada antes da produção; o SQL não muda políticas existentes das tabelas de negócio.

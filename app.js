@@ -11,10 +11,7 @@ const SUPABASE_URL = 'https://kvmayirfbdnexlzqnjvr.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY =
   'sb_publishable_RisUa11fiUO_G5TMLnMAPg_OfVBoNIP';
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
+const supabaseClient = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 function showLogin(){
   modal.classList.add('active');
   modal.setAttribute('aria-hidden','false');
@@ -27,7 +24,8 @@ function hideLogin(){
   loginMessage.textContent='';
 }
 
-openLogin.addEventListener('click', showLogin);
+openLogin.addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+document.querySelectorAll('[data-open-login]').forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); showLogin(); }));
 closeLogin.addEventListener('click', hideLogin);
 backdrop.addEventListener('click', hideLogin);
 
@@ -35,8 +33,8 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Escape') hideLogin();
 });
 
-menuBtn.addEventListener('click', () => menu.classList.toggle('open'));
-document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+if (menuBtn && menu) menuBtn.addEventListener('click', () => menu.classList.toggle('open'));
+if (menu) document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -47,10 +45,20 @@ loginForm.addEventListener('submit', async (e) => {
   loginMessage.style.color = '#6e688f';
   loginMessage.textContent = 'Entrando...';
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  if (!supabaseClient) {
+    loginMessage.style.color = '#a44f69';
+    loginMessage.textContent = 'Não foi possível carregar a autenticação. Verifique a conexão com a internet.';
+    return;
+  }
+  let data, error;
+  try {
+    ({ data, error } = await supabaseClient.auth.signInWithPassword({ email, password }));
+  } catch (falha) {
+    console.error('Falha de conexão no login:', falha);
+    loginMessage.style.color = '#a44f69';
+    loginMessage.textContent = 'Falha de conexão com o Supabase. Tente novamente.';
+    return;
+  }
 
   if (error) {
     console.error(error);
