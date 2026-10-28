@@ -1,10 +1,10 @@
-RESTAURACAO DO MODULO CLIENTES
-Origem: arquivo clientes.html do ultimo projeto enviado: destac_propagandas(9).zip
+CORREÇÃO PONTUAL DA PÁGINA INICIAL DESTAC
 
-1. Faça copia de seguranca do clientes.html atual.
-2. Substitua SOMENTE clientes.html pelo arquivo deste pacote na raiz do repositorio.
-3. Confira: git diff -- clientes.html
-4. Teste a pagina Clientes localmente/publicada.
-5. Depois de confirmar, faca commit/push apenas desse arquivo.
+1. Salve uma cópia do index.html atual.
+2. Substitua somente o index.html da raiz do projeto pelo arquivo incluído neste ZIP.
+3. Verifique: git diff -- index.html
+4. Teste a página e o acesso administrativo.
+5. Publique: git add index.html && git commit -m "Corrige conflito Git na pagina inicial" && git push origin main
 
-Nao altera clientes.js, Contratos, Dashboard, Financeiro nem Supabase.
+Não há alterações em clientes, contratos, dashboard, scripts ou banco.
+Foi preservado o layout institucional do lado direito do conflito e o favicon oficial.
