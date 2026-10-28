@@ -1,8 +1,21 @@
-DESTAC - Correcao de retorno do botao Salvar contrato
+DESTAC — DASHBOARD COM LINK NO MENU
 
-1. Faca backup do contratos.js publicado.
-2. Substitua somente contratos.js pelo arquivo deste ZIP.
-3. Recarregue a pagina sem cache (Ctrl+F5). Se necessario atualize o parametro ?v= do script no HTML.
-4. Tente salvar e confira a mensagem abaixo do botao; envie a mensagem exata caso falhe.
+A instalacao adiciona SOMENTE uma linha no menu do admin.html, depois de Contratos:
+  <a href="dashboard_contratos.html">Dashboards</a>
 
-Nao altera banco, contratos existentes, financeiro, formulario, nem regras de validacao.
+Nao substitui admin.html inteiro, contratos.html, contratos.js, financeiro ou banco.
+O instalador cria backup de admin.html com data/hora ANTES de modificar.
+
+COMO INSTALAR (Windows / Git Bash)
+1. Extraia TODO o ZIP numa pasta temporaria.
+2. Abra o Git Bash na RAIZ de seu repositorio (a pasta que contem admin.html).
+3. Execute (ajuste o caminho da pasta temporaria):
+   python /c/caminho/DESTAC_DASHBOARD_COM_ACESSO/instalar_link_dashboard.py
+   ATENCAO: o script precisa ser executado com o terminal na raiz do site.
+4. Confira: git diff -- admin.html
+5. Teste localmente ou publique com Git; o link aparece em admin.html > Dashboards.
+
+LINK DIRETO DEPOIS DE PUBLICADO:
+https://destacpropagandas.com.br/dashboard_contratos.html
+
+O dashboard usa permissao de visualizacao de contratos e nao altera dados do Supabase.
