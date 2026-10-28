@@ -781,7 +781,9 @@ const destacGrade = {
   contexto: '',
   versao: 0,
   timer: null,
-  atualizando: false
+  atualizando: false,
+  edicaoManual: false,
+  distribuindo: false
 };
 const destacarHorario = horario => {
   const m = String(horario || '').match(/^(\d\d):(\d\d)(?::(\d\d))?$/);
@@ -789,16 +791,6 @@ const destacarHorario = horario => {
 };
 function disponibilidadeContexto() {
   return [valorCampo('dataInicio'), valorCampo('dataTermino'), valorCampo('veiculoExecutor').trim().toLowerCase()].join('|');
-}
-function slotsGradeGerados(grupo) {
-  const inicio = grupo === 'TERCA_QUINTA' ? 13*3600+30*60 : 8*3600;
-  const blocos = grupo === 'TERCA_QUINTA' ? 75 : 40;
-  const lista = [];
-  for (let b=0;b<blocos;b++) for(let i=0;i<4;i++) {
-    const seg = inicio+b*360+i*30;
-    lista.push(`${String(Math.floor(seg/3600)).padStart(2,'0')}:${String(Math.floor((seg%3600)/60)).padStart(2,'0')}:${String(seg%60).padStart(2,'0')}`);
-  }
-  return lista;
 }
 function gradeStatus(texto, situacao='info') {
   const box=document.getElementById('statusGradeHorarios');
@@ -815,7 +807,7 @@ function renderizarCamposHorario(containerId, quantidade, prefixo) {
   const lugares = destacGrade.consultada ? destacGrade.slots[grupo] : [];
   const livres = lugares.filter(p=>p.disponivel).map(p=>p.horario);
   const usados = new Set();
-  const capacidade=grupo==='TERCA_QUINTA'?300:160;
+  const capacidade=grupo==='TERCA_QUINTA'?900:480;
   const qtdInformada=Number(quantidade)||0;
   const qtd=qtdInformada>capacidade?0:Math.max(0,Math.min(capacidade,qtdInformada));
   if(qtdInformada>capacidade) gradeStatus(`A capacidade maxima e ${capacidade} anuncios por dia neste grupo. Reduza a quantidade de insercoes.`,'erro');
@@ -830,13 +822,8 @@ function renderizarCamposHorario(containerId, quantidade, prefixo) {
     sel.dataset.gradeHorario=grupo;sel.required=true;
     const vazio=document.createElement('option');vazio.value='';vazio.textContent='Escolha um horário';sel.append(vazio);
     let valor=destacarHorario(anteriores[i]||'');
-    if (!valor && livres.length) {
-      // Distribuir automaticamente os anuncios ao longo de toda a feira.
-      for(let tentativa=0;tentativa<livres.length;tentativa++) {
-        const sugestao=livres[(Math.floor((i+.5)*livres.length/qtd)+tentativa)%livres.length];
-        if (!usados.has(sugestao)) {valor=sugestao;break;}
-      }
-    }
+    // A V2 preenche automaticamente por RPC, nunca por seleção aleatória local.
+
     const valoresNovos=new Set(lugares.map(p=>p.horario));
     if (valor && !valoresNovos.has(valor)) {
       const antigo=document.createElement('option');antigo.value=valor;
@@ -853,6 +840,7 @@ function renderizarCamposHorario(containerId, quantidade, prefixo) {
     usados.add(valor);
     sel.addEventListener('change',()=>{
       ajustarDisponibilidadeCampos();
+      destacGrade.edicaoManual = true;
       marcarContratoComoAlterado();
     });
     celula.append(label,sel);fragment.append(celula);
@@ -897,8 +885,8 @@ function atualizarCamposHorarios() {
   if(grupoSemana) grupoSemana.style.display=qtdSemana?'block':'none';
   renderizarCamposHorario('horariosSabadoDomingo',qtdFim,'horarioSabadoDomingo');
   renderizarCamposHorario('horariosTercaQuinta',qtdSemana,'horarioTercaQuinta');
-  if(qtdSemana>300 || qtdFim>160) {
-    gradeStatus(`Quantidade acima da capacidade: máximo de 300 anúncios às terças/quintas e 160 aos sábados/domingos, por dia.`,'erro');
+  if(qtdSemana>900 || qtdFim>480) {
+    gradeStatus(`Quantidade acima da capacidade: máximo teórico de 900 posições às terças/quintas e 480 aos sábados/domingos, por dia.`,'erro');
   }
 }
 async function consultarGradeHorarios(forcar=false) {
@@ -915,19 +903,30 @@ async function consultarGradeHorarios(forcar=false) {
   destacGrade.atualizando=true;
   gradeStatus('Consultando os horários disponíveis para todas as feiras do contrato...');
   try {
-    const {data,error}=await supabaseClient.rpc('destac_grade_disponibilidade',{
+    // A API do Supabase pode limitar cada resposta a 1000 linhas.
+    // A grade V2 possui 1380 posicoes: buscar em duas paginas evita truncamento.
+    const parametrosGrade={
       p_inicio:inicio,p_fim:fim,p_veiculo:veiculo,p_ignorar_id:contratoSalvoId||null
-    });
-    if(versao!==destacGrade.versao) return false;
-    if(error) throw error;
-    const dados=Array.isArray(data)?data:[];
-    if(dados.length!==460) throw new Error('A consulta não retornou a grade completa (460 posições).');
+    };
+    const dados=[];
+    for(const [primeiro,ultimo] of [[0,999],[1000,1999]]) {
+      const {data,error}=await supabaseClient
+        .rpc('destac_grade_disponibilidade',parametrosGrade)
+        .range(primeiro,ultimo);
+      if(versao!==destacGrade.versao) return false;
+      if(error) throw error;
+      dados.push(...(Array.isArray(data)?data:[]));
+    }
+    if(dados.length!==1380) throw new Error(
+      `A grade V2 retornou ${dados.length} de 1380 posições. Verifique o limite de linhas da API e a função de disponibilidade.`
+    );
     destacGrade.slots={
       TERCA_QUINTA:dados.filter(p=>p.grupo==='TERCA_QUINTA').map(p=>({horario:destacarHorario(p.horario),disponivel:p.disponivel===true})),
       SABADO_DOMINGO:dados.filter(p=>p.grupo==='SABADO_DOMINGO').map(p=>({horario:destacarHorario(p.horario),disponivel:p.disponivel===true}))
     };
     destacGrade.consultada=true;destacGrade.contexto=contexto;
     atualizarCamposHorarios();
+    if (!contratoSalvoId && !destacGrade.edicaoManual) await distribuirGradeInteligente(true);
     return true;
   } catch(erro) {
     if(versao!==destacGrade.versao) return false;
@@ -965,6 +964,48 @@ for(const id of ['dataInicio','dataTermino','duracaoMeses','veiculoExecutor']) {
   if(campo) for(const evento of ['change','input']) campo.addEventListener(evento, agendarConsultaGrade);
 }
 document.getElementById('btnAtualizarGrade')?.addEventListener('click',()=>consultarGradeHorarios(true));
+async function distribuirGradeInteligente(automatico=false) {
+  if (!destacGrade.consultada || destacGrade.distribuindo) {
+    if (!automatico) gradeStatus('Consulte a disponibilidade antes de distribuir os horários.', 'erro');
+    return;
+  }
+  const inicio=valorCampo('dataInicio'), fim=valorCampo('dataTermino');
+  const veiculo=valorCampo('veiculoExecutor').trim();
+  const versao=destacGrade.versao;
+  destacGrade.distribuindo=true;
+  try {
+    const grupos=[
+      ['TERCA_QUINTA','horariosTercaQuinta',Number(valorCampo('insercoesTercaQuinta'))||0],
+      ['SABADO_DOMINGO','horariosSabadoDomingo',Number(valorCampo('insercoesSabadoDomingo'))||0]
+    ];
+    const respostas=await Promise.all(grupos.map(async ([grupo,,qtd])=>{
+      if (!qtd) return [];
+      const {data,error}=await supabaseClient.rpc('destac_grade_sugerir_v2',{
+        p_grupo:grupo,p_quantidade:qtd,p_inicio:inicio,p_fim:fim,
+        p_veiculo:veiculo,p_ignorar_id:contratoSalvoId||null
+      });
+      if(error) throw error;
+      if(!Array.isArray(data) || data.length!==qtd) throw new Error('Quantidade de sugestões inconsistente.');
+      return data.map(item=>destacarHorario(item.horario));
+    }));
+    if(versao!==destacGrade.versao) return;
+    grupos.forEach(([grupo,container],idx)=>{
+      const seletores=[...document.querySelectorAll(`#${container} select[data-grade-horario]`)];
+      seletores.forEach((sel,i)=>{sel.value=respostas[idx][i]||'';});
+    });
+    destacGrade.edicaoManual=false;
+    ajustarDisponibilidadeCampos();
+    gradeStatus('Horários distribuídos proporcionalmente. Confira e, se desejar, ajuste manualmente.', 'ok');
+    marcarContratoComoAlterado();
+  } catch(erro) {
+    if(versao===destacGrade.versao) gradeStatus(`Falha ao distribuir: ${erro.message}`, 'erro');
+  } finally {destacGrade.distribuindo=false;}
+}
+document.getElementById('btnDistribuirGrade')?.addEventListener('click',async()=>{
+  if(!destacGrade.consultada && !(await consultarGradeHorarios(true))) return;
+  await distribuirGradeInteligente(false);
+});
+
 
 
 
@@ -2220,8 +2261,49 @@ async function salvarContrato() {
 }
 
 
+// Feedback local do salvamento: a mensagem original fica no inicio do documento.
+// Espelhar o resultado ao lado do botao sem mudar nenhuma regra de contrato.
+let feedbackSalvarContrato = null;
 if (btnSalvarContrato) {
-  btnSalvarContrato.addEventListener('click', salvarContrato);
+  feedbackSalvarContrato = document.createElement('div');
+  feedbackSalvarContrato.id = 'feedbackSalvarContrato';
+  feedbackSalvarContrato.setAttribute('role', 'status');
+  feedbackSalvarContrato.setAttribute('aria-live', 'polite');
+  feedbackSalvarContrato.style.cssText = 'margin-top:12px;font-weight:700;white-space:pre-wrap;';
+  btnSalvarContrato.parentElement?.appendChild(feedbackSalvarContrato);
+  const atualizarFeedbackSalvar = () => {
+    if (!feedbackSalvarContrato || !mensagemContrato) return;
+    feedbackSalvarContrato.textContent = mensagemContrato.textContent || '';
+    feedbackSalvarContrato.style.color = mensagemContrato.style.color || '#a44f69';
+  };
+  if (mensagemContrato) {
+    new MutationObserver(atualizarFeedbackSalvar).observe(mensagemContrato, {
+      childList: true, characterData: true, subtree: true
+    });
+  }
+  btnSalvarContrato.addEventListener('click', async () => {
+    if (feedbackSalvarContrato) {
+      feedbackSalvarContrato.style.color = '#6e688f';
+      feedbackSalvarContrato.textContent = 'Validando e salvando contrato...';
+    }
+    try {
+      await salvarContrato();
+      atualizarFeedbackSalvar();
+    } catch (erro) {
+      console.error('Falha inesperada ao salvar contrato:', erro);
+      const detalhe = erro?.message || String(erro);
+      if (feedbackSalvarContrato) {
+        feedbackSalvarContrato.style.color = '#a44f69';
+        feedbackSalvarContrato.textContent = `Não foi possível salvar: ${detalhe}`;
+      }
+      if (mensagemContrato) {
+        mensagemContrato.style.color = '#a44f69';
+        mensagemContrato.textContent = `Não foi possível salvar: ${detalhe}`;
+      }
+      salvandoContrato = false;
+      btnSalvarContrato.disabled = false;
+    }
+  });
 }
 
 

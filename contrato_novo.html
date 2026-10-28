@@ -1340,9 +1340,10 @@
 
               <div class="horarios-insercoes">
 
-                <h3>Horários das inserções — grade de 6 minutos</h3>
-                <p class="destac-grade-intro">Cada bloco tem <strong>4 anúncios de 30 segundos</strong> e <strong>1 música de 4 minutos</strong>. Os horários abaixo são posições fixas repetidas nas feiras durante a vigência.</p>
+                <h3>Horários das inserções — distribuição inteligente</h3>
+                <p class="destac-grade-intro">O sistema distribui anúncios de 30 segundos proporcionalmente ao longo da feira, considerando os contratos existentes. Música de 3min30s é apenas referência; você pode ajustar os horários manualmente.</p>
                 <div id="statusGradeHorarios" class="destac-grade-status" role="status" aria-live="polite">Informe início, duração e veículo executor para consultar horários livres.</div>
+                <button id="btnDistribuirGrade" class="destac-grade-atualizar" type="button">Distribuir automaticamente</button>
                 <button id="btnAtualizarGrade" class="destac-grade-atualizar" type="button">Atualizar horários disponíveis</button>
 
                 <div id="grupoSabadoDomingo" class="grupo-horarios">
@@ -1540,7 +1541,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="opcoes_impressao_contrato.js"></script>
-  <script src="contratos.js?v=20261020-correcao-data-financeira-v4"></script>
+  <script src="contratos.js?v=20261027-grade-inteligente-v2"></script>
 
 
   <script>

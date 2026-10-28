@@ -1,0 +1,24 @@
+DESTAC PROPAGANDAS - Grade Inteligente V2 (27/10/2026)
+
+ALTERADOS APENAS:
+  contrato_novo.html: botão e textos da grade
+  contratos.js: consulta das novas posições, sugestão automática via RPC, seleção manual preservada
+  sql/ATUALIZAR_GRADE_INTELIGENTE_V2_20261027.sql: atualiza 3 funções, sem recriar trigger ou alterar dados
+
+INSTALAR NA ORDEM:
+1. Faça backup/exportação externa do Supabase e dos arquivos do site.
+2. Execute sql/ATUALIZAR_GRADE_INTELIGENTE_V2_20261027.sql no SQL Editor do Supabase.
+3. Teste a disponibilidade: select grupo,count(*) from public.destac_grade_disponibilidade(date '2026-11-01',date '2026-11-30','Serviço de sonorização da Feira do Produtor') group by grupo;
+   Esperado: TERCA_QUINTA=900; SABADO_DOMINGO=480.
+4. Teste a funcao sugerir_v2 previamente instalada; garanta 8, 10 e 4 inserções em horários válidos.
+5. Somente após OK no SQL, publique contrato_novo.html e contratos.js. Não é preciso substituir os demais arquivos.
+6. Verifique cadastro de empresas/clientes; carregamento do contrato; distribuição automática; seleção manual; salvamento de contrato novo de teste.
+
+LIMITES E CUIDADOS:
+- NÃO execute o SQL antigo INSTALAR_GRADE_HORARIOS_20261020.sql após a V2: ele restauraria as regras antigas.
+- A função V2 já criada no seu Supabase é mantida.
+- Contratos legados continuam intactos. O servidor valida novos horários de 30 segundos.
+- A disponibilidade segue agrupada por terça/quinta e sábado/domingo como antes.
+- Posições de 30s são candidatos técnicos, NÃO garantia de programação musical no ZaraRadio.
+- Antes de operar produção, valide o comportamento do ZaraRadio com músicas de duração real variável.
+- Reversão de arquivos: restaure os dois arquivos originais. Reversão do SQL: use backup do código das três funções anteriores.
