@@ -1113,6 +1113,13 @@
                 >
               </div>
 
+              <div class="campo-contrato" style="margin-bottom:12px">
+                <label for="tipoVigenciaContrato">Tipo de vigência *</label>
+                <select id="tipoVigenciaContrato" aria-label="Tipo de vigência">
+                  <option value="DETERMINADO">Prazo determinado</option>
+                  <option value="INDETERMINADO">Prazo indeterminado — mensalidade recorrente</option>
+                </select>
+              </div>
               <div class="vigencia-contrato-grid">
 
                 <div class="vigencia-coluna-datas">
@@ -1121,14 +1128,14 @@
                     <input type="date" id="dataInicio" required>
                   </div>
 
-                  <div class="campo-contrato">
+                  <div class="campo-contrato" id="grupoTerminoContrato">
                     <label for="dataTermino">Término calculado *</label>
                     <input type="date" id="dataTermino" readonly required
                       title="Calculado automaticamente pela data inicial e duração em meses">
                   </div>
                 </div>
 
-                <div class="campo-contrato">
+                <div class="campo-contrato" id="grupoDuracaoContrato">
                   <label for="duracaoMeses">Duração do contrato (meses) *</label>
                   <input type="number" id="duracaoMeses" min="1" max="120" step="1"
                     inputmode="numeric" placeholder="Ex.: 6" required
@@ -1541,7 +1548,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="opcoes_impressao_contrato.js"></script>
-  <script src="contratos.js?v=20261027-grade-inteligente-v2"></script>
+  <script src="contratos.js?v=20261029-vigencia-indeterminada-v1"></script>
 
 
   <script>

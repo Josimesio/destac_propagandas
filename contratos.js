@@ -789,8 +789,16 @@ const destacarHorario = horario => {
   const m = String(horario || '').match(/^(\d\d):(\d\d)(?::(\d\d))?$/);
   return m ? `${m[1]}:${m[2]}:${m[3] || '00'}` : String(horario || '');
 };
+function fimGradeContrato() {
+  if (!prazoIndeterminado()) return valorCampo('dataTermino');
+  const inicio = valorCampo('dataInicio');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(inicio)) return '';
+  const d = new Date(`${inicio}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + 3660);
+  return d.toISOString().slice(0, 10);
+}
 function disponibilidadeContexto() {
-  return [valorCampo('dataInicio'), valorCampo('dataTermino'), valorCampo('veiculoExecutor').trim().toLowerCase()].join('|');
+  return [valorCampo('dataInicio'), fimGradeContrato(), valorCampo('veiculoExecutor').trim().toLowerCase()].join('|');
 }
 function gradeStatus(texto, situacao='info') {
   const box=document.getElementById('statusGradeHorarios');
@@ -890,7 +898,7 @@ function atualizarCamposHorarios() {
   }
 }
 async function consultarGradeHorarios(forcar=false) {
-  const inicio=valorCampo('dataInicio'),fim=valorCampo('dataTermino'),veiculo=valorCampo('veiculoExecutor').trim();
+  const inicio=valorCampo('dataInicio'),fim=fimGradeContrato(),veiculo=valorCampo('veiculoExecutor').trim();
   const contexto=disponibilidadeContexto();
   if(!inicio||!fim||fim<inicio||!veiculo) {
     destacGrade.consultada=false; destacGrade.contexto='';
@@ -969,7 +977,7 @@ async function distribuirGradeInteligente(automatico=false) {
     if (!automatico) gradeStatus('Consulte a disponibilidade antes de distribuir os horários.', 'erro');
     return;
   }
-  const inicio=valorCampo('dataInicio'), fim=valorCampo('dataTermino');
+  const inicio=valorCampo('dataInicio'), fim=fimGradeContrato();
   const veiculo=valorCampo('veiculoExecutor').trim();
   const versao=destacGrade.versao;
   destacGrade.distribuindo=true;
@@ -1261,9 +1269,16 @@ function atualizarQuantidadeMensalSugerida(forcar = false) {
   recalcularPrecoPorInsercao();
 }
 function dadosPrecoInsercao() {
+  if (prazoIndeterminado()) {
+    const mensal = moedaParaNumero(valorCampo('valorMensal'));
+    const valor = mensal == null ? 0 : Math.round(mensal * 100);
+    const valido = Number.isSafeInteger(valor) && valor > 0;
+    return {unitario:null, qtd:0, meses:1, valido,
+      mensalCentavos:valido ? valor : 0, totalCentavos:valido ? valor : 0};
+  }
   const unitario = moedaParaNumero(valorCampo('valorUnitarioInsercao'));
   const qtd = Number(valorCampo('insercoesMensais'));
-  const meses = Number(valorCampo('duracaoMeses'));
+  const meses = prazoIndeterminado() ? 1 : Number(valorCampo('duracaoMeses'));
   const centavosUnitario = unitario === null ? 0 : Math.round(unitario*100);
   const valido = Number.isSafeInteger(centavosUnitario) && centavosUnitario > 0 &&
     Number.isSafeInteger(qtd) && qtd >= 1 && qtd <= 100000 &&
@@ -1285,8 +1300,9 @@ function recalcularPrecoPorInsercao(atualizarDivisao = true) {
   const ajuda = document.getElementById('ajudaCalculoInsercoes');
   const digitouValorUnitario = Boolean(valorCampo('valorUnitarioInsercao'));
   if (preco.valido) {
-    if (campoMensal) campoMensal.value = moedaBRInsercao(preco.mensalCentavos);
-    if (ajuda) ajuda.textContent = `${preco.qtd} inserções/mês × ${moedaBRInsercao(Math.round(preco.unitario*100))} = ${moedaBRInsercao(preco.mensalCentavos)}/mês. Vigência ${preco.meses} meses: ${moedaBRInsercao(preco.totalCentavos)} no contrato. A quantidade mensal usa 4 semanas como sugestão e pode ser ajustada.`;
+    if (campoMensal && !prazoIndeterminado()) campoMensal.value = moedaBRInsercao(preco.mensalCentavos);
+    if (ajuda && prazoIndeterminado()) ajuda.textContent = 'Valor mensal negociado. Cobrança recorrente sem data final.';
+    else if (ajuda) ajuda.textContent = `${preco.qtd} inserções/mês × ${moedaBRInsercao(Math.round(preco.unitario*100))} = ${moedaBRInsercao(preco.mensalCentavos)}/mês. ${prazoIndeterminado() ? 'Prazo indeterminado, cobrança mensal recorrente.' : `Vigência ${preco.meses} meses: ${moedaBRInsercao(preco.totalCentavos)} no contrato.`} A quantidade mensal usa 4 semanas como sugestão e pode ser ajustada.`;
     if (atualizarDivisao) {
       const modalidade = valorCampo('modalidadeContrato') || 'FINANCEIRO';
       const financeiro = document.getElementById('valorFinanceiroContrato');
@@ -1322,8 +1338,8 @@ function recalcularPrecoPorInsercao(atualizarDivisao = true) {
       composicaoRecalculada = true;
     }
   } else if (digitouValorUnitario || !contratoSalvoId) {
-    if (campoMensal) campoMensal.value = '';
-    if (ajuda) ajuda.textContent = 'Informe valor unitário, quantidade mensal e duração para calcular o preço. Sugestão: quatro semanas por mês; ajuste a quantidade se necessário.';
+    if (campoMensal && !prazoIndeterminado()) campoMensal.value = '';
+    if (ajuda) ajuda.textContent = prazoIndeterminado() ? 'Informe o valor mensal combinado com o cliente.' : 'Informe valor unitário, quantidade mensal e duração para calcular o preço. Sugestão: quatro semanas por mês; ajuste a quantidade se necessário.';
   }
   if (typeof atualizarPreviaFinanceira === 'function') atualizarPreviaFinanceira();
 }
@@ -1570,6 +1586,43 @@ function atualizarAudioAtualEdicao() {
 // Vigência contratual: data de início + N meses - 1 dia, sempre usando UTC
 // para evitar erros de fuso horário e de meses com menos de 31 dias.
 // A duração é recuperada das datas ao editar: nenhuma coluna nova é exigida.
+function prazoIndeterminado() { return document.getElementById('tipoVigenciaContrato')?.value === 'INDETERMINADO'; }
+function atualizarCamposVigencia() {
+  const ind = prazoIndeterminado();
+  for (const id of ['grupoTerminoContrato','grupoDuracaoContrato']) {
+    const grupo = document.getElementById(id);
+    if (grupo) grupo.hidden = ind;
+  }
+  for (const id of ['dataTermino','duracaoMeses']) {
+    const campo = document.getElementById(id);
+    if (campo) campo.required = !ind;
+  }
+  const valorMensal = document.getElementById('valorMensal');
+  if (valorMensal) {
+    valorMensal.readOnly = !ind;
+    valorMensal.setAttribute('aria-readonly', String(!ind));
+    valorMensal.title = ind ? 'Informe a mensalidade negociada com o cliente' : 'Valor calculado pelas inserções';
+  }
+  const campoUnitario = document.getElementById('valorUnitarioInsercao');
+  const campoInsercoes = document.getElementById('insercoesMensais');
+  if (campoUnitario) campoUnitario.disabled = ind;
+  if (campoInsercoes) campoInsercoes.disabled = ind;
+  if (ind) {
+    const duracao = document.getElementById('duracaoMeses');
+    if (duracao) duracao.value = '';
+    const termino = document.getElementById('dataTermino');
+    if (termino) termino.value = '';
+    const parcela = document.getElementById('quantidadeParcelas');
+    if (parcela) parcela.value = '1';
+    const mensal = document.querySelector('input[name="tipoModalidadeVisual"][value="MENSAL"]');
+    if (mensal && !mensal.checked) { mensal.checked = true; mensal.dispatchEvent(new Event('change', {bubbles:true})); }
+  }
+  atualizarVigenciaContrato();
+  recalcularPrecoPorInsercao();
+  atualizarPreviaFinanceira();
+}
+document.getElementById('tipoVigenciaContrato')?.addEventListener('change', atualizarCamposVigencia);
+document.getElementById('valorMensal')?.addEventListener('input', () => { if (prazoIndeterminado()) recalcularPrecoPorInsercao(); });
 let parcelasAlteradasManualmente = false;
 let vigenciaLegadaOriginal = null;
 function calcularTerminoPorMeses(inicioISO, quantidadeMeses) {
@@ -1599,6 +1652,11 @@ function atualizarVigenciaContrato(alterouDuracao = false) {
   const termino = document.getElementById('dataTermino');
   const ajuda = document.getElementById('ajudaDuracaoContrato');
   if (!quantidade || !termino) return;
+  if (prazoIndeterminado()) {
+    termino.value = '';
+    if (ajuda) ajuda.textContent = 'Sem data de término. Uma cobrança mensal será gerada enquanto o contrato permanecer ativo.';
+    return;
+  }
   const meses = Number(quantidade.value);
   const valido = quantidade.value.trim() !== '' && Number.isInteger(meses) && meses >= 1 && meses <= 120;
   const calculado = valido ? calcularTerminoPorMeses(inicio, meses) : '';
@@ -1708,7 +1766,7 @@ function controlarModalidadeContrato() {
   const aVista = valorCampo('condicaoPagamento') === 'AVISTA';
   const mensal = tipoPagamentoSelecionado === 'MENSAL';
   const qtdMensal = document.getElementById('quantidadeParcelas');
-  const mesesMensais = Number(valorCampo('duracaoMeses'));
+  const mesesMensais = prazoIndeterminado() ? 1 : Number(valorCampo('duracaoMeses'));
   if (qtdMensal) {
     qtdMensal.readOnly = mensal;
     if (mensal) {
@@ -1784,7 +1842,7 @@ function dadosFinanceirosDoFormulario() {
   if (temFinanceiro && (!Number.isFinite(financeiroCentavos) || financeiroCentavos <= 0)) erro.push('informe o valor financeiro');
   if (temFinanceiro) {
     if (tipoPagamentoSelecionado === 'MENSAL') {
-      const meses = Number(valorCampo('duracaoMeses'));
+      const meses = prazoIndeterminado() ? 1 : Number(valorCampo('duracaoMeses'));
       if (!Number.isInteger(meses) || meses < 1 || meses > 120 || qtd !== meses)
         erro.push('o contrato mensal deve ter exatamente uma parcela por mês de duração');
       if (entradaCentavos !== 0) erro.push('o contrato mensal não possui entrada separada');
@@ -1852,7 +1910,7 @@ function atualizarResumoQuatroValores(f) {
   const tituloMensal = document.getElementById('rotuloResumoMensal');
   const tituloTotal = document.getElementById('rotuloResumoTotal');
   if (tituloMensal) tituloMensal.textContent = permuta ? 'Valor mensal (permuta)' : 'Valor Mensal';
-  if (tituloTotal) tituloTotal.textContent = permuta ? 'Valor total (permuta)' : 'Valor Total';
+  if (tituloTotal) tituloTotal.textContent = prazoIndeterminado() ? 'Valor da mensalidade' : (permuta ? 'Valor total (permuta)' : 'Valor Total');
   const resumoMisto = document.getElementById('resumoDivisaoMista');
   if (resumoMisto) resumoMisto.hidden = !misto;
   const preencher = (id, valor) => { const campo=document.getElementById(id);if(campo) campo.textContent=valor; };
@@ -1866,7 +1924,7 @@ function atualizarResumoQuatroValores(f) {
 
 function montarRegraFinanceira(f, valorBR) {
   const percentualPermuta = lerPercentualPermuta();
-  const temEntrada = Boolean(valorCampo('dataVencimentoEntrada')) && parseMoedaInsercao(valorCampo('valorEntrada')) > 0;
+  const temEntrada = Boolean(valorCampo('dataVencimentoEntrada')) && (moedaParaNumero(valorCampo('valorEntrada')) ?? 0) > 0;
   const complementoEntrada = temEntrada ? ' Se houver entrada, ela entra na parte financeira e também gera cobrança.' : '';
   switch (tipoPagamentoSelecionado) {
     case 'VISTA':
@@ -1898,7 +1956,7 @@ function atualizarPreviaFinanceira() {
   const el = document.getElementById('resumoFinanceiroContrato');
   if (!el) return;
   const nomes = {VISTA:'À vista', VISTA_DESCONTO:'À vista com desconto', MENSAL:'Contrato Mensal — sem desconto', PARCELADO_DESCONTO:'Parcelado com desconto', MISTO:'Permuta + dinheiro', PERMUTA:'Somente permuta', LEGADO_PARCELADO:'Financeiro parcelado (contrato antigo)'};
-  el.textContent = `${nomes[tipoPagamentoSelecionado] || 'Contrato'}. ` +
+  el.textContent = `${prazoIndeterminado() ? 'Prazo indeterminado, mensalidade recorrente' : (nomes[tipoPagamentoSelecionado] || 'Contrato')}. ` +
     `Total comercial: ${valorBR(f.comercialCentavos)}. ` +
     (f.temPermuta ? `Permuta: ${valorBR(f.permutaCentavos)}${tipoPagamentoSelecionado === 'MISTO' ? ` (${lerPercentualPermuta() ?? '—'}%)` : ''}. ` : '') +
     (f.temFinanceiro ? `Parte financeira: ${valorBR(f.financeiroCentavos)}. ` : '') +
@@ -1980,6 +2038,10 @@ document.getElementById('percentualDescontoVista')?.addEventListener('input', ()
 atualizarPreviaFinanceira();
 
 async function salvarContrato() {
+  if (prazoIndeterminado() && tipoPagamentoSelecionado !== 'MENSAL') {
+    mensagemContrato.textContent = 'Para prazo indeterminado, selecione contrato mensal sem desconto.';
+    return;
+  }
   if (!validarContratoParaGerar()) return;
 
   const inicio = valorCampo('dataInicio');
@@ -1989,7 +2051,7 @@ async function salvarContrato() {
     !duracaoInformada && vigenciaLegadaOriginal.inicio === inicio &&
     vigenciaLegadaOriginal.termino === termino);
   const terminoCalculado = calcularTerminoPorMeses(inicio, Number(duracaoInformada));
-  if (!vigenciaLegadaSemAlteracao && (!duracaoInformada || !terminoCalculado || termino !== terminoCalculado)) {
+  if (!prazoIndeterminado() && !vigenciaLegadaSemAlteracao && (!duracaoInformada || !terminoCalculado || termino !== terminoCalculado)) {
     mensagemContrato.style.color = '#a44f69';
     mensagemContrato.textContent = 'Informe uma duração válida (1 a 120 meses) para calcular a data de término antes de salvar.';
     document.getElementById('duracaoMeses')?.focus();
@@ -2111,7 +2173,7 @@ async function salvarContrato() {
     descricao_permuta: financeiro.temPermuta ? valorCampo('descricaoPermuta') : null,
     condicao_pagamento: financeiro.condicao,
     periodicidade_parcelas: 'MENSAL',
-    quantidade_parcelas: !financeiro.temFinanceiro ? null : financeiro.condicao === 'AVISTA' ? 1 : (parcelas ? Number(parcelas) : null),
+    quantidade_parcelas: prazoIndeterminado() ? 1 : !financeiro.temFinanceiro ? null : financeiro.condicao === 'AVISTA' ? 1 : (parcelas ? Number(parcelas) : null),
     valor_total_contrato: Number.isFinite(financeiro.comercialCentavos) && financeiro.comercialCentavos > 0 ? financeiro.comercialCentavos / 100 : null,
     valor_entrada: financeiro.entradaCentavos / 100,
     data_vencimento_entrada: !financeiro.temFinanceiro || financeiro.condicao === 'AVISTA' ? null : (valorCampo('dataVencimentoEntrada') || null),
@@ -2132,7 +2194,8 @@ async function salvarContrato() {
     cliente_id: Number(valorCampo('clienteId')),
     veiculo_executor: valorCampo('veiculoExecutor'),
     data_inicio: inicio,
-    data_termino: termino,
+    data_termino: prazoIndeterminado() ? null : termino,
+    prazo_indeterminado: prazoIndeterminado(),
     insercoes_terca_quinta: Number(valorCampo('insercoesTercaQuinta')),
     insercoes_sabado_domingo: Number(valorCampo('insercoesSabadoDomingo')),
     valor_unitario_insercao: precoInsercao.valido ? precoInsercao.unitario : null,
@@ -2584,14 +2647,14 @@ function montarCondicoesFinanceirasExportacao() {
     ['Data da assinatura', formatarDataDocumento(valorCampo('dataAssinatura'))],
     ['Responsável pela empresa', valorCampo('responsavelEmpresaContrato')],
     ['Responsável pelo cliente', valorCampo('responsavelClienteContrato')],
-    ['Modalidade contratual', tipoPagamentoSelecionado === 'MENSAL' ? 'Contrato Mensal (sem desconto)' : tipoPagamentoSelecionado === 'PARCELADO_DESCONTO' ? 'Parcelado com desconto' : valorCampo('modalidadeContrato') === 'MISTO' ? 'Permuta + dinheiro' : valorCampo('modalidadeContrato') === 'PERMUTA' ? 'Somente permuta' : (valorCampo('condicaoPagamento') === 'AVISTA' && Number(valorCampo('percentualDescontoVista').replace(',','.')) > 0 ? 'À vista com desconto' : 'À vista')],
+    ['Modalidade contratual', prazoIndeterminado() ? 'Mensalidade recorrente — prazo indeterminado' : tipoPagamentoSelecionado === 'MENSAL' ? 'Contrato Mensal (sem desconto)' : tipoPagamentoSelecionado === 'PARCELADO_DESCONTO' ? 'Parcelado com desconto' : valorCampo('modalidadeContrato') === 'MISTO' ? 'Permuta + dinheiro' : valorCampo('modalidadeContrato') === 'PERMUTA' ? 'Somente permuta' : (valorCampo('condicaoPagamento') === 'AVISTA' && Number(valorCampo('percentualDescontoVista').replace(',','.')) > 0 ? 'À vista com desconto' : 'À vista')],
     ['Desconto à vista (%)', tipoPagamentoSelecionado === 'VISTA_DESCONTO' ? `${valorCampo('percentualDescontoVista')}%` : ''],
     ['Desconto no parcelamento (%)', tipoPagamentoSelecionado === 'PARCELADO_DESCONTO' ? `${valorCampo('percentualDescontoVista')}%` : ''],
     ['Percentual em permuta', valorCampo('modalidadeContrato') === 'MISTO' ? `${lerPercentualPermuta() ?? '—'}%` : ''],
     ['Valor em permuta', valorCampo('modalidadeContrato') !== 'FINANCEIRO' ? valorCampo('valorPermuta') : ''],
     ['Descrição da permuta', valorCampo('modalidadeContrato') !== 'FINANCEIRO' ? valorCampo('descricaoPermuta') : ''],
     ['Valor financeiro', valorCampo('modalidadeContrato') !== 'PERMUTA' ? valorCampo('valorFinanceiroContrato') : ''],
-    ['Total a receber', valorCampo('modalidadeContrato') === 'PERMUTA' ? 'R$ 0,00' : (['VISTA_DESCONTO','PARCELADO_DESCONTO'].includes(tipoPagamentoSelecionado) || valorCampo('condicaoPagamento') === 'AVISTA' ? valorCampo('valorVista') : valorCampo('valorFinanceiroContrato'))],
+    ['Total a receber', prazoIndeterminado() ? 'Mensalidade recorrente: ' + valorCampo('valorMensal') : valorCampo('modalidadeContrato') === 'PERMUTA' ? 'R$ 0,00' : (['VISTA_DESCONTO','PARCELADO_DESCONTO'].includes(tipoPagamentoSelecionado) || valorCampo('condicaoPagamento') === 'AVISTA' ? valorCampo('valorVista') : valorCampo('valorFinanceiroContrato'))],
     ['Condição de cobrança', valorCampo('modalidadeContrato') === 'PERMUTA' ? 'Sem cobrança monetária' : tipoPagamentoSelecionado === 'MENSAL' ? 'Mensal sem desconto' : tipoPagamentoSelecionado === 'PARCELADO_DESCONTO' ? 'Parcelado com desconto' : valorCampo('condicaoPagamento') === 'AVISTA' ? (tipoPagamentoSelecionado === 'VISTA_DESCONTO' ? 'À vista com desconto' : 'À vista') : 'Parcelado'],
     ['Forma de pagamento', valorCampo('formaPagamento')],
     ['Dia do vencimento', valorCampo('diaVencimento')],
@@ -2719,7 +2782,7 @@ function montarHtmlContrato(incluirCondicoes = false) {
           <strong>Veículo Executor:</strong> ${escaparHtml(valorCampo('veiculoExecutor'))}<br><br>
           <strong>Início:</strong> ${escaparHtml(formatarDataDocumento(valorCampo('dataInicio')))}
           &nbsp;&nbsp;&nbsp;
-          <strong>Término:</strong> ${escaparHtml(formatarDataDocumento(valorCampo('dataTermino')))}<br>
+          <strong>Término:</strong> ${escaparHtml((prazoIndeterminado() ? 'Prazo indeterminado' : formatarDataDocumento(valorCampo('dataTermino'))))}<br>
           <strong>Número de inserções:</strong>
           ${escaparHtml(quantidadeTercaQuinta)}x às terças e quintas e
           ${escaparHtml(quantidadeSabadoDomingo)}x aos sábados e domingos.<br>
@@ -2841,7 +2904,7 @@ function validarContratoParaGerar() {
     ['veiculoExecutor', 'Veículo Executor'],
     ['statusContratoEdicao', 'Status do contrato'],
     ['dataInicio', 'Início'],
-    ['dataTermino', 'Término'],
+    ...(prazoIndeterminado() ? [] : [['dataTermino', 'Término']]),
     ['insercoesTercaQuinta', 'Inserções de terça e quinta'],
     ['insercoesSabadoDomingo', 'Inserções de sábado e domingo'],
     ['valorMensal', 'Valor mensal']
@@ -3732,9 +3795,12 @@ async function iniciarPagina() {
       } else if (contrato.percentual_desconto_vista == null && tipoPagamentoSelecionado !== 'PARCELADO_DESCONTO') {
         definir('percentualDescontoVista', '0');
       }
+      if (contrato.prazo_indeterminado) tipoPagamentoSelecionado = 'MENSAL';
       const duracaoExistente = mesesDasDatas(contrato.data_inicio, contrato.data_termino);
-      definir('duracaoMeses', duracaoExistente ?? '');
-      vigenciaLegadaOriginal = duracaoExistente === null
+      definir('tipoVigenciaContrato', contrato.prazo_indeterminado ? 'INDETERMINADO' : 'DETERMINADO');
+      definir('duracaoMeses', contrato.prazo_indeterminado ? '' : (duracaoExistente ?? ''));
+      atualizarCamposVigencia();
+      vigenciaLegadaOriginal = !contrato.prazo_indeterminado && duracaoExistente === null
         ? { inicio: contrato.data_inicio, termino: contrato.data_termino }
         : null;
       // Não sobrescrever parcelamentos personalizados ao editar contratos antigos.

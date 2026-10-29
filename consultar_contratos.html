@@ -1112,7 +1112,7 @@
               <td>${empresas.get(contrato.empresa_id) || '-'}</td>
               <td>${clientes.get(contrato.cliente_id) || '-'}</td>
               <td>${formatarData(contrato.data_inicio)}</td>
-              <td>${formatarData(contrato.data_termino)}</td>
+              <td>${contrato.prazo_indeterminado ? "Indeterminado" : formatarData(contrato.data_termino)}</td>
               <td>${formatarMoeda(contrato.valor_mensal)}</td>
               <td><span class="status-pill">${contrato.status || '-'}</span></td>
               <td>
@@ -1375,7 +1375,7 @@
           contrato.id;
 
         option.textContent =
-          `${contrato.numero_contrato} — ${formatarData(contrato.data_inicio)} até ${formatarData(contrato.data_termino)} — ${contrato.status}`;
+          `${contrato.numero_contrato} — ${formatarData(contrato.data_inicio)} até ${contrato.prazo_indeterminado ? "Indeterminado" : formatarData(contrato.data_termino)} — ${contrato.status}`;
 
         contratoId.appendChild(option);
       });
@@ -1520,7 +1520,7 @@
         formatarData(contrato.data_inicio);
 
       document.getElementById('dataTermino').textContent =
-        formatarData(contrato.data_termino);
+        contrato.prazo_indeterminado ? 'Indeterminado' : formatarData(contrato.data_termino);
 
       document.getElementById('numeroInsercoes').textContent =
         `${contrato.insercoes_terca_quinta || 0}x às terças e quintas e ${contrato.insercoes_sabado_domingo || 0}x aos sábados e domingos`;

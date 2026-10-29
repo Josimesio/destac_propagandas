@@ -1,0 +1,19 @@
+DESTAC PROPAGANDAS - PRAZO INDETERMINADO (29/10/2026)
+
+1. Fazer backup do Supabase e do site.
+2. Executar no SQL Editor: sql/INSTALAR_PRAZO_INDETERMINADO_20261029.sql
+3. Habilitar a extensão pg_cron no Supabase, se ainda não estiver habilitada.
+4. Executar no SQL Editor: sql/AGENDAR_COBRANCA_RECORRENTE.sql
+5. Publicar os arquivos do ZIP no GitHub Pages.
+6. Testar um contrato PENDENTE e depois ATIVO: primeiro lançamento deve surgir uma vez.
+7. Testar no dia seguinte a execução da rotina e a inexistência de cobranças duplicadas.
+
+OBSERVAÇÕES:
+- Contratos antigos continuam usando a regra atual de financeiro.
+- Para prazo indeterminado, o valor mensal é negociado e informado diretamente.
+- Apenas contratos ATIVOS geram novas mensalidades.
+- O primeiro vencimento informa o dia-base dos demais meses (ajustado ao último dia quando necessário).
+- O controle da grade consulta um horizonte de até 3660 dias para impedir sobreposição,
+  mas a vigência do contrato permanece indeterminada.
+- Mudanças de valor mensal aplicam-se apenas às futuras cobranças, sem alterar lançamentos já existentes.
+- O SQL foi preparado a partir da versão enviada, mas ainda necessita validação no Supabase real.
