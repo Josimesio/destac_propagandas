@@ -1,0 +1,6 @@
+DESTAC - Auditoria V1
+1. Execute sql/INSTALAR_LOGS_PRINCIPAIS_V1.sql no Supabase SQL Editor.
+2. Publique o conteúdo do ZIP no GitHub Pages.
+3. Faça login como SUPER_USUARIO e acesse Auditoria / Logs no painel.
+4. Execute cadastro/edição de um registro de teste e confira o histórico.
+Observações: histórico só começa após instalação; registros históricos não são reconstruídos. Falhas de login antes da autenticação não são registradas no banco nesta versão. Alterações gravadas por scripts administrativos sem auth.uid() aparecerão com usuário vazio. Triggers podem adicionar custo de escrita. Falha no registro de auditoria do banco interrompe a operação original: valide em homologação.

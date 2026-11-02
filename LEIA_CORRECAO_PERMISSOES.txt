@@ -1,0 +1,13 @@
+DESTAC — Navegação por permissões (01/11/2026)
+
+Atualize os arquivos do site com o conteúdo deste pacote.
+
+- Links de módulos sem permissão Visualizar removidos dos menus e atalhos.
+- Acesso direto à página verificado no controle-acesso.js via RPC destac_tem_permissao.
+- Dashboard incluído na proteção central.
+- Item Campanhas (não implementado) retirado de menus em páginas principais e secundárias.
+- Textos de marketing público que usam a palavra campanhas foram preservados.
+
+IMPORTANTE: Proteja também as tabelas/dados com políticas RLS do Supabase; ocultar menu não substitui autorização no banco.
+
+Se o usuário já tiver um site aberto, recarregue com Ctrl+F5.

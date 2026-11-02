@@ -1,0 +1,10 @@
+DESTAC ANALYTICS V2
+
+1. Execute sql/INSTALAR_LOGS_PRINCIPAIS_V1.sql se ainda nao tiver instalado.
+2. Execute sql/INSTALAR_ANALYTICS_AUDITORIA_V2.sql.
+3. Publique os arquivos deste ZIP no GitHub Pages.
+4. Acesse como SUPER_USUARIO em admin.html > Analytics / Logs.
+
+Analytics aparece na matriz de permissoes, mas a leitura de logs permanece exclusiva do SUPER_USUARIO por politica RLS e validacao na tela.
+
+A auditoria registra apenas eventos APOS instalacao, e identifica usuarios quando o contexto de autenticacao do Supabase esta presente. Testar primeiro em homologacao.

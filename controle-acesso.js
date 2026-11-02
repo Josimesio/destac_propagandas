@@ -5,8 +5,10 @@
     'cliente_novo.html':'clientes','consultar_clientes.html':'clientes',
     'importar_clientes.html':'clientes','contratos.html':'contratos',
     'contrato_novo.html':'contratos','consultar_contratos.html':'contratos',
+    'dashboard_contratos.html':'dashboard_contratos',
     'financeiro.html':'financeiro','conciliacao_contratos.html':'conciliacao_contratos',
-    'consultar_cnpj.html':'consultar_cnpj','buscar_cep.html':'buscar_cep','usuarios.html':'usuarios'
+    'consultar_cnpj.html':'consultar_cnpj','buscar_cep.html':'buscar_cep',
+    'usuarios.html':'usuarios','permissoes.html':'usuarios','auditoria.html':'analytics'
   };
   const rota = location.pathname.split('/').pop();
   const modulo = mapa[rota];
@@ -75,22 +77,16 @@
       const voltar=document.createElement('a');voltar.href='admin.html';voltar.textContent='Voltar ao início';
       cartao.append(titulo,descricao,voltar);verificando.append(cartao);return;
     }
-    // Na tela inicial, manter todos os módulos à vista, mas bloquear navegação sem permissão.
-    const seletores=['aside nav a[href]'];
-    if(rota==='admin.html')seletores.push('.atalhos-grid a[href]');
-    const links=[...document.querySelectorAll(seletores.join(','))];
-    await Promise.all(links.map(async a=>{
-      const href=(a.getAttribute('href')||'').split('?')[0];
+    // Remove opções de navegação sem permissão, inclusive em páginas secundárias.
+    // Não altera conteúdo público editorial que eventualmente menciona campanhas.
+    const links=[...document.querySelectorAll('aside a[href], nav a[href], .atalhos-grid a[href]')];
+    await Promise.all(links.map(async link=>{
+      const href=(link.getAttribute('href')||'').split(/[?#]/)[0].split('/').pop();
       const destino=mapa[href];
-      if(!destino) return;
-      if(!await permitido(destino)) bloquear(a,'Acesso restrito — você não tem permissão para este módulo.',rota==='admin.html');
+      if (destino && !(await permitido(destino))) link.remove();
     }));
-    // Campanhas não está implantado: mensagem distinta de falta de autorização.
-    if(rota==='admin.html'){
-      document.querySelectorAll('aside nav .disabled, .atalhos-grid .atalho-card[aria-disabled="true"]').forEach(el=>{
-        bloquear(el,'Em breve, em desenvolvimento.');
-      });
-    }
+    // Módulos ainda não implantados não devem aparecer, nem mesmo cinza/desabilitados.
+    document.querySelectorAll('aside nav a.disabled, aside nav a[aria-disabled="true"], .atalhos-grid .atalho-card[aria-disabled="true"]').forEach(el=>el.remove());
     verificando.remove();
   } catch(error) {
     console.error('Destac acesso',error);

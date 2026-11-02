@@ -74,6 +74,7 @@ loginForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  try { await supabaseClient.rpc('destac_registrar_evento', {p_evento:'LOGIN',p_modulo:'autenticacao',p_detalhes:{pagina:'index.html'}}); } catch(err) { console.warn('Log de login indisponível:',err); }
   loginMessage.style.color = '#4f7a57';
   loginMessage.textContent = 'Login realizado com sucesso.';
 

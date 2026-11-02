@@ -164,8 +164,9 @@ async function iniciarAdmin() {
 
 
   const podeGerenciarUsuarios =
-    perfil.perfil === 'SUPER_USUARIO' ||
-    perfil.perfil === 'ADMINISTRADOR';
+    (perfil.perfil === 'SUPER_USUARIO' || perfil.perfil === 'ADMINISTRADOR') &&
+    (perfil.perfil === 'SUPER_USUARIO' ||
+      (await supabaseClient.rpc('destac_tem_permissao', {p_modulo:'usuarios',p_acao:'visualizar'})).data === true);
 
 
   const menuPermissoes = document.getElementById('menuPermissoes');

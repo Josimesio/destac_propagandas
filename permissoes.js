@@ -1,6 +1,6 @@
 "use strict";
 const db=window.supabase.createClient('https://kvmayirfbdnexlzqnjvr.supabase.co','sb_publishable_RisUa11fiUO_G5TMLnMAPg_OfVBoNIP');
-const MODULOS=[['admin', 'Painel inicial'], ['empresas', 'Empresas'], ['clientes', 'Clientes'], ['contratos', 'Contratos'], ['financeiro', 'Financeiro'], ['conciliacao_contratos', 'Conciliação'], ['consultar_cnpj', 'Consultar CNPJ'], ['buscar_cep', 'Buscar CEP'], ['usuarios', 'Usuários']];
+const MODULOS=[['admin', 'Painel inicial'], ['empresas', 'Empresas'], ['clientes', 'Clientes'], ['contratos', 'Contratos'], ['dashboard_contratos', 'Dashboards'], ['analytics', 'Analytics'], ['financeiro', 'Financeiro'], ['conciliacao_contratos', 'Conciliação'], ['consultar_cnpj', 'Consultar CNPJ'], ['buscar_cep', 'Buscar CEP'], ['usuarios', 'Usuários']];
 const ACOES=['visualizar','criar','editar','excluir','exportar'];
 const $=id=>document.getElementById(id);
 let perfil=null,permitidas=new Set(),originais=new Map(),alvo='';
